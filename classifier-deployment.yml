@@ -1,0 +1,41 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: karton-classifier
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: karton-classifier
+    spec:
+      containers:
+        - image: localhost:5000/classifier:latest
+          imagePullPolicy: Always
+          #command: [ "/bin/bash", "-c", "--" ]
+          #args: [ "while true; do sleep 30; done;" ]
+          name: karton-classifier-container
+          volumeMounts:
+            - mountPath: /app/service/config.ini
+              subPath: config.ini
+              name: karton-config-volume
+            - mountPath: /app/service/certs
+              name: karton-certs-volume
+
+      volumes:
+        - name: karton-config-volume
+          secret:
+            secretName: karton-config-ini
+            items:
+            - key: config-file
+              path: config.ini
+        - name: karton-certs-volume
+          secret:
+            secretName: karton-certs
+            items:
+            - key: certca.crt
+              path: certca.crt
+            - key: karton.key
+              path: karton.key
+            - key: karton.pem
+              path: karton.pem
