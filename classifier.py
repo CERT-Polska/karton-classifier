@@ -1,4 +1,4 @@
-from karton import Karton, Config
+from karton import Karton, Config, Task
 import magic as pymagic
 import zipfile
 import struct
@@ -20,13 +20,17 @@ class Classifier(Karton):
         sample = self.current_task.payload["sample"]
 
         file_name = sample.name or "sample"
-        sample_class = self._classify(sample)
+
+        local_sample = self.download_resource(sample)
+        sample_class = self._classify(local_sample)
+
         if sample_class is None:
             self.log.info("Sample {} not recognized (unsupported type)".format(file_name.encode("utf8")))
             return
 
         self.log.info("Classified {} as {}".format(file_name.encode("utf8"), repr(sample_class)))
-        task = self.create_task(sample_class, derive_task=self.current_task)
+
+        task = Task.derive_task(sample_class, self.current_task)
         self.send_task(task)
 
     def _get_extension(self, name):
@@ -38,9 +42,8 @@ class Classifier(Karton):
             "type": "sample",
             "stage": "recognized"
         }
-
         content = sample.content
-        magic = self.current_task.payload.get("magic") or pymagic.from_buffer(sample.content)
+        magic = self.current_task.payload.get("magic") or pymagic.from_buffer(content)
         extension = self._get_extension(sample.name or "sample")
 
         # Is PE file?
