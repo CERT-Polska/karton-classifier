@@ -17,12 +17,12 @@ class Classifier(Karton):
     ]
 
     def process(self):
-        sample = self.current_task.payload["sample"]
-
-        file_name = sample.name or "sample"
+        sample = self.current_task.get_resource("sample")
 
         local_sample = self.download_resource(sample)
         sample_class = self._classify(local_sample)
+
+        file_name = sample.name or "sample"
 
         if sample_class is None:
             self.log.info("Sample {} not recognized (unsupported type)".format(file_name.encode("utf8")))
@@ -43,7 +43,7 @@ class Classifier(Karton):
             "stage": "recognized"
         }
         content = sample.content
-        magic = self.current_task.payload.get("magic") or pymagic.from_buffer(content)
+        magic = self.current_task.get_payload("magic") or pymagic.from_buffer(content)
         extension = self._get_extension(sample.name or "sample")
 
         # Is PE file?
