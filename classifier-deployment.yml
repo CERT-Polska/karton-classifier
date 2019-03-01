@@ -19,7 +19,7 @@ spec:
             - mountPath: /app/service/config.ini
               subPath: config.ini
               name: karton-config-volume
-            - mountPath: /app/service/certs
+            - mountPath: /certs
               name: karton-certs-volume
 
       volumes:
