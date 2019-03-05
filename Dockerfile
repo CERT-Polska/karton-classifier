@@ -1,4 +1,4 @@
-FROM localhost:5000/karton:latest
+FROM docker.cert.pl:5000/karton:latest
 
 COPY requirements.txt /tmp/requirements.txt
 

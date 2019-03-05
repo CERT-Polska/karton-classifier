@@ -10,7 +10,7 @@ spec:
         app: karton-classifier
     spec:
       containers:
-        - image: localhost:5000/classifier:latest
+        - image: docker.cert.pl:5000/classifier:latest
           imagePullPolicy: Always
           #command: [ "/bin/bash", "-c", "--" ]
           #args: [ "while true; do sleep 30; done;" ]
