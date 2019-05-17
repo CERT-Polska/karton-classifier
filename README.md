@@ -28,5 +28,6 @@ Author: CERT.pl
               || "script",   # Scripts (js/vbs/bat...)
     "platform":  "win32" || "win64" || "linux" || "android",
     "extension": "*",        # Expected file extension
+    ... (consumed task is derived)
 }
 ```
