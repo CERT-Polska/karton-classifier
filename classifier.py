@@ -197,9 +197,10 @@ class Classifier(Karton):
             "zip": "Zip archive data",
             "rar": "RAR archive data",
             "7z": "7-zip archive data",
-            "gz": "gzip compressed"
+            "gz": "gzip compressed",
+            "iso": "ISO 9660 CD-ROM"
         }
-        archive_extensions = ["ace", "zip", "rar", "tar", "cab", "gz", "7z", "bz2", "arj"]
+        archive_extensions = ["ace", "zip", "rar", "tar", "cab", "gz", "7z", "bz2", "arj", "iso"]
         for ext in archive_extensions:
             if ext in archive_assoc:
                 if magic.startswith(archive_assoc[ext]):
@@ -232,6 +233,14 @@ class Classifier(Karton):
             sample_type.update({
                 "kind": "archive",
                 "extension": extension
+            })
+            return sample_type
+
+        # HTML
+
+        if magic.startswith("HTML document"):
+            sample_type.update({
+                "kind": "html"
             })
             return sample_type
 
@@ -275,6 +284,13 @@ class Classifier(Karton):
                 vbs_keywords = ["dim ", "set ", "chr(", "sub ", "on error ", "createobject"]
                 js_keywords = ["function ", "function(", "this.", "this[", "new ", "createobject", "activexobject",
                                "var ", "catch"]
+                html_keywords = ["<!doctype", "<html", "<script"]
+
+                if len([True for keyword in html_keywords if keyword in partial_str]) >= 2:
+                    sample_type.update({
+                        "kind": "html"
+                    })
+                    return sample_type
 
                 if len([True for keyword in vbs_keywords if keyword in partial_str]) >= 2:
                     sample_type.update({
