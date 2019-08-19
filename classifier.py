@@ -40,7 +40,8 @@ class Classifier(Karton):
     def _classify(self, sample):
         sample_type = {
             "type": "sample",
-            "stage": "recognized"
+            "stage": "recognized",
+            "quality": self.current_task.headers.get("quality", "high")
         }
         content = sample.content
         magic = self.current_task.get_payload("magic") or pymagic.from_buffer(content)
