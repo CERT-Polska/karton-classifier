@@ -240,10 +240,18 @@ class Classifier(Karton):
             return sample_type
 
         # HTML
-
         if magic.startswith("HTML document"):
             sample_type.update({
                 "kind": "html"
+            })
+            return sample_type
+
+        # Linux scripts
+        if ("script" in magic and "executable" in magic) or extension == "sh":
+            sample_type.update({
+                "kind": "script",
+                "platform": "linux",
+                "extension": extension
             })
             return sample_type
 
