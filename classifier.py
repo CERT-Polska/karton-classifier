@@ -199,9 +199,11 @@ class Classifier(Karton):
             "rar": "RAR archive data",
             "7z": "7-zip archive data",
             "gz": "gzip compressed",
-            "iso": "ISO 9660 CD-ROM"
+            "iso": "ISO 9660 CD-ROM",
+            "xz": "XZ compressed data"
         }
-        archive_extensions = ["ace", "zip", "rar", "tar", "cab", "gz", "7z", "bz2", "arj", "iso"]
+        archive_extensions = ["ace", "zip", "rar", "tar", "cab", "gz", "7z",
+                              "bz2", "arj", "iso", "xz"]
         for ext in archive_extensions:
             if ext in archive_assoc:
                 if magic.startswith(archive_assoc[ext]):
