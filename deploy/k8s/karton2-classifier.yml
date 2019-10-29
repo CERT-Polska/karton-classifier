@@ -1,0 +1,57 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: karton2-classifier
+  name: karton2-classifier
+  namespace: karton-prod
+spec:
+  selector:
+    matchLabels:
+      app: karton2-classifier
+  template:
+    metadata:
+      labels:
+        app: karton2-classifier
+    spec:
+      containers:
+      - image: dr.cert.pl/karton/classifier2
+        imagePullPolicy: Always
+        name: container-classifier
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /app/service/config.ini
+          name: karton-config-volume
+          subPath: config.ini
+        - mountPath: /certs
+          name: karton-certs-volume
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+      - name: regcred
+      nodeSelector:
+        kubernetes.io/hostname: karton-node.cert.pl
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: karton-config-volume
+        secret:
+          defaultMode: 420
+          items:
+          - key: config-file
+            path: config.ini
+          secretName: karton2-config
+      - name: karton-certs-volume
+        secret:
+          defaultMode: 420
+          items:
+          - key: certca.crt
+            path: certca.crt
+          - key: karton.key
+            path: karton.key
+          - key: karton.pem
+            path: karton.pem
+          secretName: karton-certs

@@ -1,0 +1,14 @@
+{
+    "classifier": {
+        "docker": {
+            "image": "dr.cert.pl/karton/classifier2",
+            "dockerfile": "deploy/docker/Dockerfile",
+            "dir": "."
+        },
+        "k8s": {
+            "namespace": "karton-prod",
+            "deployment": "karton2-classifier",
+            "container": "container-classifier"
+        }
+    }
+}
