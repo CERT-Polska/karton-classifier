@@ -1,4 +1,4 @@
-from karton import Karton, Config, Task
+from karton2 import Karton, Config, Task
 import magic as pymagic
 import zipfile
 import struct
