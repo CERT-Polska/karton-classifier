@@ -65,7 +65,7 @@ class Classifier(Karton):
             try:
                 zipfile.ZipFile(BytesIO(content)).getinfo(path)
                 return True
-            except:
+            except Exception:
                 return False
 
         if magic.startswith("Zip archive data"):
