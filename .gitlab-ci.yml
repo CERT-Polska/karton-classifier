@@ -1,16 +1,28 @@
 image: certpl/docker-ci-base
 
-stages:
-- deploy
+variables:
+  DOCKER_REGISTRY: dr.cert.pl
+  GIT_SUBMODULE_STRATEGY: none
 
 services:
-- docker:dind
+  - docker:dind
+
+stages:
+  - deploy
+
+before_script:
+  - eval $(ssh-agent -s)
+  - bash -c 'ssh-add <(echo "$DEPLOY_SSH_KEY")'
+  - mkdir -p ~/.ssh
+  - echo -n "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
 
 deploy:
   stage: deploy
   only:
   - master
   script:
+  - git submodule init
+  - git submodule update --recursive
   - docker login -u "$DOCKER_REGISTRY_LOGIN" -p "$DOCKER_REGISTRY_PASSWORD" https://dr.cert.pl
   - kubernetes_use_token https://kapi.cert.pl "$KUBE_TOKEN"
   - deploy --production
