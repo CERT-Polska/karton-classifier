@@ -1,19 +1,16 @@
+image: certpl/docker-ci-base
+
 stages:
 - deploy
 
-variables:
-  DOCKER_HOST: tcp://naskpl-dind:2375
-
 services:
-- naskpl/dind
+- docker:dind
 
 deploy:
   stage: deploy
-  image: dr.cert.pl/feeds/deploy:latest
   only:
   - master
   script:
-  - echo "$CI_COMMIT_SHA 1" > .git/refs/heads/master
   - docker login -u "$DOCKER_REGISTRY_LOGIN" -p "$DOCKER_REGISTRY_PASSWORD" https://dr.cert.pl
   - kubernetes_use_token https://kapi.cert.pl "$KUBE_TOKEN"
   - deploy --production
