@@ -200,10 +200,11 @@ class Classifier(Karton):
             "7z": "7-zip archive data",
             "gz": "gzip compressed",
             "iso": "ISO 9660 CD-ROM",
-            "xz": "XZ compressed data"
+            "xz": "XZ compressed data",
+            "lz": "lzip compressed data"
         }
         archive_extensions = ["ace", "zip", "rar", "tar", "cab", "gz", "7z",
-                              "bz2", "arj", "iso", "xz"]
+                              "bz2", "arj", "iso", "xz", "lz"]
         for ext in archive_extensions:
             if ext in archive_assoc:
                 if magic.startswith(archive_assoc[ext]):
