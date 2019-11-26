@@ -145,6 +145,15 @@ class Classifier(Karton):
             return sample_type
         # Check Composite Document (doc/xls/ppt) by libmagic and extension
         if magic.startswith("Composite Document File"):
+            # MSI installers are also CDFs
+            if "MSI Installer" in magic:
+                sample_type.update({
+                    "kind": "runnable",
+                    "platform": "win32",
+                    "extension": "msi"
+                })
+                return sample_type
+            # If not MSI, treat it like Office document
             sample_type.update({
                 "kind": "document",
                 "platform": "win32",
