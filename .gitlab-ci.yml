@@ -25,4 +25,4 @@ deploy:
   - git submodule update --recursive
   - docker login -u "$DOCKER_REGISTRY_LOGIN" -p "$DOCKER_REGISTRY_PASSWORD" https://dr.cert.pl
   - kubernetes_use_token https://kapi.cert.pl "$KUBE_TOKEN"
-  - deploy --production
+  - deploy production
