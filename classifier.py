@@ -306,7 +306,7 @@ class Classifier(Karton):
                 js_keywords = ["function ", "function(", "this.", "this[", "new ", "createobject", "activexobject",
                                "var ", "catch"]
                 html_keywords = ["<!doctype", "<html", "<script"]
-
+                ps_keywords = ["powershell","-nop","bypass", "new-object", "IEX","Invoke-Expression","FromBase64String("]
                 if len([True for keyword in html_keywords if keyword in partial_str]) >= 2:
                     sample_type.update({
                         "kind": "html"
@@ -337,6 +337,18 @@ class Classifier(Karton):
                         "extension": "jse"   # jse is more possible than vbe
                     })
                     return sample_type
+                # Powershell heuristics
+                if len([True for keyword in ps_keywords if keyword in partial_str]):
+                    sample_type.update({
+                        "kind": "script",
+                        "platform": "win32",
+                        "extension": "ps"
+                    })
+                    return sample_type
+                if magic.startswith("ASCII"):
+                    sample_type.update({
+                        "kind": "ascii",
+                    })
         except Exception as e:
             self.log.exception(e)
 
