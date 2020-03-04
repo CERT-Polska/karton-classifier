@@ -349,6 +349,7 @@ class Classifier(Karton):
                     sample_type.update({
                         "kind": "ascii",
                     })
+                    return sample_type
         except Exception as e:
             self.log.exception(e)
 
