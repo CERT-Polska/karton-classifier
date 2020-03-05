@@ -306,7 +306,8 @@ class Classifier(Karton):
                 js_keywords = ["function ", "function(", "this.", "this[", "new ", "createobject", "activexobject",
                                "var ", "catch"]
                 html_keywords = ["<!doctype", "<html", "<script"]
-                ps_keywords = ["powershell","-nop","bypass", "new-object", "IEX","Invoke-Expression","FromBase64String("]
+                ps_keywords = ["powershell", "-nop", "bypass", "new-object", "invoke-expression", "frombase64string(",
+                               "| iex", "|iex"]
                 if len([True for keyword in html_keywords if keyword in partial_str]) >= 2:
                     sample_type.update({
                         "kind": "html"
@@ -338,7 +339,7 @@ class Classifier(Karton):
                     })
                     return sample_type
                 # Powershell heuristics
-                if len([True for keyword in ps_keywords if keyword in partial_str]):
+                if len([True for keyword in ps_keywords if keyword.lower() in partial_str]):
                     sample_type.update({
                         "kind": "script",
                         "platform": "win32",
