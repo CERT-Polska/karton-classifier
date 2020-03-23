@@ -343,7 +343,7 @@ class Classifier(Karton):
                     sample_type.update({
                         "kind": "script",
                         "platform": "win32",
-                        "extension": "ps"
+                        "extension": "ps1"
                     })
                     return sample_type
                 if magic.startswith("ASCII"):
