@@ -1,4 +1,4 @@
-from karton2 import Karton, Config, Task
+from karton2 import Karton
 import magic as pymagic
 import zipfile
 import struct
@@ -8,6 +8,13 @@ import chardet
 
 
 class Classifier(Karton):
+    """
+    Sample type classifier.
+
+    Entrypoint for samples. Classifies type of samples labeled as `kind: raw`,
+    which makes them available for subsystems that receive samples with specific
+    type only (e.g. `raw` => `runnable:win32:exe`)
+    """
     identity = "karton.classifier"
     filters = [
         {
@@ -18,9 +25,7 @@ class Classifier(Karton):
 
     def process(self):
         sample = self.current_task.get_resource("sample")
-
-        local_sample = self.download_resource(sample)
-        sample_class = self._classify(local_sample)
+        sample_class = self._classify(sample)
 
         file_name = sample.name or "sample"
 
@@ -30,7 +35,7 @@ class Classifier(Karton):
 
         self.log.info("Classified {} as {}".format(file_name.encode("utf8"), repr(sample_class)))
 
-        task = Task.derive_task(sample_class, self.current_task)
+        task = self.current_task.derive_task(sample_class)
         self.send_task(task)
 
     def _get_extension(self, name):
@@ -101,6 +106,7 @@ class Classifier(Karton):
                 "platform": "win32",
                 "extension": "swf"
             })
+            return sample_type
 
         # Windows LNK?
         if magic.startswith("MS Windows shortcut") or extension == "lnk":
@@ -359,6 +365,4 @@ class Classifier(Karton):
 
 
 if __name__ == "__main__":
-    conf = Config("config.ini")
-    c = Classifier(conf)
-    c.loop()
+    Classifier().loop()
