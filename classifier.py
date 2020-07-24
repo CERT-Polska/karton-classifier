@@ -209,17 +209,21 @@ class Classifier(Karton):
 
         # Archives
         archive_assoc = {
-            "ace": "ACE archive data",
-            "zip": "Zip archive data",
-            "rar": "RAR archive data",
             "7z": "7-zip archive data",
+            "ace": "ACE archive data",
+            "bz2": "bzip2 compressed data",
+            "cab": "Microsoft Cabinet archive data",
             "gz": "gzip compressed",
             "iso": "ISO 9660 CD-ROM",
+            "lz": "lzip compressed data",
+            "rar": "RAR archive data",
+            "udf": "UDF filesystem data",
             "xz": "XZ compressed data",
-            "lz": "lzip compressed data"
+            "zip": "Zip archive data",
+            "zlib": "zlib compressed data"
         }
         archive_extensions = ["ace", "zip", "rar", "tar", "cab", "gz", "7z",
-                              "bz2", "arj", "iso", "xz", "lz"]
+                              "bz2", "arj", "iso", "xz", "lz", "udf", "cab", "zlib"]
         for ext in archive_extensions:
             if ext in archive_assoc:
                 if magic.startswith(archive_assoc[ext]):
