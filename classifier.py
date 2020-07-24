@@ -1,10 +1,13 @@
-from karton2 import Karton
-import magic as pymagic
-import zipfile
-import struct
 import re
+import struct
+import zipfile
 from io import BytesIO
-import chardet
+from typing import Dict, Optional
+
+import chardet  # type: ignore
+from karton2 import Karton, Resource  # type: ignore
+
+import magic as pymagic  # type: ignore
 
 
 class Classifier(Karton):
@@ -23,7 +26,7 @@ class Classifier(Karton):
         },
     ]
 
-    def process(self):
+    def process(self) -> None:
         sample = self.current_task.get_resource("sample")
         sample_class = self._classify(sample)
 
@@ -38,11 +41,11 @@ class Classifier(Karton):
         task = self.current_task.derive_task(sample_class)
         self.send_task(task)
 
-    def _get_extension(self, name):
+    def _get_extension(self, name: str) -> str:
         splitted = name.rsplit('.', 1)
         return splitted[-1].lower() if len(splitted) > 1 else ""
 
-    def _classify(self, sample):
+    def _classify(self, sample: Resource) -> Optional[Dict[str, str]]:
         sample_type = {
             "type": "sample",
             "stage": "recognized",
@@ -66,7 +69,7 @@ class Classifier(Karton):
             return sample_type
 
         # ZIP-contained files?
-        def zip_has_file(path):
+        def zip_has_file(path: str) -> bool:
             try:
                 zipfile.ZipFile(BytesIO(content)).getinfo(path)
                 return True
