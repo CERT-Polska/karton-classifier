@@ -3,6 +3,7 @@ import struct
 import zipfile
 from io import BytesIO
 from typing import Dict, Optional
+from hashlib import sha256
 
 import chardet  # type: ignore
 from karton2 import Karton, Resource  # type: ignore
@@ -39,6 +40,10 @@ class Classifier(Karton):
         self.log.info("Classified {} as {}".format(file_name.encode("utf8"), repr(sample_class)))
 
         task = self.current_task.derive_task(sample_class)
+
+        # add a sha256 digest in the outgoing task if there isn't one in the incoming task
+        if "sha256" not in task.payload["sample"].metadata:
+            task.payload["sample"].metadata["sha256"] = sha256(sample.content).hexdigest()
         self.send_task(task)
 
     def _get_extension(self, name: str) -> str:
