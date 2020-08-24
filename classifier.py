@@ -11,6 +11,27 @@ from karton2 import Karton, Resource  # type: ignore
 import magic as pymagic  # type: ignore
 
 
+def get_tag(classification: Dict[str, str]) -> str:
+    sample_type = classification["kind"]
+
+    # Build classification tag
+    if "platform" in classification:
+        # Add platform information
+        sample_type += f":{classification['platform']}"
+
+    if "extension" in classification:
+        # Add extension (if not empty)
+        extension = classification["extension"]
+        if extension:
+            sample_type += f":{classification['extension']}"
+
+    # Add misc: if headers doesn't have platform nor extension
+    if ":" not in sample_type:
+        sample_type = f"misc:{sample_type}"
+
+    return sample_type
+
+
 class Classifier(Karton):
     """
     Sample type classifier.
@@ -37,13 +58,16 @@ class Classifier(Karton):
             self.log.info("Sample {} not recognized (unsupported type)".format(file_name.encode("utf8")))
             return
 
-        self.log.info("Classified {} as {}".format(file_name.encode("utf8"), repr(sample_class)))
+        classification_tag = get_tag(sample_class)
+        self.log.info("Classified {} as {} and tag {}".format(file_name.encode("utf8"), repr(sample_class), classification_tag))
 
         task = self.current_task.derive_task(sample_class)
+        task.add_payload("tags", [classification_tag])
 
         # add a sha256 digest in the outgoing task if there isn't one in the incoming task
         if "sha256" not in task.payload["sample"].metadata:
             task.payload["sample"].metadata["sha256"] = sha256(sample.content).hexdigest()
+
         self.send_task(task)
 
     def _get_extension(self, name: str) -> str:

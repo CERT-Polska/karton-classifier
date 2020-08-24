@@ -10,7 +10,7 @@ class ClassifierTestCase(KartonTestCase):
     karton_class = Classifier
 
     def _single_file_test(
-            self, name, content,
+            self, name, content, tag,
             kind=None, platform=None, extension=None
     ):
         sample = TestResource(name, content)
@@ -39,7 +39,8 @@ class ClassifierTestCase(KartonTestCase):
             self.assertTasksEqual(results, [
                 Task(expected_headers, payload={
                     "sample": sample,
-                    "extraction_level": 999
+                    "extraction_level": 999,
+                    "tags": [tag]
                 })
             ])
 
@@ -50,6 +51,11 @@ class ClassifierTestCase(KartonTestCase):
                     content = f.read()
                 expected_tag, file_name = testcase.split("-", 1)
                 tag_elements = expected_tag.split(":")
+
+                # "misc" prefix is added only for mwdb compatibility
+                if tag_elements[0] == "misc":
+                    tag_elements = tag_elements[1:]
+
                 headers = {
                     "kind": tag_elements[0]
                 }
@@ -61,5 +67,5 @@ class ClassifierTestCase(KartonTestCase):
                         if len(tag_elements) > 2:
                             headers["extension"] = tag_elements[2]
                 self._single_file_test(
-                    file_name, content, **headers
+                    file_name, content, expected_tag, **headers
                 )
