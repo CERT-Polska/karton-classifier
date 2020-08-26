@@ -1,14 +1,29 @@
 import re
 import struct
 import zipfile
+from hashlib import sha256
 from io import BytesIO
 from typing import Dict, Optional
-from hashlib import sha256
+from zipfile import ZipFile
 
 import chardet  # type: ignore
+import magic as pymagic  # type: ignore
 from karton2 import Karton, Resource  # type: ignore
 
-import magic as pymagic  # type: ignore
+
+def classify_openxml(content: bytes) -> Optional[str]:
+    zipfile = ZipFile(BytesIO(content))
+    extensions = {
+        "docx": "word/",
+        "pptx": "ppt/",
+        "xlsx": "xl/"
+    }
+    filenames = [x.filename for x in zipfile.filelist]
+
+    for ext, file_prefix in extensions.items():
+        if any(x.startswith(file_prefix) for x in filenames):
+            return ext
+    return None
 
 
 def get_tag(classification: Dict[str, str]) -> str:
@@ -229,6 +244,20 @@ class Classifier(Karton):
                 "extension": extension
             })
             return sample_type
+
+        # Unclassified Open XML documents
+        if magic.startswith("Microsoft OOXML"):
+            try:
+                ext = classify_openxml(content)
+                if ext:
+                    sample_type.update({
+                        "kind": "document",
+                        "platform": "win32",
+                        "extension": ext
+                    })
+                    return sample_type
+            except Exception as e:
+                self.log.exception("Error while trying to classify OOXML")
 
         # PDF files
         if magic.startswith("PDF document") or extension == "pdf":
