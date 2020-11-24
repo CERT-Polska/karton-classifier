@@ -77,7 +77,9 @@ class Classifier(Karton):
         self.log.info("Classified {} as {} and tag {}".format(file_name.encode("utf8"), repr(sample_class), classification_tag))
 
         task = self.current_task.derive_task(sample_class)
-        task.add_payload("tags", [classification_tag])
+        # pass the original tags to the next task
+        tags = [classification_tag] + task.get_payload("tags", [])
+        task.add_payload("tags", tags)
 
         # add a sha256 digest in the outgoing task if there isn't one in the incoming task
         if "sha256" not in task.payload["sample"].metadata:
