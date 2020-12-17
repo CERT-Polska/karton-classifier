@@ -89,7 +89,8 @@ class Classifier(Karton):
 
         task.add_payload("tags", tags)
 
-        # add a sha256 digest in the outgoing task if there isn't one in the incoming task
+        # add a sha256 digest in the outgoing task if there
+        # isn't one in the incoming task
         if "sha256" not in task.payload["sample"].metadata:
             task.payload["sample"].metadata["sha256"] = sha256(
                 sample.content
@@ -262,7 +263,7 @@ class Classifier(Karton):
                         }
                     )
                     return sample_type
-            except Exception as e:
+            except Exception:
                 self.log.exception("Error while trying to classify OOXML")
 
         # PDF files
