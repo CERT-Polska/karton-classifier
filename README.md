@@ -1,6 +1,10 @@
 # Classifier karton service
 
-Performs initial classification of sample type. Default karton entrypoint for unrecognized samples.
+File type classifier for the Karton framework.
+
+Entrypoint for samples. Classifies type of samples labeled as `kind: raw`,
+which makes them available for subsystems that receive samples with specific
+type only (e.g. `raw` => `runnable:win32:exe`)
 
 **Author**: CERT.pl
 
