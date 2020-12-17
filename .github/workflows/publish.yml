@@ -23,4 +23,4 @@ jobs:
           dockerfile: ./Dockerfile
           repository: certpl/${{ github.event.repository.name }}
           tags: ${{ github.sha }}
-          push: ${{ github.event == 'push' }}
+          push: ${{ github.event_name == 'push' }}
