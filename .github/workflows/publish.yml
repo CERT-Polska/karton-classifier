@@ -24,4 +24,3 @@ jobs:
           repository: certpl/${{ github.event.repository.name }}
           tags: ${{ github.sha }}
           push: ${{ github.event == 'push' }}
-        run: docker push certpl/mwdb:${{ github.sha }}
