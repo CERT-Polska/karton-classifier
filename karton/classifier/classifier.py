@@ -455,7 +455,7 @@ class Classifier(Karton):
                 if magic.startswith("ISO-8859"):
                     sample_type.update(
                         {
-                            "kind": "iso-8859",
+                            "kind": "iso-8859-1",
                         }
                     )
                     return sample_type
