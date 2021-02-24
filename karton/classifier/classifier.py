@@ -452,6 +452,27 @@ class Classifier(Karton):
                         }
                     )
                     return sample_type
+                if magic.startswith("ISO-8859"):
+                    sample_type.update(
+                        {
+                            "kind": "iso-8859-1",
+                        }
+                    )
+                    return sample_type
+                if magic.startswith("UTF-8"):
+                    sample_type.update(
+                        {
+                            "kind": "utf-8",
+                        }
+                    )
+                    return sample_type
+                if magic.startswith("PGP"):
+                    sample_type.update(
+                        {
+                            "kind": "pgp",
+                        }
+                    )
+                    return sample_type
         except Exception as e:
             self.log.exception(e)
 
