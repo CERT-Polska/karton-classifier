@@ -2,12 +2,12 @@ import re
 import struct
 from hashlib import sha256
 from io import BytesIO
-from typing import Dict, Optional
+from typing import Dict, Optional, cast
 from zipfile import ZipFile
 
 import chardet  # type: ignore
 import magic as pymagic  # type: ignore
-from karton.core import Karton, Resource  # type: ignore
+from karton.core import Karton, Task
 
 from .__version__ import __version__
 
@@ -59,9 +59,9 @@ class Classifier(Karton):
         {"type": "sample", "kind": "raw"},
     ]
 
-    def process(self) -> None:
-        sample = self.current_task.get_resource("sample")
-        sample_class = self._classify(sample)
+    def process(self, task: Task) -> None:  # type: ignore
+        sample = task.get_resource("sample")
+        sample_class = self._classify(task)
 
         file_name = sample.name or "sample"
 
@@ -80,37 +80,38 @@ class Classifier(Karton):
             )
         )
 
-        task = self.current_task.derive_task(sample_class)
+        derived_task = task.derive_task(sample_class)
         # pass the original tags to the next task
         tags = [classification_tag]
-        if task.has_payload("tags"):
-            tags += task.get_payload("tags")
-            task.remove_payload("tags")
+        if derived_task.has_payload("tags"):
+            tags += derived_task.get_payload("tags")
+            derived_task.remove_payload("tags")
 
-        task.add_payload("tags", tags)
+        derived_task.add_payload("tags", tags)
 
         # add a sha256 digest in the outgoing task if there
         # isn't one in the incoming task
-        if "sha256" not in task.payload["sample"].metadata:
-            task.payload["sample"].metadata["sha256"] = sha256(
-                sample.content
+        if "sha256" not in derived_task.payload["sample"].metadata:
+            derived_task.payload["sample"].metadata["sha256"] = sha256(
+                cast(bytes, sample.content)
             ).hexdigest()
 
-        self.send_task(task)
+        self.send_task(derived_task)
 
     def _get_extension(self, name: str) -> str:
         splitted = name.rsplit(".", 1)
         return splitted[-1].lower() if len(splitted) > 1 else ""
 
-    def _classify(self, sample: Resource) -> Optional[Dict[str, str]]:
+    def _classify(self, task: Task) -> Optional[Dict[str, str]]:
+        sample = task.get_resource("sample")
+        content = cast(bytes, sample.content)
+        magic = task.get_payload("magic") or pymagic.from_buffer(content)
+        extension = self._get_extension(sample.name or "sample")
         sample_type = {
             "type": "sample",
             "stage": "recognized",
-            "quality": self.current_task.headers.get("quality", "high"),
+            "quality": task.headers.get("quality", "high"),
         }
-        content = sample.content
-        magic = self.current_task.get_payload("magic") or pymagic.from_buffer(content)
-        extension = self._get_extension(sample.name or "sample")
 
         # Is PE file?
         if magic.startswith("PE32"):
