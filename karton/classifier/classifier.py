@@ -114,7 +114,7 @@ class Classifier(Karton):
         }
 
         # Is PE file?
-        if magic.startswith("PE32"):
+        if magic.startswith("PE32") or magic.startswith("MS-DOS executable PE32"):
             sample_type.update(
                 {"kind": "runnable", "platform": "win32", "extension": "exe"}
             )
