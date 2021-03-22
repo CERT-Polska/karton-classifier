@@ -14,7 +14,7 @@ from .__version__ import __version__
 
 def classify_openxml(content: bytes) -> Optional[str]:
     zipfile = ZipFile(BytesIO(content))
-    extensions = {"docx": "word/", "pptx": "ppt/", "xlsx": "xl/"}
+    extensions = {"docx": "word", "pptx": "ppt", "xlsx": "xl"}
     filenames = [x.filename for x in zipfile.filelist]
 
     for ext, file_prefix in extensions.items():
@@ -255,7 +255,7 @@ class Classifier(Karton):
         if magic.startswith("Microsoft OOXML"):
             try:
                 extn = classify_openxml(content)
-                if ext:
+                if extn:
                     sample_type.update(
                         {
                             "kind": "document",
