@@ -1,4 +1,6 @@
-FROM python:3.7
+FROM python:3.7-alpine
+
+RUN apk add libmagic
 
 WORKDIR /app/service
 COPY ./requirements.txt ./requirements.txt
