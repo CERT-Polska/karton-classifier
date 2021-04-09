@@ -119,7 +119,7 @@ class Classifier(Karton):
         try:
             magic = pymagic.from_buffer(content)
         except Exception as ex:
-            self.log.exception(ex)
+            self.log.warning(f"unable to get magic: {ex}")
 
         extension = self._get_extension(sample.name or "sample")
         sample_type = {

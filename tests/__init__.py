@@ -65,7 +65,7 @@ class ClassifierTestCase(KartonTestCase):
                 if len(tag_elements) > 1:
                     if tag_elements[0] == "archive":
                         headers["extension"] = tag_elements[1]
-                    elif (tag_elements[0] == "unknown"):
+                    elif tag_elements[0] == "unknown":
                         expected_tag = None
                         headers['stage'] = "unrecognized"
                     else:
