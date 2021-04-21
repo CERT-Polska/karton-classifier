@@ -11,7 +11,7 @@ class ClassifierTestCase(KartonTestCase):
 
     def _single_file_test(
             self, name, content, tag,
-            kind=None, platform=None, extension=None
+            kind=None, platform=None, extension=None, stage="recognized"
     ):
         sample = TestResource(name, content)
         task = Task({
@@ -28,7 +28,7 @@ class ClassifierTestCase(KartonTestCase):
             expected_headers = {
                 "origin": "karton.classifier",
                 "type": "sample",
-                "stage": "recognized",
+                "stage": stage,
                 "quality": "high",
                 "kind": kind
             }
@@ -36,13 +36,15 @@ class ClassifierTestCase(KartonTestCase):
                 expected_headers["platform"] = platform
             if extension:
                 expected_headers["extension"] = extension
-            self.assertTasksEqual(results, [
-                Task(expected_headers, payload={
-                    "sample": sample,
-                    "extraction_level": 999,
-                    "tags": [tag]
-                })
-            ])
+
+            payload = {
+                "sample": sample,
+                "extraction_level": 999,
+            }
+            if tag:
+                payload["tags"] = [tag]
+
+            self.assertTasksEqual(results, [Task(expected_headers, payload)])
 
     def test_works_as_expected(self):
         for testcase in os.listdir("tests/testdata"):
@@ -57,11 +59,15 @@ class ClassifierTestCase(KartonTestCase):
                     tag_elements = tag_elements[1:]
 
                 headers = {
-                    "kind": tag_elements[0]
+                    "kind": tag_elements[0],
+                    'stage': "recognized",
                 }
                 if len(tag_elements) > 1:
                     if tag_elements[0] == "archive":
                         headers["extension"] = tag_elements[1]
+                    elif tag_elements[0] == "unknown":
+                        expected_tag = None
+                        headers['stage'] = "unrecognized"
                     else:
                         headers["platform"] = tag_elements[1]
                         if len(tag_elements) > 2:

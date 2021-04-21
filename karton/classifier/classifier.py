@@ -71,6 +71,15 @@ class Classifier(Karton):
                     file_name.encode("utf8")
                 )
             )
+            res = task.derive_task(
+                {
+                    "type": "sample",
+                    "stage": "unrecognized",
+                    "kind": "unknown",
+                    "quality": task.headers.get("quality", "high"),
+                }
+            )
+            self.send_task(res)
             return
 
         classification_tag = get_tag(sample_class)
@@ -105,7 +114,13 @@ class Classifier(Karton):
     def _classify(self, task: Task) -> Optional[Dict[str, str]]:
         sample = task.get_resource("sample")
         content = cast(bytes, sample.content)
-        magic = task.get_payload("magic") or pymagic.from_buffer(content)
+
+        magic = task.get_payload("magic") or ""
+        try:
+            magic = pymagic.from_buffer(content)
+        except Exception as ex:
+            self.log.warning(f"unable to get magic: {ex}")
+
         extension = self._get_extension(sample.name or "sample")
         sample_type = {
             "type": "sample",
