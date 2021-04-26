@@ -2,6 +2,8 @@
     "headers": {
         "extension": "pdf",
         "kind": "document",
+        "magic": "PDF document, version 1.4",
+        "mime": "application/pdf",
         "origin": "karton.classifier",
         "quality": "high",
         "stage": "recognized",

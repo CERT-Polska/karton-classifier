@@ -2,6 +2,8 @@
     "headers": {
         "extension": "ace",
         "kind": "archive",
+        "magic": "ACE archive data version 20, from Win/32, version 20 to extract, contains AV-String (unregistered), solid",
+        "mime": "application/octet-stream",
         "origin": "karton.classifier",
         "quality": "high",
         "stage": "recognized",

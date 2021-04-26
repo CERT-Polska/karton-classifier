@@ -116,8 +116,10 @@ class Classifier(Karton):
         content = cast(bytes, sample.content)
 
         magic = task.get_payload("magic") or ""
+        magic_mime = task.get_payload("mime") or ""
         try:
             magic = pymagic.from_buffer(content)
+            magic_mime = pymagic.from_buffer(content, mime=True)
         except Exception as ex:
             self.log.warning(f"unable to get magic: {ex}")
 
@@ -126,6 +128,8 @@ class Classifier(Karton):
             "type": "sample",
             "stage": "recognized",
             "quality": task.headers.get("quality", "high"),
+            "magic": magic if magic else None,
+            "mime": magic_mime if magic_mime else None,
         }
 
         # Is PE file?

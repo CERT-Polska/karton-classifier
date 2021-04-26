@@ -2,6 +2,8 @@
     "headers": {
         "extension": "bz2",
         "kind": "archive",
+        "magic": "bzip2 compressed data, block size = 900k",
+        "mime": "application/x-bzip2",
         "origin": "karton.classifier",
         "quality": "high",
         "stage": "recognized",

@@ -2,6 +2,8 @@
     "headers": {
         "extension": "dex",
         "kind": "runnable",
+        "magic": "Dalvik dex file version 035",
+        "mime": "application/octet-stream",
         "origin": "karton.classifier",
         "quality": "high",
         "stage": "recognized",

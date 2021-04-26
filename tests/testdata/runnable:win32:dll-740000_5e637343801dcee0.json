@@ -2,6 +2,8 @@
     "headers": {
         "extension": "dll",
         "kind": "runnable",
+        "magic": "PE32 executable (DLL) (console) Intel 80386, for MS Windows",
+        "mime": "application/x-dosexec",
         "origin": "karton.classifier",
         "quality": "high",
         "stage": "recognized",

@@ -2,6 +2,8 @@
     "headers": {
         "extension": "7z",
         "kind": "archive",
+        "magic": "7-zip archive data, version 0.4",
+        "mime": "application/x-7z-compressed",
         "origin": "karton.classifier",
         "quality": "high",
         "stage": "recognized",

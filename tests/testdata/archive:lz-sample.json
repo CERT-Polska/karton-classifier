@@ -2,6 +2,8 @@
     "headers": {
         "extension": "lz",
         "kind": "archive",
+        "magic": "lzip compressed data, version: 1",
+        "mime": "application/x-lzip",
         "origin": "karton.classifier",
         "quality": "high",
         "stage": "recognized",

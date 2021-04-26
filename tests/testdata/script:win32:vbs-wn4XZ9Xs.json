@@ -2,6 +2,8 @@
     "headers": {
         "extension": "vbs",
         "kind": "script",
+        "magic": "ASCII text, with very long lines, with no line terminators",
+        "mime": "text/plain",
         "origin": "karton.classifier",
         "quality": "high",
         "stage": "recognized",

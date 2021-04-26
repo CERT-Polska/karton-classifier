@@ -2,6 +2,8 @@
     "headers": {
         "extension": "tar",
         "kind": "archive",
+        "magic": "POSIX tar archive",
+        "mime": "application/x-tar",
         "origin": "karton.classifier",
         "quality": "high",
         "stage": "recognized",

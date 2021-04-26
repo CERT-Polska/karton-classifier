@@ -2,6 +2,8 @@
     "headers": {
         "extension": "rtf",
         "kind": "document",
+        "magic": "Rich Text Format data, version 1, unknown character set",
+        "mime": "text/rtf",
         "origin": "karton.classifier",
         "quality": "high",
         "stage": "recognized",

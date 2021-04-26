@@ -2,6 +2,8 @@
     "headers": {
         "extension": "jse",
         "kind": "script",
+        "magic": "data",
+        "mime": "application/octet-stream",
         "origin": "karton.classifier",
         "quality": "high",
         "stage": "recognized",

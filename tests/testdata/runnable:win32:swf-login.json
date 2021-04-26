@@ -2,6 +2,8 @@
     "headers": {
         "extension": "swf",
         "kind": "runnable",
+        "magic": "Macromedia Flash data (compressed), version 36",
+        "mime": "application/x-shockwave-flash",
         "origin": "karton.classifier",
         "quality": "high",
         "stage": "recognized",

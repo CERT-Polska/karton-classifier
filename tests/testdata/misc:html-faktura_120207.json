@@ -1,6 +1,8 @@
 {
     "headers": {
         "kind": "html",
+        "magic": "HTML document, ASCII text",
+        "mime": "text/html",
         "origin": "karton.classifier",
         "quality": "high",
         "stage": "recognized",

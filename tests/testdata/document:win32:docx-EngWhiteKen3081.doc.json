@@ -2,6 +2,8 @@
     "headers": {
         "extension": "docx",
         "kind": "document",
+        "magic": "Microsoft Word 2007+",
+        "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         "origin": "karton.classifier",
         "quality": "high",
         "stage": "recognized",

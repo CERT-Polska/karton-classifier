@@ -2,6 +2,8 @@
     "headers": {
         "extension": "xls",
         "kind": "document",
+        "magic": "Composite Document File V2 Document, Little Endian, Os: Windows, Version 6.2, Code page: 1252, Name of Creating Application: Microsoft Excel, Create Time/Date: Thu Mar 19 21:34:27 2020, Last Saved Time/Date: Thu Mar 19 21:47:49 2020, Security: 0",
+        "mime": "application/vnd.ms-excel",
         "origin": "karton.classifier",
         "quality": "high",
         "stage": "recognized",

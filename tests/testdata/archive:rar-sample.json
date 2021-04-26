@@ -2,6 +2,8 @@
     "headers": {
         "extension": "rar",
         "kind": "archive",
+        "magic": "RAR archive data, v5",
+        "mime": "application/x-rar",
         "origin": "karton.classifier",
         "quality": "high",
         "stage": "recognized",

@@ -2,6 +2,8 @@
     "headers": {
         "extension": "xlsx",
         "kind": "document",
+        "magic": "Microsoft Excel 2007+",
+        "mime": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         "origin": "karton.classifier",
         "quality": "high",
         "stage": "recognized",

@@ -2,6 +2,8 @@
     "headers": {
         "extension": "doc",
         "kind": "document",
+        "magic": "Composite Document File V2 Document, Little Endian, Os: Windows, Version 6.1, Code page: 1251, Title:    , Template: Normal, Last Saved By: Z, Revision Number: 5, Name of Creating Application: Microsoft Office Word, Total Editing Time: 01:33:00, Last Printed: Sat Nov  5 19:25:00 2016, Create Time/Date: Sun Oct 30 16:29:00 2016, Last Saved Time/Date: Sat Nov  5 19:28:00 2016, Number of Pages: 9, Number of Words: 1800, Number of Characters: 10264, Security: 0",
+        "mime": "application/msword",
         "origin": "karton.classifier",
         "quality": "high",
         "stage": "recognized",
