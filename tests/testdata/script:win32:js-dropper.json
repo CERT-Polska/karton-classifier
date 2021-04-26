@@ -1,0 +1,16 @@
+{
+    "headers": {
+        "extension": "js",
+        "kind": "script",
+        "origin": "karton.classifier",
+        "quality": "high",
+        "stage": "recognized",
+        "type": "sample",
+        "platform": "win32"
+    },
+    "payload": {
+        "tags": [
+            "script:win32:js"
+        ]
+    }
+}

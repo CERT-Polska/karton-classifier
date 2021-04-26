@@ -1,0 +1,16 @@
+{
+    "headers": {
+        "extension": "lnk",
+        "kind": "runnable",
+        "origin": "karton.classifier",
+        "quality": "high",
+        "stage": "recognized",
+        "type": "sample",
+        "platform": "win32"
+    },
+    "payload": {
+        "tags": [
+            "runnable:win32:lnk"
+        ]
+    }
+}

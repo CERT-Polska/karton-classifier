@@ -1,0 +1,14 @@
+{
+    "headers": {
+        "kind": "ascii",
+        "origin": "karton.classifier",
+        "quality": "high",
+        "stage": "recognized",
+        "type": "sample"
+    },
+    "payload": {
+        "tags": [
+            "misc:ascii"
+        ]
+    }
+}

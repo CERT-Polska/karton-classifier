@@ -1,0 +1,15 @@
+{
+    "headers": {
+        "extension": "bz2",
+        "kind": "archive",
+        "origin": "karton.classifier",
+        "quality": "high",
+        "stage": "recognized",
+        "type": "sample"
+    },
+    "payload": {
+        "tags": [
+            "archive:bz2"
+        ]
+    }
+}

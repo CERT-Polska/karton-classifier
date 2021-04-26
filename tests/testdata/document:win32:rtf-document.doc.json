@@ -1,0 +1,16 @@
+{
+    "headers": {
+        "extension": "rtf",
+        "kind": "document",
+        "origin": "karton.classifier",
+        "quality": "high",
+        "stage": "recognized",
+        "type": "sample",
+        "platform": "win32"
+    },
+    "payload": {
+        "tags": [
+            "document:win32:rtf"
+        ]
+    }
+}

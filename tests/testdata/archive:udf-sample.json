@@ -1,0 +1,15 @@
+{
+    "headers": {
+        "extension": "udf",
+        "kind": "archive",
+        "origin": "karton.classifier",
+        "quality": "high",
+        "stage": "recognized",
+        "type": "sample"
+    },
+    "payload": {
+        "tags": [
+            "archive:udf"
+        ]
+    }
+}

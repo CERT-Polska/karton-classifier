@@ -1,0 +1,16 @@
+{
+    "headers": {
+        "extension": "dex",
+        "kind": "runnable",
+        "origin": "karton.classifier",
+        "quality": "high",
+        "stage": "recognized",
+        "type": "sample",
+        "platform": "android"
+    },
+    "payload": {
+        "tags": [
+            "runnable:android:dex"
+        ]
+    }
+}

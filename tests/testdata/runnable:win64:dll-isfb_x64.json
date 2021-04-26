@@ -1,0 +1,16 @@
+{
+    "headers": {
+        "extension": "dll",
+        "kind": "runnable",
+        "origin": "karton.classifier",
+        "quality": "high",
+        "stage": "recognized",
+        "type": "sample",
+        "platform": "win64"
+    },
+    "payload": {
+        "tags": [
+            "runnable:win64:dll"
+        ]
+    }
+}

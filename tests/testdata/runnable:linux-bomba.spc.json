@@ -1,0 +1,15 @@
+{
+    "headers": {
+        "kind": "runnable",
+        "origin": "karton.classifier",
+        "quality": "high",
+        "stage": "recognized",
+        "type": "sample",
+        "platform": "linux"
+    },
+    "payload": {
+        "tags": [
+            "runnable:linux"
+        ]
+    }
+}

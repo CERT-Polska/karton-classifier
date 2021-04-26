@@ -1,0 +1,14 @@
+{
+    "headers": {
+        "kind": "html",
+        "origin": "karton.classifier",
+        "quality": "high",
+        "stage": "recognized",
+        "type": "sample"
+    },
+    "payload": {
+        "tags": [
+            "misc:html"
+        ]
+    }
+}
