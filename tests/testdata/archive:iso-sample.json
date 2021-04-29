@@ -1,17 +1,17 @@
 {
-    "headers": {
-        "extension": "iso",
-        "kind": "archive",
-        "magic": "ISO 9660 CD-ROM filesystem data 'DHL Shipping Document (Please Si'",
-        "mime": "application/x-iso9660-image",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample"
-    },
-    "payload": {
-        "tags": [
-            "archive:iso"
-        ]
-    }
+  "headers": {
+    "extension": "iso",
+    "kind": "archive",
+    "mime": "application/x-iso9660-image",
+    "origin": "karton.classifier",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "ISO 9660 CD-ROM filesystem data 'DHL Shipping Document (Please Si'",
+    "tags": [
+      "archive:iso"
+    ]
+  }
 }

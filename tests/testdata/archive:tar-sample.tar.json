@@ -1,17 +1,17 @@
 {
-    "headers": {
-        "extension": "tar",
-        "kind": "archive",
-        "magic": "POSIX tar archive",
-        "mime": "application/x-tar",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample"
-    },
-    "payload": {
-        "tags": [
-            "archive:tar"
-        ]
-    }
+  "headers": {
+    "extension": "tar",
+    "kind": "archive",
+    "mime": "application/x-tar",
+    "origin": "karton.classifier",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "POSIX tar archive",
+    "tags": [
+      "archive:tar"
+    ]
+  }
 }

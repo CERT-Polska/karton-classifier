@@ -1,18 +1,18 @@
 {
-    "headers": {
-        "extension": "pdf",
-        "kind": "document",
-        "magic": "PDF document, version 1.4",
-        "mime": "application/pdf",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample",
-        "platform": "win32"
-    },
-    "payload": {
-        "tags": [
-            "document:win32:pdf"
-        ]
-    }
+  "headers": {
+    "extension": "pdf",
+    "kind": "document",
+    "mime": "application/pdf",
+    "origin": "karton.classifier",
+    "platform": "win32",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "PDF document, version 1.4",
+    "tags": [
+      "document:win32:pdf"
+    ]
+  }
 }

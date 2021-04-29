@@ -1,17 +1,17 @@
 {
-    "headers": {
-        "extension": "bz2",
-        "kind": "archive",
-        "magic": "bzip2 compressed data, block size = 900k",
-        "mime": "application/x-bzip2",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample"
-    },
-    "payload": {
-        "tags": [
-            "archive:bz2"
-        ]
-    }
+  "headers": {
+    "extension": "bz2",
+    "kind": "archive",
+    "mime": "application/x-bzip2",
+    "origin": "karton.classifier",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "bzip2 compressed data, block size = 900k",
+    "tags": [
+      "archive:bz2"
+    ]
+  }
 }

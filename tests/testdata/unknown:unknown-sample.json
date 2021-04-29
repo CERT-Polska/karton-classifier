@@ -1,9 +1,9 @@
 {
-    "headers": {
-        "kind": "unknown",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "unrecognized",
-        "type": "sample"
-    }
+  "headers": {
+    "kind": "unknown",
+    "origin": "karton.classifier",
+    "quality": "high",
+    "stage": "unrecognized",
+    "type": "sample"
+  }
 }

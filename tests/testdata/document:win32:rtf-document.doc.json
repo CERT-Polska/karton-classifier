@@ -1,18 +1,18 @@
 {
-    "headers": {
-        "extension": "rtf",
-        "kind": "document",
-        "magic": "Rich Text Format data, version 1, unknown character set",
-        "mime": "text/rtf",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample",
-        "platform": "win32"
-    },
-    "payload": {
-        "tags": [
-            "document:win32:rtf"
-        ]
-    }
+  "headers": {
+    "extension": "rtf",
+    "kind": "document",
+    "mime": "text/rtf",
+    "origin": "karton.classifier",
+    "platform": "win32",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "Rich Text Format data, version 1, unknown character set",
+    "tags": [
+      "document:win32:rtf"
+    ]
+  }
 }

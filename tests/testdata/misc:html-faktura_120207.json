@@ -1,16 +1,16 @@
 {
-    "headers": {
-        "kind": "html",
-        "magic": "HTML document, ASCII text",
-        "mime": "text/html",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample"
-    },
-    "payload": {
-        "tags": [
-            "misc:html"
-        ]
-    }
+  "headers": {
+    "kind": "html",
+    "mime": "text/html",
+    "origin": "karton.classifier",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "HTML document, ASCII text",
+    "tags": [
+      "misc:html"
+    ]
+  }
 }

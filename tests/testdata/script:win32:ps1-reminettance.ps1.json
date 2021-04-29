@@ -1,18 +1,18 @@
 {
-    "headers": {
-        "extension": "ps1",
-        "kind": "script",
-        "magic": "ASCII text, with very long lines",
-        "mime": "text/plain",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample",
-        "platform": "win32"
-    },
-    "payload": {
-        "tags": [
-            "script:win32:ps1"
-        ]
-    }
+  "headers": {
+    "extension": "ps1",
+    "kind": "script",
+    "mime": "text/plain",
+    "origin": "karton.classifier",
+    "platform": "win32",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "ASCII text, with very long lines",
+    "tags": [
+      "script:win32:ps1"
+    ]
+  }
 }

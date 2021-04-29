@@ -1,18 +1,18 @@
 {
-    "headers": {
-        "extension": "dex",
-        "kind": "runnable",
-        "magic": "Dalvik dex file version 035",
-        "mime": "application/octet-stream",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample",
-        "platform": "android"
-    },
-    "payload": {
-        "tags": [
-            "runnable:android:dex"
-        ]
-    }
+  "headers": {
+    "extension": "dex",
+    "kind": "runnable",
+    "mime": "application/octet-stream",
+    "origin": "karton.classifier",
+    "platform": "android",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "Dalvik dex file version 035",
+    "tags": [
+      "runnable:android:dex"
+    ]
+  }
 }

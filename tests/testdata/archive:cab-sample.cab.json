@@ -1,17 +1,17 @@
 {
-    "headers": {
-        "extension": "cab",
-        "kind": "archive",
-        "magic": "Microsoft Cabinet archive data, Windows 2000/XP setup, 235156 bytes, 1 file, at 0x2c +A \"RFQ and Company Profile_PDF.exe\", number 1, 12 datablocks, 0x1503 compression",
-        "mime": "application/vnd.ms-cab-compressed",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample"
-    },
-    "payload": {
-        "tags": [
-            "archive:cab"
-        ]
-    }
+  "headers": {
+    "extension": "cab",
+    "kind": "archive",
+    "mime": "application/vnd.ms-cab-compressed",
+    "origin": "karton.classifier",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "Microsoft Cabinet archive data, Windows 2000/XP setup, 235156 bytes, 1 file, at 0x2c +A \"RFQ and Company Profile_PDF.exe\", number 1, 12 datablocks, 0x1503 compression",
+    "tags": [
+      "archive:cab"
+    ]
+  }
 }

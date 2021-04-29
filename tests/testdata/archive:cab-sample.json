@@ -1,17 +1,17 @@
 {
-    "headers": {
-        "extension": "cab",
-        "kind": "archive",
-        "magic": "Microsoft Cabinet archive data, Windows 2000/XP setup, 5099 bytes, 1 file, at 0x2c +A \"360se.ini\", number 1, 1 datablock, 0x1 compression",
-        "mime": "application/vnd.ms-cab-compressed",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample"
-    },
-    "payload": {
-        "tags": [
-            "archive:cab"
-        ]
-    }
+  "headers": {
+    "extension": "cab",
+    "kind": "archive",
+    "mime": "application/vnd.ms-cab-compressed",
+    "origin": "karton.classifier",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "Microsoft Cabinet archive data, Windows 2000/XP setup, 5099 bytes, 1 file, at 0x2c +A \"360se.ini\", number 1, 1 datablock, 0x1 compression",
+    "tags": [
+      "archive:cab"
+    ]
+  }
 }

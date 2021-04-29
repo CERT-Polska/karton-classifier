@@ -1,17 +1,17 @@
 {
-    "headers": {
-        "extension": "rar",
-        "kind": "archive",
-        "magic": "RAR archive data, v5",
-        "mime": "application/x-rar",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample"
-    },
-    "payload": {
-        "tags": [
-            "archive:rar"
-        ]
-    }
+  "headers": {
+    "extension": "rar",
+    "kind": "archive",
+    "mime": "application/x-rar",
+    "origin": "karton.classifier",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "RAR archive data, v5",
+    "tags": [
+      "archive:rar"
+    ]
+  }
 }

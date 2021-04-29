@@ -1,18 +1,18 @@
 {
-    "headers": {
-        "extension": "jse",
-        "kind": "script",
-        "magic": "data",
-        "mime": "application/octet-stream",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample",
-        "platform": "win32"
-    },
-    "payload": {
-        "tags": [
-            "script:win32:jse"
-        ]
-    }
+  "headers": {
+    "extension": "jse",
+    "kind": "script",
+    "mime": "application/octet-stream",
+    "origin": "karton.classifier",
+    "platform": "win32",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "data",
+    "tags": [
+      "script:win32:jse"
+    ]
+  }
 }

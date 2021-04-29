@@ -1,18 +1,18 @@
 {
-    "headers": {
-        "extension": "msi",
-        "kind": "runnable",
-        "magic": "Composite Document File V2 Document, Little Endian, Os: Windows, Version 6.1, MSI Installer, Code page: 1252, Last Printed: Fri Sep 21 09:56:09 2012, Create Time/Date: Fri Sep 21 09:56:09 2012, Name of Creating Application: Windows Installer, Title: Exe to msi converter free, Author: www.exetomsi.com, Template: ;0, Last Saved By: devuser, Revision Number: {C35CF0AA-9B3F-4903-9F05-EBF606D58D3E}, Last Saved Time/Date: Tue May 21 11:56:44 2013, Number of Pages: 100, Number of Words: 0, Security: 0",
-        "mime": "application/x-msi",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample",
-        "platform": "win32"
-    },
-    "payload": {
-        "tags": [
-            "runnable:win32:msi"
-        ]
-    }
+  "headers": {
+    "extension": "msi",
+    "kind": "runnable",
+    "mime": "application/x-msi",
+    "origin": "karton.classifier",
+    "platform": "win32",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "Composite Document File V2 Document, Little Endian, Os: Windows, Version 6.1, MSI Installer, Code page: 1252, Last Printed: Fri Sep 21 09:56:09 2012, Create Time/Date: Fri Sep 21 09:56:09 2012, Name of Creating Application: Windows Installer, Title: Exe to msi converter free, Author: www.exetomsi.com, Template: ;0, Last Saved By: devuser, Revision Number: {C35CF0AA-9B3F-4903-9F05-EBF606D58D3E}, Last Saved Time/Date: Tue May 21 11:56:44 2013, Number of Pages: 100, Number of Words: 0, Security: 0",
+    "tags": [
+      "runnable:win32:msi"
+    ]
+  }
 }

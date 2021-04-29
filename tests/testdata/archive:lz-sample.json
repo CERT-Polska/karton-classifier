@@ -1,17 +1,17 @@
 {
-    "headers": {
-        "extension": "lz",
-        "kind": "archive",
-        "magic": "lzip compressed data, version: 1",
-        "mime": "application/x-lzip",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample"
-    },
-    "payload": {
-        "tags": [
-            "archive:lz"
-        ]
-    }
+  "headers": {
+    "extension": "lz",
+    "kind": "archive",
+    "mime": "application/x-lzip",
+    "origin": "karton.classifier",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "lzip compressed data, version: 1",
+    "tags": [
+      "archive:lz"
+    ]
+  }
 }

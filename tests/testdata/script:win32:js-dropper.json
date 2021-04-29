@@ -1,18 +1,18 @@
 {
-    "headers": {
-        "extension": "js",
-        "kind": "script",
-        "magic": "ASCII text, with very long lines, with CRLF line terminators",
-        "mime": "text/plain",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample",
-        "platform": "win32"
-    },
-    "payload": {
-        "tags": [
-            "script:win32:js"
-        ]
-    }
+  "headers": {
+    "extension": "js",
+    "kind": "script",
+    "mime": "text/plain",
+    "origin": "karton.classifier",
+    "platform": "win32",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "ASCII text, with very long lines, with CRLF line terminators",
+    "tags": [
+      "script:win32:js"
+    ]
+  }
 }

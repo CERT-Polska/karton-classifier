@@ -1,17 +1,17 @@
 {
-    "headers": {
-        "extension": "zip",
-        "kind": "archive",
-        "magic": "Zip archive data, at least v2.0 to extract",
-        "mime": "application/zip",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample"
-    },
-    "payload": {
-        "tags": [
-            "archive:zip"
-        ]
-    }
+  "headers": {
+    "extension": "zip",
+    "kind": "archive",
+    "mime": "application/zip",
+    "origin": "karton.classifier",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "Zip archive data, at least v2.0 to extract",
+    "tags": [
+      "archive:zip"
+    ]
+  }
 }

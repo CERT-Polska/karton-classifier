@@ -1,18 +1,18 @@
 {
-    "headers": {
-        "extension": "swf",
-        "kind": "runnable",
-        "magic": "Macromedia Flash data (compressed), version 36",
-        "mime": "application/x-shockwave-flash",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample",
-        "platform": "win32"
-    },
-    "payload": {
-        "tags": [
-            "runnable:win32:swf"
-        ]
-    }
+  "headers": {
+    "extension": "swf",
+    "kind": "runnable",
+    "mime": "application/x-shockwave-flash",
+    "origin": "karton.classifier",
+    "platform": "win32",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "Macromedia Flash data (compressed), version 36",
+    "tags": [
+      "runnable:win32:swf"
+    ]
+  }
 }

@@ -1,17 +1,17 @@
 {
-    "headers": {
-        "extension": "udf",
-        "kind": "archive",
-        "magic": "UDF filesystem data (version 1.5) '06_25_2020'",
-        "mime": "application/x-iso9660-image",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample"
-    },
-    "payload": {
-        "tags": [
-            "archive:udf"
-        ]
-    }
+  "headers": {
+    "extension": "udf",
+    "kind": "archive",
+    "mime": "application/x-iso9660-image",
+    "origin": "karton.classifier",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "UDF filesystem data (version 1.5) '06_25_2020'",
+    "tags": [
+      "archive:udf"
+    ]
+  }
 }

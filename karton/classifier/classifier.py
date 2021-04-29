@@ -23,15 +23,15 @@ def classify_openxml(content: bytes) -> Optional[str]:
     return None
 
 
-def get_tag(classification: Dict[str, str]) -> str:
+def get_tag(classification: Dict) -> str:
     sample_type = classification["kind"]
 
     # Build classification tag
-    if "platform" in classification:
+    if classification.get("platform") is not None:
         # Add platform information
         sample_type += f":{classification['platform']}"
 
-    if "extension" in classification:
+    if classification.get("extension") is not None:
         # Add extension (if not empty)
         extension = classification["extension"]
         if extension:
@@ -89,7 +89,21 @@ class Classifier(Karton):
             )
         )
 
-        derived_task = task.derive_task(sample_class)
+        derived_headers = {
+            "type": "sample",
+            "stage": "recognized",
+            "quality": task.headers.get("quality", "high"),
+            "mime": sample_class["mime"],
+        }
+        if sample_class.get("kind") is not None:
+            derived_headers["kind"] = sample_class["kind"]
+        if sample_class.get("platform") is not None:
+            derived_headers["platform"] = sample_class["platform"]
+        if sample_class.get("extension") is not None:
+            derived_headers["extension"] = sample_class["extension"]
+
+        derived_task = task.derive_task(derived_headers)
+
         # pass the original tags to the next task
         tags = [classification_tag]
         if derived_task.has_payload("tags"):
@@ -97,6 +111,10 @@ class Classifier(Karton):
             derived_task.remove_payload("tags")
 
         derived_task.add_payload("tags", tags)
+
+        # if present the magic description is added as a playload
+        if "magic" in sample_class:
+            derived_task.add_payload("magic", sample_class["magic"])
 
         # add a sha256 digest in the outgoing task if there
         # isn't one in the incoming task
@@ -111,7 +129,7 @@ class Classifier(Karton):
         splitted = name.rsplit(".", 1)
         return splitted[-1].lower() if len(splitted) > 1 else ""
 
-    def _classify(self, task: Task) -> Optional[Dict[str, str]]:
+    def _classify(self, task: Task) -> Optional[Dict[str, Optional[str]]]:
         sample = task.get_resource("sample")
         content = cast(bytes, sample.content)
 
@@ -124,24 +142,24 @@ class Classifier(Karton):
             self.log.warning(f"unable to get magic: {ex}")
 
         extension = self._get_extension(sample.name or "sample")
-        sample_type = {
-            "type": "sample",
-            "stage": "recognized",
-            "quality": task.headers.get("quality", "high"),
+        sample_class = {
             "magic": magic if magic else None,
             "mime": magic_mime if magic_mime else None,
+            "kind": None,
+            "platform": None,
+            "extension": None,
         }
 
         # Is PE file?
         if magic.startswith("PE32") or magic.startswith("MS-DOS executable PE32"):
-            sample_type.update(
+            sample_class.update(
                 {"kind": "runnable", "platform": "win32", "extension": "exe"}
             )
             if magic.startswith("PE32+"):
-                sample_type["platform"] = "win64"  # 64-bit only executable
+                sample_class["platform"] = "win64"  # 64-bit only executable
             if "(DLL)" in magic:
-                sample_type["extension"] = "dll"
-            return sample_type
+                sample_class["extension"] = "dll"
+            return sample_class
 
         # ZIP-contained files?
         def zip_has_file(path: str) -> bool:
@@ -155,46 +173,46 @@ class Classifier(Karton):
             "Java archive data (JAR)"
         ):
             if extension == "apk" or zip_has_file("AndroidManifest.xml"):
-                sample_type.update(
+                sample_class.update(
                     {"kind": "runnable", "platform": "android", "extension": "apk"}
                 )
-                return sample_type
+                return sample_class
 
             if extension == "jar" or zip_has_file("META-INF/MANIFEST.MF"):
-                sample_type.update(
+                sample_class.update(
                     {
                         "kind": "runnable",
                         "platform": "win32",  # Default platform should be Windows
                         "extension": "jar",
                     }
                 )
-                return sample_type
+                return sample_class
 
         # Dalvik Android files?
         if magic.startswith("Dalvik dex file") or extension == "dex":
-            sample_type.update(
+            sample_class.update(
                 {"kind": "runnable", "platform": "android", "extension": "dex"}
             )
-            return sample_type
+            return sample_class
 
         # Shockwave Flash?
         if magic.startswith("Macromedia Flash") or extension == "swf":
-            sample_type.update(
+            sample_class.update(
                 {"kind": "runnable", "platform": "win32", "extension": "swf"}
             )
-            return sample_type
+            return sample_class
 
         # Windows LNK?
         if magic.startswith("MS Windows shortcut") or extension == "lnk":
-            sample_type.update(
+            sample_class.update(
                 {"kind": "runnable", "platform": "win32", "extension": "lnk"}
             )
-            return sample_type
+            return sample_class
 
         # Is ELF file?
         if magic.startswith("ELF"):
-            sample_type.update({"kind": "runnable", "platform": "linux"})
-            return sample_type
+            sample_class.update({"kind": "runnable", "platform": "linux"})
+            return sample_class
 
         # Windows scripts (per extension)
         script_extensions = [
@@ -210,10 +228,10 @@ class Classifier(Karton):
             "ps1",
         ]
         if extension in script_extensions:
-            sample_type.update(
+            sample_class.update(
                 {"kind": "script", "platform": "win32", "extension": extension}
             )
-            return sample_type
+            return sample_class
 
         # Office documents
         office_extensions = {
@@ -223,75 +241,75 @@ class Classifier(Karton):
         }
         # Check RTF by libmagic
         if magic.startswith("Rich Text Format"):
-            sample_type.update(
+            sample_class.update(
                 {"kind": "document", "platform": "win32", "extension": "rtf"}
             )
-            return sample_type
+            return sample_class
         # Check Composite Document (doc/xls/ppt) by libmagic and extension
         if magic.startswith("Composite Document File"):
             # MSI installers are also CDFs
             if "MSI Installer" in magic:
-                sample_type.update(
+                sample_class.update(
                     {"kind": "runnable", "platform": "win32", "extension": "msi"}
                 )
-                return sample_type
+                return sample_class
             # If not MSI, treat it like Office document
-            sample_type.update(
+            sample_class.update(
                 {
                     "kind": "document",
                     "platform": "win32",
                 }
             )
             if extension[:3] in office_extensions.keys():
-                sample_type["extension"] = extension
+                sample_class["extension"] = extension
             else:
-                sample_type["extension"] = "doc"
-            return sample_type
+                sample_class["extension"] = "doc"
+            return sample_class
 
         # Check docx/xlsx/pptx by libmagic
         for ext, typepart in office_extensions.items():
             if magic.startswith(typepart):
-                sample_type.update(
+                sample_class.update(
                     {"kind": "document", "platform": "win32", "extension": ext + "x"}
                 )
-                return sample_type
+                return sample_class
 
         # Check RTF by extension
         if extension == "rtf":
-            sample_type.update(
+            sample_class.update(
                 {"kind": "document", "platform": "win32", "extension": "rtf"}
             )
-            return sample_type
+            return sample_class
 
         # Finally check document type only by extension
         if extension[:3] in office_extensions.keys():
-            sample_type.update(
+            sample_class.update(
                 {"kind": "document", "platform": "win32", "extension": extension}
             )
-            return sample_type
+            return sample_class
 
         # Unclassified Open XML documents
         if magic.startswith("Microsoft OOXML"):
             try:
                 extn = classify_openxml(content)
                 if extn:
-                    sample_type.update(
+                    sample_class.update(
                         {
                             "kind": "document",
                             "platform": "win32",
                             "extension": extn,
                         }
                     )
-                    return sample_type
+                    return sample_class
             except Exception:
                 self.log.exception("Error while trying to classify OOXML")
 
         # PDF files
         if magic.startswith("PDF document") or extension == "pdf":
-            sample_type.update(
+            sample_class.update(
                 {"kind": "document", "platform": "win32", "extension": "pdf"}
             )
-            return sample_type
+            return sample_class
 
         # Archives
         archive_assoc = {
@@ -329,58 +347,58 @@ class Classifier(Karton):
         for ext in archive_extensions:
             if ext in archive_assoc:
                 if any(magic.startswith(x) for x in archive_assoc[ext]):
-                    sample_type.update({"kind": "archive", "extension": ext})
-                    return sample_type
+                    sample_class.update({"kind": "archive", "extension": ext})
+                    return sample_class
         if extension in archive_extensions:
-            sample_type.update({"kind": "archive", "extension": extension})
-            return sample_type
+            sample_class.update({"kind": "archive", "extension": extension})
+            return sample_class
 
         # E-mail
         email_assoc = {"msg": "Microsoft Outlook Message", "eml": "multipart/mixed"}
         for ext in email_assoc.keys():
             if email_assoc[ext] in magic:
-                sample_type.update({"kind": "archive", "extension": ext})
-                return sample_type
+                sample_class.update({"kind": "archive", "extension": ext})
+                return sample_class
 
         if extension in email_assoc.keys():
-            sample_type.update({"kind": "archive", "extension": extension})
-            return sample_type
+            sample_class.update({"kind": "archive", "extension": extension})
+            return sample_class
 
         # HTML
         if magic.startswith("HTML document"):
-            sample_type.update({"kind": "html"})
-            return sample_type
+            sample_class.update({"kind": "html"})
+            return sample_class
 
         # Linux scripts
         if ("script" in magic and "executable" in magic) or extension == "sh":
-            sample_type.update(
+            sample_class.update(
                 {"kind": "script", "platform": "linux", "extension": extension}
             )
-            return sample_type
+            return sample_class
 
         # Content heuristics
         partial = content[:2048] + content[-2048:]
 
         # Dumped PE file heuristics (PE not recognized by libmagic)
         if b".text" in partial and b"This program cannot be run" in partial:
-            sample_type.update(
+            sample_class.update(
                 {"kind": "dump", "platform": "win32", "extension": "exe"}
             )
-            return sample_type
+            return sample_class
 
         if len(partial) > 0x40:
             pe_offs = struct.unpack("<H", partial[0x3C:0x3E])[0]
             if partial[pe_offs : pe_offs + 2] == b"PE":
-                sample_type.update(
+                sample_class.update(
                     {"kind": "dump", "platform": "win32", "extension": "exe"}
                 )
-                return sample_type
+                return sample_class
 
         if partial.startswith(b"MZ"):
-            sample_type.update(
+            sample_class.update(
                 {"kind": "dump", "platform": "win32", "extension": "exe"}
             )
-            return sample_type
+            return sample_class
 
         # Heuristics for scripts
         try:
@@ -426,73 +444,73 @@ class Classifier(Karton):
                     len([True for keyword in html_keywords if keyword in partial_str])
                     >= 2
                 ):
-                    sample_type.update({"kind": "html"})
-                    return sample_type
+                    sample_class.update({"kind": "html"})
+                    return sample_class
 
                 if (
                     len([True for keyword in vbs_keywords if keyword in partial_str])
                     >= 2
                 ):
-                    sample_type.update(
+                    sample_class.update(
                         {"kind": "script", "platform": "win32", "extension": "vbs"}
                     )
-                    return sample_type
+                    return sample_class
 
                 if (
                     len([True for keyword in js_keywords if keyword in partial_str])
                     >= 2
                 ):
-                    sample_type.update(
+                    sample_class.update(
                         {"kind": "script", "platform": "win32", "extension": "js"}
                     )
-                    return sample_type
+                    return sample_class
 
                 # JSE heuristics
                 if re.match("#@~\\^[a-zA-Z0-9+/]{6}==", partial_str):
-                    sample_type.update(
+                    sample_class.update(
                         {
                             "kind": "script",
                             "platform": "win32",
                             "extension": "jse",  # jse is more possible than vbe
                         }
                     )
-                    return sample_type
+                    return sample_class
                 # Powershell heuristics
                 if len(
                     [True for keyword in ps_keywords if keyword.lower() in partial_str]
                 ):
-                    sample_type.update(
+                    sample_class.update(
                         {"kind": "script", "platform": "win32", "extension": "ps1"}
                     )
-                    return sample_type
+                    return sample_class
                 if magic.startswith("ASCII"):
-                    sample_type.update(
+                    sample_class.update(
                         {
                             "kind": "ascii",
                         }
                     )
-                    return sample_type
+                    return sample_class
                 if magic.startswith("ISO-8859"):
-                    sample_type.update(
+                    sample_class.update(
                         {
                             "kind": "iso-8859-1",
                         }
                     )
-                    return sample_type
+                    return sample_class
                 if magic.startswith("UTF-8"):
-                    sample_type.update(
+                    sample_class.update(
                         {
                             "kind": "utf-8",
                         }
                     )
-                    return sample_type
+                    return sample_class
                 if magic.startswith("PGP"):
-                    sample_type.update(
+                    sample_class.update(
                         {
                             "kind": "pgp",
                         }
                     )
-                    return sample_type
+                    return sample_class
         except Exception as e:
             self.log.exception(e)
 

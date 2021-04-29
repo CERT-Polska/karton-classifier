@@ -1,18 +1,18 @@
 {
-    "headers": {
-        "extension": "jar",
-        "kind": "runnable",
-        "magic": "Zip archive data, at least v1.0 to extract",
-        "mime": "application/zip",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample",
-        "platform": "win32"
-    },
-    "payload": {
-        "tags": [
-            "runnable:win32:jar"
-        ]
-    }
+  "headers": {
+    "extension": "jar",
+    "kind": "runnable",
+    "mime": "application/zip",
+    "origin": "karton.classifier",
+    "platform": "win32",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "Zip archive data, at least v1.0 to extract",
+    "tags": [
+      "runnable:win32:jar"
+    ]
+  }
 }

@@ -1,16 +1,16 @@
 {
-    "headers": {
-        "kind": "ascii",
-        "magic": "ASCII text, with very long lines, with no line terminators",
-        "mime": "text/plain",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample"
-    },
-    "payload": {
-        "tags": [
-            "misc:ascii"
-        ]
-    }
+  "headers": {
+    "kind": "ascii",
+    "mime": "text/plain",
+    "origin": "karton.classifier",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "ASCII text, with very long lines, with no line terminators",
+    "tags": [
+      "misc:ascii"
+    ]
+  }
 }

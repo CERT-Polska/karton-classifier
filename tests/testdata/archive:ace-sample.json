@@ -1,17 +1,17 @@
 {
-    "headers": {
-        "extension": "ace",
-        "kind": "archive",
-        "magic": "ACE archive data version 20, from Win/32, version 20 to extract, contains AV-String (unregistered), solid",
-        "mime": "application/octet-stream",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample"
-    },
-    "payload": {
-        "tags": [
-            "archive:ace"
-        ]
-    }
+  "headers": {
+    "extension": "ace",
+    "kind": "archive",
+    "mime": "application/octet-stream",
+    "origin": "karton.classifier",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "ACE archive data version 20, from Win/32, version 20 to extract, contains AV-String (unregistered), solid",
+    "tags": [
+      "archive:ace"
+    ]
+  }
 }

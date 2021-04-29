@@ -1,18 +1,18 @@
 {
-    "headers": {
-        "extension": "lnk",
-        "kind": "runnable",
-        "magic": "MS Windows shortcut, Item id list present, Has Description string, Has Relative path, Has Working directory, Has command line arguments, Icon number=67, ctime=Mon Jan  1 00:00:00 1601, mtime=Mon Jan  1 00:00:00 1601, atime=Mon Jan  1 00:00:00 1601, length=0, window=hidenormalshowminimized",
-        "mime": "application/octet-stream",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample",
-        "platform": "win32"
-    },
-    "payload": {
-        "tags": [
-            "runnable:win32:lnk"
-        ]
-    }
+  "headers": {
+    "extension": "lnk",
+    "kind": "runnable",
+    "mime": "application/octet-stream",
+    "origin": "karton.classifier",
+    "platform": "win32",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "MS Windows shortcut, Item id list present, Has Description string, Has Relative path, Has Working directory, Has command line arguments, Icon number=67, ctime=Mon Jan  1 00:00:00 1601, mtime=Mon Jan  1 00:00:00 1601, atime=Mon Jan  1 00:00:00 1601, length=0, window=hidenormalshowminimized",
+    "tags": [
+      "runnable:win32:lnk"
+    ]
+  }
 }

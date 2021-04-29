@@ -1,17 +1,17 @@
 {
-    "headers": {
-        "extension": "gz",
-        "kind": "archive",
-        "magic": "gzip compressed data, was \"Order 002_PDF.exe\", last modified: Thu Apr 30 23:25:26 2020, from FAT filesystem (MS-DOS, OS/2, NT)",
-        "mime": "application/gzip",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample"
-    },
-    "payload": {
-        "tags": [
-            "archive:gz"
-        ]
-    }
+  "headers": {
+    "extension": "gz",
+    "kind": "archive",
+    "mime": "application/gzip",
+    "origin": "karton.classifier",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "gzip compressed data, was \"Order 002_PDF.exe\", last modified: Thu Apr 30 23:25:26 2020, from FAT filesystem (MS-DOS, OS/2, NT)",
+    "tags": [
+      "archive:gz"
+    ]
+  }
 }

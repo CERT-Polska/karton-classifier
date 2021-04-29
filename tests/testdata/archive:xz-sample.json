@@ -1,17 +1,17 @@
 {
-    "headers": {
-        "extension": "xz",
-        "kind": "archive",
-        "magic": "XZ compressed data",
-        "mime": "application/x-xz",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample"
-    },
-    "payload": {
-        "tags": [
-            "archive:xz"
-        ]
-    }
+  "headers": {
+    "extension": "xz",
+    "kind": "archive",
+    "mime": "application/x-xz",
+    "origin": "karton.classifier",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "XZ compressed data",
+    "tags": [
+      "archive:xz"
+    ]
+  }
 }

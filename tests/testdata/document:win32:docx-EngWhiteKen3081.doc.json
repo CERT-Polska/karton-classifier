@@ -1,18 +1,18 @@
 {
-    "headers": {
-        "extension": "docx",
-        "kind": "document",
-        "magic": "Microsoft Word 2007+",
-        "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample",
-        "platform": "win32"
-    },
-    "payload": {
-        "tags": [
-            "document:win32:docx"
-        ]
-    }
+  "headers": {
+    "extension": "docx",
+    "kind": "document",
+    "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "origin": "karton.classifier",
+    "platform": "win32",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "Microsoft Word 2007+",
+    "tags": [
+      "document:win32:docx"
+    ]
+  }
 }

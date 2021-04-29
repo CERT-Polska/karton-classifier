@@ -1,18 +1,18 @@
 {
-    "headers": {
-        "extension": "exe",
-        "kind": "runnable",
-        "magic": "PE32+ executable (console) x86-64, for MS Windows",
-        "mime": "application/x-dosexec",
-        "origin": "karton.classifier",
-        "quality": "high",
-        "stage": "recognized",
-        "type": "sample",
-        "platform": "win64"
-    },
-    "payload": {
-        "tags": [
-            "runnable:win64:exe"
-        ]
-    }
+  "headers": {
+    "extension": "exe",
+    "kind": "runnable",
+    "mime": "application/x-dosexec",
+    "origin": "karton.classifier",
+    "platform": "win64",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "PE32+ executable (console) x86-64, for MS Windows",
+    "tags": [
+      "runnable:win64:exe"
+    ]
+  }
 }
