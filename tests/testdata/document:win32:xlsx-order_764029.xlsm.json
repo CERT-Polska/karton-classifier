@@ -1,0 +1,18 @@
+{
+  "headers": {
+    "extension": "xlsx",
+    "kind": "document",
+    "mime": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "origin": "karton.classifier",
+    "platform": "win32",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "Microsoft Excel 2007+",
+    "tags": [
+      "document:win32:xlsx"
+    ]
+  }
+}

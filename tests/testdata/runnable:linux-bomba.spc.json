@@ -1,0 +1,17 @@
+{
+  "headers": {
+    "kind": "runnable",
+    "mime": "application/x-executable",
+    "origin": "karton.classifier",
+    "platform": "linux",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "ELF 32-bit MSB executable, SPARC, version 1 (SYSV)",
+    "tags": [
+      "runnable:linux"
+    ]
+  }
+}

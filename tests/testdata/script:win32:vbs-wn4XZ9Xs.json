@@ -1,0 +1,18 @@
+{
+  "headers": {
+    "extension": "vbs",
+    "kind": "script",
+    "mime": "text/plain",
+    "origin": "karton.classifier",
+    "platform": "win32",
+    "quality": "high",
+    "stage": "recognized",
+    "type": "sample"
+  },
+  "payload": {
+    "magic": "ASCII text, with very long lines, with no line terminators",
+    "tags": [
+      "script:win32:vbs"
+    ]
+  }
+}
