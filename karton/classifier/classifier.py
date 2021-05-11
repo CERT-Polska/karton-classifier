@@ -2,12 +2,13 @@ import re
 import struct
 from hashlib import sha256
 from io import BytesIO
-from typing import Dict, Optional, cast
+from typing import Callable, Dict, Optional, cast
 from zipfile import ZipFile
 
 import chardet  # type: ignore
 import magic as pymagic  # type: ignore
-from karton.core import Karton, Task
+from karton.core import Config, Karton, Task
+from karton.core.backend import KartonBackend
 
 from .__version__ import __version__
 
@@ -58,6 +59,17 @@ class Classifier(Karton):
     filters = [
         {"type": "sample", "kind": "raw"},
     ]
+
+    def __init__(
+        self,
+        config: Config = None,
+        identity: str = None,
+        backend: KartonBackend = None,
+        magic: Callable = None,
+    ) -> None:
+        super().__init__(config=config, identity=identity, backend=backend)
+
+        self._magic = magic if magic else pymagic.from_buffer
 
     def process(self, task: Task) -> None:  # type: ignore
         sample = task.get_resource("sample")
@@ -117,7 +129,8 @@ class Classifier(Karton):
 
         magic = task.get_payload("magic") or ""
         try:
-            magic = pymagic.from_buffer(content)
+            magic = self._magic(content)
+            magic_mime = self._magic(content, mime=True)
         except Exception as ex:
             self.log.warning(f"unable to get magic: {ex}")
 
