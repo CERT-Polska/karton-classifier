@@ -16,6 +16,8 @@ setup(
     description="File type classifier for Karton framework",
     namespace_packages=["karton"],
     packages=["karton.classifier"],
+    long_description=open("README.md", "r").read(),
+    long_description_content_type="text/markdown",
     install_requires=open("requirements.txt").read().splitlines(),
     entry_points={
         'console_scripts': [
