@@ -523,6 +523,13 @@ class Classifier(Karton):
                         }
                     )
                     return sample_class
+                 if  partial.startswith(b"\xd4\xc3\xb2\xa1"):
+                    sample_class.update(
+                        {
+                            "kind": "pcap",
+                        }
+                    )
+                    return sample_class
         except Exception as e:
             self.log.exception(e)
 
