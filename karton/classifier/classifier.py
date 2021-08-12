@@ -523,10 +523,17 @@ class Classifier(Karton):
                         }
                     )
                     return sample_class
-                 if  partial.startswith(b"\xd4\xc3\xb2\xa1"):
+                if magic.startswith("pcap capture file"):
                     sample_class.update(
                         {
                             "kind": "pcap",
+                        }
+                    )
+                    return sample_class
+                if magic.startswith("pcap-ng capture file"):
+                    sample_class.update(
+                        {
+                            "kind": "pcap-ng",
                         }
                     )
                     return sample_class
