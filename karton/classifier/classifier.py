@@ -530,10 +530,10 @@ class Classifier(Karton):
                         }
                     )
                     return sample_class
-                if magic.startswith("pcap-ng capture file"):
+                if magic.startswith("pcap") and "ng capture file" in magic:
                     sample_class.update(
                         {
-                            "kind": "pcap-ng",
+                            "kind": "pcapng",
                         }
                     )
                     return sample_class
