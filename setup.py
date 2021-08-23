@@ -16,6 +16,12 @@ setup(
     description="File type classifier for Karton framework",
     namespace_packages=["karton"],
     packages=["karton.classifier"],
+    package_data={
+        "karton.classifier": [
+            "file/magic/Magdir/*",
+            "file/COPYING",
+        ],
+    },
     url="https://github.com/CERT-Polska/karton-classifier/",
     long_description=open("README.md", "r").read(),
     long_description_content_type="text/markdown",
