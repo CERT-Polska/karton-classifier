@@ -22,6 +22,7 @@ setup(
             "file/COPYING",
         ],
     },
+    license_files = ("LICENSE",),
     url="https://github.com/CERT-Polska/karton-classifier/",
     long_description=open("README.md", "r").read(),
     long_description_content_type="text/markdown",
