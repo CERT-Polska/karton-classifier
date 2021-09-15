@@ -27,6 +27,8 @@ jobs:
         minor: [7, 8, 9]
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: true
       - uses: actions/setup-python@v1
         with:
           python-version: 3.${{ matrix.minor }}
