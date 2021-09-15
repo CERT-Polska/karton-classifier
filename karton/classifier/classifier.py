@@ -285,6 +285,19 @@ class Classifier(Karton):
             )
             return sample_class
 
+        def zip_has_mac_app() -> bool:
+            zipfile = ZipFile(BytesIO(content))
+            if any(x.filename.lower().endswith(".app/contents/info.plist") for x in zipfile.filelist):
+                return True
+            return False
+
+        # macos app within zip
+        if magic.startswith("Zip archive data") and zip_has_mac_app():
+            sample_class.update(
+                {"kind": "runnable", "platform": "macos", "extension": "app"}
+            )
+            return sample_class
+
         # Windows scripts (per extension)
         script_extensions = [
             "vbs",
