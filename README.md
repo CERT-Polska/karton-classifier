@@ -36,6 +36,7 @@ type only (e.g. `raw` => `runnable:win32:exe`)
               || "win64" 
               || "linux" 
               || "android",
+              || "macos",
     "extension": "*",        # Expected file extension
     ... (other fields are derived from incoming task)
 }
