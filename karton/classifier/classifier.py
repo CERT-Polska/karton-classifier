@@ -286,10 +286,11 @@ class Classifier(Karton):
             return sample_class
 
         def zip_has_mac_app() -> bool:
-            zipfile = ZipFile(BytesIO(content))
-            if any(x.filename.lower().endswith(".app/contents/info.plist") for x in zipfile.filelist):
-                return True
-            return False
+            try:
+                zipfile = ZipFile(BytesIO(content))
+                return any(x.filename.lower().endswith(".app/contents/info.plist") for x in zipfile.filelist)
+            except Exception:
+                return False
 
         # macos app within zip
         if magic.startswith("Zip archive data") and zip_has_mac_app():
