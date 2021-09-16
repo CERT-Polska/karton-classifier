@@ -259,6 +259,48 @@ class Classifier(Karton):
             sample_class.update({"kind": "runnable", "platform": "linux"})
             return sample_class
 
+        # Is PKG file?
+        if magic.startswith("xar archive") or extension == "pkg":
+            sample_class.update(
+                {"kind": "runnable", "platform": "macos", "extension": "pkg"}
+            )
+            return sample_class
+
+        # Is DMG file?
+        if extension == "dmg" or all(
+            [
+                len(content) > 512,
+                content[-512:][:4] == b"koly",
+                content[-512:][8:12] == b"\x00\x00\x02\x00",
+            ]
+        ):
+            sample_class.update(
+                {"kind": "runnable", "platform": "macos", "extension": "dmg"}
+            )
+            return sample_class
+
+        # Is mach-o file?
+        if magic.startswith("Mach-O"):
+            sample_class.update({"kind": "runnable", "platform": "macos"})
+            return sample_class
+
+        def zip_has_mac_app() -> bool:
+            try:
+                zipfile = ZipFile(BytesIO(content))
+                return any(
+                    x.filename.lower().endswith(".app/contents/info.plist")
+                    for x in zipfile.filelist
+                )
+            except Exception:
+                return False
+
+        # macos app within zip
+        if magic.startswith("Zip archive data") and zip_has_mac_app():
+            sample_class.update(
+                {"kind": "runnable", "platform": "macos", "extension": "app"}
+            )
+            return sample_class
+
         # Windows scripts (per extension)
         script_extensions = [
             "vbs",
