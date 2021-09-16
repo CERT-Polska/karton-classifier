@@ -441,9 +441,12 @@ class Classifier(Karton):
             return sample_class
 
         # E-mail
-        email_assoc = {"msg": "Microsoft Outlook Message", "eml": "multipart/mixed"}
-        for ext in email_assoc.keys():
-            if email_assoc[ext] in magic:
+        email_assoc = {
+            "msg": ["Microsoft Outlook Message"],
+            "eml": ["multipart/mixed", "RFC 822 mail", "SMTP mail"],
+        }
+        for ext, patterns in email_assoc.items():
+            if any(pattern in magic for pattern in patterns):
                 sample_class.update({"kind": "archive", "extension": ext})
                 return sample_class
 
