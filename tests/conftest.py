@@ -53,6 +53,11 @@ def magic_from_content(content, mime):
     return (get_mime if mime else get_magic).from_buffer(content)
 
 
-@pytest.fixture
-def magic():
-    return magic_from_content
+from karton.core.test import ConfigMock, KartonBackendMock
+from karton.classifier import Classifier
+
+
+@pytest.fixture(scope="class")
+def karton_classifier(request):
+    classifier = Classifier(magic=magic_from_content, config=ConfigMock(), backend=KartonBackendMock())
+    request.cls.karton = classifier
