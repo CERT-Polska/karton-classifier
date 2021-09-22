@@ -1,8 +1,5 @@
-import pathlib
 import re
 import struct
-import subprocess
-import tempfile
 from hashlib import sha256
 from io import BytesIO
 from typing import Callable, Dict, Optional, cast
@@ -71,32 +68,13 @@ class Classifier(Karton):
         magic: Callable = None,
     ) -> None:
         super().__init__(config=config, identity=identity, backend=backend)
-        self._magic = magic or self._build_magic_db()
+        self._magic = magic or self._magic_from_content
 
-    def _build_magic_db(self) -> Callable:
-        """Build libmagic database from embedded file type definitions"""
+    def _magic_from_content(self) -> Callable:
+        get_magic = pymagic.Magic(mime=False)
+        get_mime = pymagic.Magic(mime=True)
 
-        classifier_dir = pathlib.Path(__file__).parent
-        self._magic_db_dir = tempfile.TemporaryDirectory()
-
-        magic_db = str(pathlib.Path(self._magic_db_dir.name) / "Magdir.mgc")
-        self.log.info("Building magic database...")
-        subprocess.run(
-            [
-                "file",
-                "-C",
-                "-m",
-                str(classifier_dir / "file" / "magic" / "Magdir"),
-            ],
-            cwd=self._magic_db_dir.name,
-            check=True,
-            capture_output=True,
-        )
-
-        get_magic = pymagic.Magic(mime=False, magic_file=magic_db)
-        get_mime = pymagic.Magic(mime=True, magic_file=magic_db)
-
-        def wrapper(content, mime=False):
+        def wrapper(content, mime):
             if mime:
                 return get_mime.from_buffer(content)
             else:
