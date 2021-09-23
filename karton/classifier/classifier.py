@@ -159,7 +159,7 @@ class Classifier(Karton):
         magic = task.get_payload("magic") or ""
         magic_mime = task.get_payload("mime") or ""
         try:
-            magic = self._magic(content)
+            magic = self._magic(content, mime=False)
             magic_mime = self._magic(content, mime=True)
         except Exception as ex:
             self.log.warning(f"unable to get magic: {ex}")
@@ -325,6 +325,12 @@ class Classifier(Karton):
                     "platform": "win32",
                 }
             )
+
+            for ext, typepart in office_extensions.items():
+                if f"Name of Creating Application: {typepart}" in magic:
+                    sample_class["extension"] = ext
+                    return sample_class
+
             if extension[:3] in office_extensions.keys():
                 sample_class["extension"] = extension
             else:
@@ -523,7 +529,15 @@ class Classifier(Karton):
                         {"kind": "script", "platform": "win32", "extension": "vbs"}
                     )
                     return sample_class
-
+                # Powershell heuristics
+                if len(
+                    [True for keyword in ps_keywords if keyword.lower() in partial_str]
+                ):
+                    sample_class.update(
+                        {"kind": "script", "platform": "win32", "extension": "ps1"}
+                    )
+                    return sample_class
+                # JS heuristics
                 if (
                     len([True for keyword in js_keywords if keyword in partial_str])
                     >= 2
@@ -532,7 +546,6 @@ class Classifier(Karton):
                         {"kind": "script", "platform": "win32", "extension": "js"}
                     )
                     return sample_class
-
                 # JSE heuristics
                 if re.match("#@~\\^[a-zA-Z0-9+/]{6}==", partial_str):
                     sample_class.update(
@@ -541,14 +554,6 @@ class Classifier(Karton):
                             "platform": "win32",
                             "extension": "jse",  # jse is more possible than vbe
                         }
-                    )
-                    return sample_class
-                # Powershell heuristics
-                if len(
-                    [True for keyword in ps_keywords if keyword.lower() in partial_str]
-                ):
-                    sample_class.update(
-                        {"kind": "script", "platform": "win32", "extension": "ps1"}
                     )
                     return sample_class
                 if magic.startswith("ASCII"):

@@ -1,8 +1,15 @@
 import pathlib
+
 from karton.core import Resource, Task
 
-def mock_resource(filename: str, content: bytes) -> Resource:
-    return Resource(filename, content, sha256="sha256")
+tests_dir = pathlib.Path(__file__).parent
+
+
+def mock_resource(filename: str, with_name=False) -> Resource:
+    filepath = tests_dir / "testdata" / filename
+    return Resource(
+        filename if with_name else "file", filepath.read_bytes(), sha256="sha256"
+    )
 
 
 def mock_task(resource: Resource) -> Task:

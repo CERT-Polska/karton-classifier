@@ -1,18 +1,19 @@
+import pytest
 from karton.core import Task
 from karton.core.test import ConfigMock, KartonBackendMock, KartonTestCase
 
-from .mock_helper import mock_classifier, mock_resource, mock_task
+from .mock_helper import mock_resource, mock_task
 
 
+@pytest.mark.usefixtures("karton_classifier")
 class TestClassifier(KartonTestCase):
     def setUp(self):
         self.config = ConfigMock()
         self.backend = KartonBackendMock()
 
     def test_process_misc_ascii(self):
-        magic, mime = "ASCII text...", "text/plain"
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.txt")
+        resource = mock_resource("misc.ascii")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -22,7 +23,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "ascii",
-                "mime": mime,
+                "mime": "text/plain",
             },
             payload={
                 "sample": resource,
@@ -33,9 +34,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_misc_html(self):
-        magic, mime = "HTML document...", "text/html"
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.html")
+        resource = mock_resource("misc.html")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -45,7 +45,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "html",
-                "mime": mime,
+                "mime": "text/html",
             },
             payload={
                 "sample": resource,
