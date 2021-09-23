@@ -68,7 +68,7 @@ class Classifier(Karton):
         magic: Callable = None,
     ) -> None:
         super().__init__(config=config, identity=identity, backend=backend)
-        self._magic = magic or self._magic_from_content
+        self._magic = magic or self._magic_from_content()
 
     def _magic_from_content(self) -> Callable:
         get_magic = pymagic.Magic(mime=False)

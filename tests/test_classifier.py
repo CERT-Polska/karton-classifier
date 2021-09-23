@@ -16,7 +16,7 @@ class TestClassifier(KartonTestCase):
         self.backend = KartonBackendMock()
 
     def test_process(self):
-        resource = Resource("file.txt", b"ffafafffa", sha256="sha256")
+        resource = Resource("file.txt", b"ffafafffa\nfafafafa", sha256="sha256")
         res = self.run_task(mock_task(resource))
 
         expected = Task(
