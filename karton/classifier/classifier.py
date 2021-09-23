@@ -415,14 +415,21 @@ class Classifier(Karton):
             "cab",
             "zlib",
         ]
-        for ext in archive_extensions:
-            if ext in archive_assoc:
-                if any(magic.startswith(x) for x in archive_assoc[ext]):
-                    sample_class.update({"kind": "archive", "extension": ext})
-                    return sample_class
-        if extension in archive_extensions:
-            sample_class.update({"kind": "archive", "extension": extension})
+
+        def apply_archive_headers(extension):
+            headers = {"kind": "archive", "extension": extension}
+            if extension == "xz":
+                # libmagic >= 5.40 generates correct MIME type for XZ archives
+                headers["mime"] = "application/x-xz"
+            sample_class.update(headers)
             return sample_class
+
+        for archive_extension, assocs in archive_assoc.items():
+            if any(magic.startswith(assoc) for assoc in assocs):
+                return apply_archive_headers(archive_extension)
+
+        if extension in archive_extensions:
+            return apply_archive_headers(extension)
 
         # E-mail
         email_assoc = {

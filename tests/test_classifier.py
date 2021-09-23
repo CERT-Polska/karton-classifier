@@ -31,7 +31,7 @@ class TestClassifier(KartonTestCase):
             payload={
                 "sample": resource,
                 "tags": ["misc:ascii"],
-                "magic": "ASCII text, with no line terminators",
+                "magic": "ASCII text",
             },
         )
         self.assertTasksEqual(res, [expected])
