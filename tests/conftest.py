@@ -23,6 +23,9 @@ if expected_libmagic:
     if not libmagic_file.exists() or not database_file.exists():
         raise RuntimeError("LIBMAGIC_PRELOAD is set, but libmagic binaries are missing")
 
+    # libmagic is loaded during python-magic import.
+    # We need to monkeypatch find_library to enforce
+    # loading 'magic' from specified path
     ctypes_find_library = ctypes.util.find_library
 
     def find_library_patch(name):
