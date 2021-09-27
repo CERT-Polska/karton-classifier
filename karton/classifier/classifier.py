@@ -1,8 +1,5 @@
-import pathlib
 import re
 import struct
-import subprocess
-import tempfile
 from hashlib import sha256
 from io import BytesIO
 from typing import Callable, Dict, Optional, cast
@@ -71,32 +68,13 @@ class Classifier(Karton):
         magic: Callable = None,
     ) -> None:
         super().__init__(config=config, identity=identity, backend=backend)
-        self._magic = magic or self._build_magic_db()
+        self._magic = magic or self._magic_from_content()
 
-    def _build_magic_db(self) -> Callable:
-        """Build libmagic database from embedded file type definitions"""
+    def _magic_from_content(self) -> Callable:
+        get_magic = pymagic.Magic(mime=False)
+        get_mime = pymagic.Magic(mime=True)
 
-        classifier_dir = pathlib.Path(__file__).parent
-        self._magic_db_dir = tempfile.TemporaryDirectory()
-
-        magic_db = str(pathlib.Path(self._magic_db_dir.name) / "Magdir.mgc")
-        self.log.info("Building magic database...")
-        subprocess.run(
-            [
-                "file",
-                "-C",
-                "-m",
-                str(classifier_dir / "file" / "magic" / "Magdir"),
-            ],
-            cwd=self._magic_db_dir.name,
-            check=True,
-            capture_output=True,
-        )
-
-        get_magic = pymagic.Magic(mime=False, magic_file=magic_db)
-        get_mime = pymagic.Magic(mime=True, magic_file=magic_db)
-
-        def wrapper(content, mime=False):
+        def wrapper(content, mime):
             if mime:
                 return get_mime.from_buffer(content)
             else:
@@ -181,7 +159,7 @@ class Classifier(Karton):
         magic = task.get_payload("magic") or ""
         magic_mime = task.get_payload("mime") or ""
         try:
-            magic = self._magic(content)
+            magic = self._magic(content, mime=False)
             magic_mime = self._magic(content, mime=True)
         except Exception as ex:
             self.log.warning(f"unable to get magic: {ex}")
@@ -347,6 +325,12 @@ class Classifier(Karton):
                     "platform": "win32",
                 }
             )
+
+            for ext, typepart in office_extensions.items():
+                if f"Name of Creating Application: {typepart}" in magic:
+                    sample_class["extension"] = ext
+                    return sample_class
+
             if extension[:3] in office_extensions.keys():
                 sample_class["extension"] = extension
             else:
@@ -431,14 +415,21 @@ class Classifier(Karton):
             "cab",
             "zlib",
         ]
-        for ext in archive_extensions:
-            if ext in archive_assoc:
-                if any(magic.startswith(x) for x in archive_assoc[ext]):
-                    sample_class.update({"kind": "archive", "extension": ext})
-                    return sample_class
-        if extension in archive_extensions:
-            sample_class.update({"kind": "archive", "extension": extension})
+
+        def apply_archive_headers(extension):
+            headers = {"kind": "archive", "extension": extension}
+            if extension == "xz":
+                # libmagic >= 5.40 generates correct MIME type for XZ archives
+                headers["mime"] = "application/x-xz"
+            sample_class.update(headers)
             return sample_class
+
+        for archive_extension, assocs in archive_assoc.items():
+            if any(magic.startswith(assoc) for assoc in assocs):
+                return apply_archive_headers(archive_extension)
+
+        if extension in archive_extensions:
+            return apply_archive_headers(extension)
 
         # E-mail
         email_assoc = {
@@ -545,7 +536,15 @@ class Classifier(Karton):
                         {"kind": "script", "platform": "win32", "extension": "vbs"}
                     )
                     return sample_class
-
+                # Powershell heuristics
+                if len(
+                    [True for keyword in ps_keywords if keyword.lower() in partial_str]
+                ):
+                    sample_class.update(
+                        {"kind": "script", "platform": "win32", "extension": "ps1"}
+                    )
+                    return sample_class
+                # JS heuristics
                 if (
                     len([True for keyword in js_keywords if keyword in partial_str])
                     >= 2
@@ -554,7 +553,6 @@ class Classifier(Karton):
                         {"kind": "script", "platform": "win32", "extension": "js"}
                     )
                     return sample_class
-
                 # JSE heuristics
                 if re.match("#@~\\^[a-zA-Z0-9+/]{6}==", partial_str):
                     sample_class.update(
@@ -563,14 +561,6 @@ class Classifier(Karton):
                             "platform": "win32",
                             "extension": "jse",  # jse is more possible than vbe
                         }
-                    )
-                    return sample_class
-                # Powershell heuristics
-                if len(
-                    [True for keyword in ps_keywords if keyword.lower() in partial_str]
-                ):
-                    sample_class.update(
-                        {"kind": "script", "platform": "win32", "extension": "ps1"}
                     )
                     return sample_class
                 if magic.startswith("ASCII"):

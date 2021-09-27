@@ -1,18 +1,19 @@
+import pytest
 from karton.core import Task
 from karton.core.test import ConfigMock, KartonBackendMock, KartonTestCase
 
-from .mock_helper import mock_classifier, mock_resource, mock_task
+from .mock_helper import mock_resource, mock_task
 
 
+@pytest.mark.usefixtures("karton_classifier")
 class TestClassifier(KartonTestCase):
     def setUp(self):
         self.config = ConfigMock()
         self.backend = KartonBackendMock()
 
     def test_process_script_win32_js(self):
-        magic, mime = "ASCII text...", "text/plain"
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.js")
+        resource = mock_resource("script.js")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -22,7 +23,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "script",
-                "mime": mime,
+                "mime": "text/plain",
                 "extension": "js",
                 "platform": "win32",
             },
@@ -35,9 +36,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_script_win32_jse(self):
-        magic, mime = "data", "application/octet-stream"
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.jse")
+        resource = mock_resource("script.jse")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -47,7 +47,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "script",
-                "mime": mime,
+                "mime": "application/octet-stream",
                 "extension": "jse",
                 "platform": "win32",
             },
@@ -60,9 +60,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_script_win32_ps1(self):
-        magic, mime = "ASCII text...", "text/plain"
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.ps1")
+        resource = mock_resource("script.ps1")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -72,7 +71,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "script",
-                "mime": mime,
+                "mime": "text/plain",
                 "extension": "ps1",
                 "platform": "win32",
             },
@@ -85,9 +84,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_script_win32_vbs(self):
-        magic, mime = "ASCII text...", "text/plain"
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.vbs")
+        resource = mock_resource("script.vbs")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -97,7 +95,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "script",
-                "mime": mime,
+                "mime": "text/plain",
                 "extension": "vbs",
                 "platform": "win32",
             },

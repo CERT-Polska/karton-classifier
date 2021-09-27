@@ -1,18 +1,19 @@
+import pytest
 from karton.core import Task
 from karton.core.test import ConfigMock, KartonBackendMock, KartonTestCase
 
-from .mock_helper import mock_classifier, mock_resource, mock_task
+from .mock_helper import mock_resource, mock_task
 
 
+@pytest.mark.usefixtures("karton_classifier")
 class TestClassifier(KartonTestCase):
     def setUp(self):
         self.config = ConfigMock()
         self.backend = KartonBackendMock()
 
     def test_process_archive_7z(self):
-        magic, mime = "7-zip archive data...", "application/x-7z-compressed"
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.7z")
+        resource = mock_resource("archive.7z")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -22,7 +23,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": mime,
+                "mime": "application/x-7z-compressed",
                 "extension": "7z",
             },
             payload={
@@ -34,9 +35,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_archive_ace(self):
-        magic, mime = "ACE archive data version 20...", "application/octet-stream"
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.ace")
+        resource = mock_resource("archive.ace")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -46,7 +46,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": mime,
+                "mime": "application/octet-stream",
                 "extension": "ace",
             },
             payload={
@@ -58,9 +58,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_archive_bz2(self):
-        magic, mime = "bzip2 compressed data...", "application/x-bzip2"
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.bz2")
+        resource = mock_resource("archive.bz2")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -70,7 +69,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": mime,
+                "mime": "application/x-bzip2",
                 "extension": "bz2",
             },
             payload={
@@ -82,12 +81,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_archive_cab(self):
-        magic, mime = (
-            "Microsoft Cabinet archive data...",
-            "application/vnd.ms-cab-compressed",
-        )
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.cab")
+        resource = mock_resource("archive.cab")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -97,7 +92,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": mime,
+                "mime": "application/vnd.ms-cab-compressed",
                 "extension": "cab",
             },
             payload={
@@ -108,13 +103,9 @@ class TestClassifier(KartonTestCase):
         )
         self.assertTasksEqual(res, [expected])
 
-    def test_process_archive_cab_no_extension(self):
-        magic, mime = (
-            "Microsoft Cabinet archive data...",
-            "application/vnd.ms-cab-compressed",
-        )
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file")
+    def test_process_archive_cab_with_extension(self):
+        resource = mock_resource("archive.cab", with_name=True)
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -124,7 +115,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": mime,
+                "mime": "application/vnd.ms-cab-compressed",
                 "extension": "cab",
             },
             payload={
@@ -136,9 +127,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_archive_gz(self):
-        magic, mime = "gzip compressed data...", "application/gzip"
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.gz")
+        resource = mock_resource("archive.gz")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -148,7 +138,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": mime,
+                "mime": "application/gzip",
                 "extension": "gz",
             },
             payload={
@@ -160,12 +150,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_archive_iso(self):
-        magic, mime = (
-            "ISO 9660 CD-ROM filesystem data...",
-            "application/x-iso9660-image",
-        )
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.iso")
+        resource = mock_resource("archive.iso")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -175,7 +161,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": mime,
+                "mime": "application/x-iso9660-image",
                 "extension": "iso",
             },
             payload={
@@ -187,9 +173,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_archive_lz(self):
-        magic, mime = "lzip compressed data...", "application/x-lzip"
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.lz")
+        resource = mock_resource("archive.lz")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -199,7 +184,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": mime,
+                "mime": "application/x-lzip",
                 "extension": "lz",
             },
             payload={"sample": resource, "tags": ["archive:lz"], "magic": magic},
@@ -207,9 +192,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_archive_rar(self):
-        magic, mime = "RAR archive data...", "application/x-rar"
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.rar")
+        resource = mock_resource("archive.rar")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -219,7 +203,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": mime,
+                "mime": "application/x-rar",
                 "extension": "rar",
             },
             payload={
@@ -231,9 +215,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_archive_tar(self):
-        magic, mime = "POSIX tar archive", "application/x-tar"
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.tar")
+        resource = mock_resource("archive.tar")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -243,7 +226,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": mime,
+                "mime": "application/x-tar",
                 "extension": "tar",
             },
             payload={
@@ -255,9 +238,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_archive_udf(self):
-        magic, mime = "UDF filesystem data...", "application/x-iso9660-image"
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.udf")
+        resource = mock_resource("archive.udf")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -267,7 +249,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": mime,
+                "mime": "application/x-iso9660-image",
                 "extension": "udf",
             },
             payload={
@@ -279,9 +261,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_archive_xz(self):
-        magic, mime = "XZ compressed data", "application/x-xz"
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.xz")
+        resource = mock_resource("archive.xz")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -291,7 +272,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": mime,
+                "mime": "application/x-xz",
                 "extension": "xz",
             },
             payload={
@@ -303,9 +284,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_archive_zip(self):
-        magic, mime = "Zip archive data", "application/zip"
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.zip")
+        resource = mock_resource("archive.zip")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -315,7 +295,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": mime,
+                "mime": "application/zip",
                 "extension": "zip",
             },
             payload={

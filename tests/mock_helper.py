@@ -1,22 +1,15 @@
-from unittest.mock import MagicMock
+import pathlib
 
 from karton.core import Resource, Task
-from karton.core.test import ConfigMock, KartonBackendMock
 
-from karton.classifier import Classifier
-
-
-def mock_classifier(magic: str, mime: str) -> Classifier:
-    m = MagicMock()
-    m.side_effect = [
-        magic,
-        mime,
-    ]
-    return Classifier(magic=m, config=ConfigMock(), backend=KartonBackendMock())
+tests_dir = pathlib.Path(__file__).parent
 
 
-def mock_resource(filename: str) -> Resource:
-    return Resource(filename, b"feeddecaf\n", sha256="sha256")
+def mock_resource(filename: str, with_name=False) -> Resource:
+    filepath = tests_dir / "testdata" / filename
+    return Resource(
+        filename if with_name else "file", filepath.read_bytes(), sha256="sha256"
+    )
 
 
 def mock_task(resource: Resource) -> Task:

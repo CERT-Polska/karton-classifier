@@ -1,18 +1,19 @@
+import pytest
 from karton.core import Task
 from karton.core.test import ConfigMock, KartonBackendMock, KartonTestCase
 
-from .mock_helper import mock_classifier, mock_resource, mock_task
+from .mock_helper import mock_resource, mock_task
 
 
+@pytest.mark.usefixtures("karton_classifier")
 class TestClassifier(KartonTestCase):
     def setUp(self):
         self.config = ConfigMock()
         self.backend = KartonBackendMock()
 
-    def test_process_runnable_android_dec(self):
-        magic, mime = "Dalvik dex file version 035", "application/octet-stream"
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file")
+    def test_process_runnable_android_dex(self):
+        resource = mock_resource("runnable.dex")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -22,7 +23,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "runnable",
-                "mime": mime,
+                "mime": "application/octet-stream",
                 "extension": "dex",
                 "platform": "android",
             },
@@ -35,9 +36,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_runnable_linux(self):
-        magic, mime = "ELF 32-bit MSB executable...", "application/x-executable"
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file")
+        resource = mock_resource("runnable.spc")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -47,7 +47,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "runnable",
-                "mime": mime,
+                "mime": "application/x-executable",
                 "platform": "linux",
             },
             payload={
@@ -59,12 +59,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_runnable_win32_dll(self):
-        magic, mime = (
-            "PE32 executable (DLL) (console) Intel 80386...",
-            "application/x-dosexec",
-        )
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file")
+        resource = mock_resource("runnable.dll")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -74,7 +70,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "runnable",
-                "mime": mime,
+                "mime": "application/x-dosexec",
                 "extension": "dll",
                 "platform": "win32",
             },
@@ -87,12 +83,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_runnable_win32_exe(self):
-        magic, mime = (
-            "PE32 executable (GUI) Intel 80386 Mono/.Net assembly...",
-            "application/x-dosexec",
-        )
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file")
+        resource = mock_resource("runnable.exe")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -102,7 +94,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "runnable",
-                "mime": mime,
+                "mime": "application/x-dosexec",
                 "extension": "exe",
                 "platform": "win32",
             },
@@ -115,9 +107,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_runnable_win32_jar(self):
-        magic, mime = "Zip archive data...", "application/zip"
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.jar")
+        resource = mock_resource("runnable.jar")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -127,7 +118,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "runnable",
-                "mime": mime,
+                "mime": "application/zip",
                 "extension": "jar",
                 "platform": "win32",
             },
@@ -140,9 +131,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_runnable_win32_lnk(self):
-        magic, mime = "MS Windows shortcut...", "application/octet-stream"
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.lnk")
+        resource = mock_resource("runnable.lnk")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -152,7 +142,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "runnable",
-                "mime": mime,
+                "mime": "application/octet-stream",
                 "extension": "lnk",
                 "platform": "win32",
             },
@@ -165,12 +155,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_runnable_win32_msi(self):
-        magic, mime = (
-            "Composite Document File V2 Document, MSI Installer...",
-            "application/x-msi",
-        )
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.msi")
+        resource = mock_resource("runnable.msi")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -180,7 +166,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "runnable",
-                "mime": mime,
+                "mime": "application/x-msi",
                 "extension": "msi",
                 "platform": "win32",
             },
@@ -193,12 +179,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_runnable_win32_swf(self):
-        magic, mime = (
-            "Macromedia Flash data (compressed)...",
-            "application/x-shockwave-flash",
-        )
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.swf")
+        resource = mock_resource("runnable.swf")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -208,7 +190,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "runnable",
-                "mime": mime,
+                "mime": "application/x-shockwave-flash",
                 "extension": "swf",
                 "platform": "win32",
             },
@@ -221,9 +203,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_runnable_win64_dll(self):
-        magic, mime = "PE32+ executable (DLL) (GUI) x86-64...", "application/x-dosexec"
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file")
+        resource = mock_resource("runnable.dll64")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -233,7 +214,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "runnable",
-                "mime": mime,
+                "mime": "application/x-dosexec",
                 "extension": "dll",
                 "platform": "win64",
             },
@@ -246,9 +227,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_runnable_win64_exe(self):
-        magic, mime = "PE32+ executable (console) x86-64...", "application/x-dosexec"
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file")
+        resource = mock_resource("runnable.exe64")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -258,7 +238,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "runnable",
-                "mime": mime,
+                "mime": "application/x-dosexec",
                 "extension": "exe",
                 "platform": "win64",
             },

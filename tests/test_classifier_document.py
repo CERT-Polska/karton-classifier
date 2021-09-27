@@ -1,18 +1,19 @@
+import pytest
 from karton.core import Task
 from karton.core.test import ConfigMock, KartonBackendMock, KartonTestCase
 
-from .mock_helper import mock_classifier, mock_resource, mock_task
+from .mock_helper import mock_resource, mock_task
 
 
+@pytest.mark.usefixtures("karton_classifier")
 class TestClassifier(KartonTestCase):
     def setUp(self):
         self.config = ConfigMock()
         self.backend = KartonBackendMock()
 
     def test_process_document_doc(self):
-        magic, mime = "Composite Document File V2 Document...", "application/msword"
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.doc")
+        resource = mock_resource("document.doc")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -22,7 +23,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "document",
-                "mime": mime,
+                "mime": "application/msword",
                 "extension": "doc",
                 "platform": "win32",
             },
@@ -35,12 +36,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_document_docx(self):
-        magic, mime = (
-            "Microsoft Word 2007+...",
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        )
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.docx")
+        resource = mock_resource("document.docx")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -50,7 +47,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "document",
-                "mime": mime,
+                "mime": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                 "extension": "docx",
                 "platform": "win32",
             },
@@ -63,9 +60,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_document_pdf(self):
-        magic, mime = "PDF document...", "application/pdf"
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.pdf")
+        resource = mock_resource("document.pdf")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -75,7 +71,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "document",
-                "mime": mime,
+                "mime": "application/pdf",
                 "extension": "pdf",
                 "platform": "win32",
             },
@@ -88,9 +84,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_document_rtf(self):
-        magic, mime = "Rich Text Format data...", "text/rtf"
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.rtf")
+        resource = mock_resource("document.rtf")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -100,7 +95,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "document",
-                "mime": mime,
+                "mime": "text/rtf",
                 "extension": "rtf",
                 "platform": "win32",
             },
@@ -113,12 +108,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_document_xls(self):
-        magic, mime = (
-            "Composite Document File V2 Document...",
-            "application/vnd.ms-excel",
-        )
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.xls")
+        resource = mock_resource("document.xls")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -128,7 +119,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "document",
-                "mime": mime,
+                "mime": "application/vnd.ms-excel",
                 "extension": "xls",
                 "platform": "win32",
             },
@@ -141,12 +132,8 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_document_xlsx(self):
-        magic, mime = (
-            "Microsoft Excel 2007+...",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        )
-        self.karton = mock_classifier(magic, mime)
-        resource = mock_resource("file.xlsx")
+        resource = mock_resource("document.xlsm")
+        magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -156,7 +143,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "document",
-                "mime": mime,
+                "mime": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 "extension": "xlsx",
                 "platform": "win32",
             },
