@@ -28,8 +28,6 @@ jobs:
         libmagic: [FILE5_37, FILE5_38, FILE5_39, FILE5_40]
     steps:
       - uses: actions/checkout@v2
-        with:
-          submodules: true
       - uses: actions/setup-python@v1
         with:
           python-version: 3.${{ matrix.minor }}
