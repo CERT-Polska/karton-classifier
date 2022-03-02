@@ -397,6 +397,7 @@ class Classifier(Karton):
             "xz": ["XZ compressed data"],
             "zip": ["Zip archive data"],
             "zlib": ["zlib compressed data"],
+            "lzh": ["  LHa (2.x) archive data"],
         }
         archive_extensions = [
             "ace",
@@ -414,6 +415,7 @@ class Classifier(Karton):
             "udf",
             "cab",
             "zlib",
+            "lzh",
         ]
 
         def apply_archive_headers(extension):
