@@ -345,6 +345,15 @@ class Classifier(Karton):
                 )
                 return sample_class
 
+        # Check Password-Encrypted Open XML documents documents
+        if magic == "CDFV2 Encrypted" and magic_mime == "application/encrypted":
+            # if extension is known before this step, the document would have
+            # been already classified - if we are here, no extension is known
+            sample_class.update(
+                {"kind": "document", "platform": "win32"}
+            )
+            return sample_class
+
         # Check RTF by extension
         if extension == "rtf":
             sample_class.update(
