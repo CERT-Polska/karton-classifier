@@ -345,7 +345,7 @@ class Classifier(Karton):
                 )
                 return sample_class
 
-        # Check Password-Encrypted Open XML documents documents
+        # Check Password-Encrypted Open XML documents
         if magic == "CDFV2 Encrypted" and magic_mime == "application/encrypted":
             # if extension is known before this step, the document would have
             # been already classified - if we are here, no extension is known
