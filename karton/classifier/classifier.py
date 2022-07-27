@@ -82,7 +82,7 @@ class Classifier(Karton):
 
         return wrapper
 
-    def process(self, task: Task) -> None:  # type: ignore
+    def process(self, task: Task) -> None:
         sample = task.get_resource("sample")
         sample_class = self._classify(task)
 
