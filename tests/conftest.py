@@ -1,11 +1,7 @@
-from karton.classifier import Classifier
-
 import ctypes.util
 import os
 import pathlib
 import re
-
-import pytest
 
 # If you want to test pymagic using specific libmagic version:
 # - put `libmagic.so` and `magic.mgc` in `tests/libmagic` directory
@@ -52,6 +48,12 @@ else:
 
     get_magic = pymagic.Magic(mime=False)
     get_mime = pymagic.Magic(mime=True)
+
+# Actual conftest.py goes there
+# pymagic must be patched before any imports occur
+
+from karton.classifier import Classifier
+import pytest
 
 
 def magic_from_content(content, mime):
