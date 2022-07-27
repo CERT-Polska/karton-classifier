@@ -1,16 +1,12 @@
 import pytest
 from karton.core import Task
-from karton.core.test import ConfigMock, KartonBackendMock, KartonTestCase
+from karton.core.test import KartonTestCase
 
 from .mock_helper import mock_resource, mock_task
 
 
 @pytest.mark.usefixtures("karton_classifier")
 class TestClassifier(KartonTestCase):
-    def setUp(self):
-        self.config = ConfigMock()
-        self.backend = KartonBackendMock()
-
     def test_process_runnable_android_dex(self):
         resource = mock_resource("runnable.dex")
         magic = self.magic_from_content(resource.content, mime=False)

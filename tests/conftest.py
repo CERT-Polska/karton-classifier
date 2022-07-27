@@ -1,3 +1,5 @@
+from karton.classifier import Classifier
+
 import ctypes.util
 import os
 import pathlib
@@ -56,18 +58,13 @@ def magic_from_content(content, mime):
     return (get_mime if mime else get_magic).from_buffer(content)
 
 
-from karton.core.test import ConfigMock, KartonBackendMock
-
-from karton.classifier import Classifier
-
-
 @pytest.fixture(scope="class")
 def karton_classifier(request):
     def _magic_from_content(_, content, mime):
         return magic_from_content(content, mime)
 
-    classifier = Classifier(
-        magic=magic_from_content, config=ConfigMock(), backend=KartonBackendMock()
-    )
+    request.cls.karton_class = Classifier
     request.cls.magic_from_content = _magic_from_content
-    request.cls.karton = classifier
+    request.cls.kwargs = {
+        "magic": magic_from_content
+    }

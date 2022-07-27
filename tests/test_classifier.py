@@ -2,7 +2,7 @@ from unittest.mock import MagicMock
 
 import pytest
 from karton.core import Resource, Task
-from karton.core.test import ConfigMock, KartonBackendMock, KartonTestCase
+from karton.core.test import KartonTestCase
 
 from karton.classifier import Classifier
 
@@ -11,10 +11,6 @@ from .mock_helper import mock_task
 
 @pytest.mark.usefixtures("karton_classifier")
 class TestClassifier(KartonTestCase):
-    def setUp(self):
-        self.config = ConfigMock()
-        self.backend = KartonBackendMock()
-
     def test_process(self):
         resource = Resource("file.txt", b"ffafafffa\nfafafafa", sha256="sha256")
         res = self.run_task(mock_task(resource))
