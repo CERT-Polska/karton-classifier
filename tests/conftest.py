@@ -3,8 +3,6 @@ import os
 import pathlib
 import re
 
-import pytest
-
 # If you want to test pymagic using specific libmagic version:
 # - put `libmagic.so` and `magic.mgc` in `tests/libmagic` directory
 # - call LIBMAGIC_PRELOAD=FILE5_38 pytest if 5.38 is expected libmagic version:
@@ -51,14 +49,15 @@ else:
     get_magic = pymagic.Magic(mime=False)
     get_mime = pymagic.Magic(mime=True)
 
+# Actual conftest.py goes there
+# pymagic must be patched before any imports occur
+
+from karton.classifier import Classifier
+import pytest
+
 
 def magic_from_content(content, mime):
     return (get_mime if mime else get_magic).from_buffer(content)
-
-
-from karton.core.test import ConfigMock, KartonBackendMock
-
-from karton.classifier import Classifier
 
 
 @pytest.fixture(scope="class")
@@ -66,8 +65,8 @@ def karton_classifier(request):
     def _magic_from_content(_, content, mime):
         return magic_from_content(content, mime)
 
-    classifier = Classifier(
-        magic=magic_from_content, config=ConfigMock(), backend=KartonBackendMock()
-    )
+    request.cls.karton_class = Classifier
     request.cls.magic_from_content = _magic_from_content
-    request.cls.karton = classifier
+    request.cls.kwargs = {
+        "magic": magic_from_content
+    }

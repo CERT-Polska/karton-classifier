@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        minor: [7, 8, 9]
+        minor: [8, 9, 10]
         libmagic: [FILE5_37, FILE5_38, FILE5_39, FILE5_40]
     steps:
       - uses: actions/checkout@v2
