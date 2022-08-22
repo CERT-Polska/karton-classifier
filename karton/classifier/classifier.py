@@ -388,7 +388,7 @@ class Classifier(Karton):
                 {"kind": "document", "platform": "win32", "extension": "pdf"}
             )
             return sample_class
-            
+
         # JSON files
         if magic == "JSON data" or magic_mime == "application/json":
             sample_class.update({"kind": "json"})
