@@ -389,6 +389,11 @@ class Classifier(Karton):
             )
             return sample_class
 
+        # JSON files
+        if magic == "JSON data" or magic_mime == "application/json":
+            sample_class.update({"kind": "json"})
+            return sample_class
+
         # Archives
         archive_assoc = {
             "7z": ["7-zip archive data"],
