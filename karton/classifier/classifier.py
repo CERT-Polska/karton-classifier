@@ -232,6 +232,13 @@ class Classifier(Karton):
             )
             return sample_class
 
+        # Windows CHM?
+        if magic.startswith("MS Windows HtmlHelp Data") or extension == "chm":
+            sample_class.update(
+                {"kind": "runnable", "platform": "win32", "extension": "chm"}
+            )
+            return sample_class
+
         # Is ELF file?
         if magic.startswith("ELF"):
             sample_class.update({"kind": "runnable", "platform": "linux"})
