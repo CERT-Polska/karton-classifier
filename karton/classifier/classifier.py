@@ -501,7 +501,13 @@ class Classifier(Karton):
                 {"kind": "dump", "platform": "win32", "extension": "exe"}
             )
             return sample_class
-
+        
+        if partial.startswith(b"\x0B\xAD\x00\x98\x91\xFD\xDE\x68"):
+            sample_class.update(
+                {"kind":"defender:quarantine"}
+            )
+            return sample_class
+        
         # Heuristics for scripts
         try:
             try:
