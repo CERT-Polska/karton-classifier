@@ -471,11 +471,22 @@ class Classifier(Karton):
             sample_class.update({"kind": "html"})
             return sample_class
 
-        # Linux scripts
-        if ("script" in magic and "executable" in magic) or extension == "sh":
-            sample_class.update(
-                {"kind": "script", "platform": "linux", "extension": extension}
-            )
+        # Various scripting languages
+        script_assoc = {
+            "php": ["PHP script"],
+            "pl": ["Perl script", "Perl5 module"],
+            "py": ["Python script"],
+            "rb": ["Ruby script"],
+            "scpt": ["AppleScript compiled"],
+            "sh": ["Bourne-Again shell", "POSIX shell"],
+        }
+        for ext, patterns in script_assoc.items():
+            if any(pattern in magic for pattern in patterns):
+                sample_class.update({"kind": "script", "extension": ext})
+                return sample_class
+
+        if extension in script_assoc.keys():
+            sample_class.update({"kind": "script", "extension": ext})
             return sample_class
 
         # Content heuristics
