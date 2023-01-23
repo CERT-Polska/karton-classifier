@@ -44,11 +44,12 @@ class TestClassifier(KartonTestCase):
                 "quality": "high",
                 "kind": "runnable",
                 "mime": "application/x-executable",
-                "platform": "linux",
+                "extension": "elf",
+                "platform": "openbsd",
             },
             payload={
                 "sample": resource,
-                "tags": ["runnable:linux"],
+                "tags": ["runnable:openbsd:elf"],
                 "magic": magic,
             },
         )
