@@ -240,8 +240,22 @@ class Classifier(Karton):
             return sample_class
 
         # Is ELF file?
+        elf_assoc = {
+            "linux": "(GNU/Linux)",
+            "freebsd": "(FreeBSD)",
+            "netbsd": "(NetBSD)",
+            "openbsd": "(SYSV)",
+            "solaris": "(Solaris)",
+        }
         if magic.startswith("ELF"):
-            sample_class.update({"kind": "runnable", "platform": "linux"})
+            for platform, platform_full in elf_assoc.items():
+                if platform_full in magic:
+                    sample_class.update(
+                        {"kind": "runnable", "platform": platform, "extension": "elf"}
+                    )
+                    return sample_class
+
+            sample_class.update({"kind": "runnable", "extension": "elf"})
             return sample_class
 
         # Is PKG file?
