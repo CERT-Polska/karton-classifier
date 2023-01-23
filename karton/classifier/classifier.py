@@ -598,7 +598,8 @@ class Classifier(Karton):
                         }
                     )
                     return sample_class
-                if magic.startswith("ASCII"):
+                # magic of XML files: XML 1.0 document, ASCII text
+                if magic.startswith("ASCII") or magic.endswith("ASCII text"):
                     sample_class.update(
                         {
                             "kind": "ascii",
