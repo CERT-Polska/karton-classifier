@@ -38,7 +38,7 @@ def get_tag(classification: Dict) -> str:
         if extension:
             sample_type += f":{classification['extension']}"
 
-    # Add misc: if headers doesn't have platform nor extension
+    # Add misc: when header doesn't have platform nor extension
     if ":" not in sample_type:
         sample_type = f"misc:{sample_type}"
 
