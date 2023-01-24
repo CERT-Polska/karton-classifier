@@ -246,3 +246,74 @@ class TestClassifier(KartonTestCase):
             },
         )
         self.assertTasksEqual(res, [expected])
+
+    def test_process_runnable_aix_xcoff(self):
+        resource = mock_resource("runnable.xcoff")
+        magic = self.magic_from_content(resource.content, mime=False)
+        res = self.run_task(mock_task(resource))
+
+        expected = Task(
+            headers={
+                "type": "sample",
+                "stage": "recognized",
+                "origin": "karton.classifier",
+                "quality": "high",
+                "kind": "runnable",
+                "mime": "application/octet-stream",
+                "extension": "xcoff",
+                "platform": "aix",
+            },
+            payload={
+                "sample": resource,
+                "tags": ["runnable:aix:xcoff"],
+                "magic": magic,
+            },
+        )
+        self.assertTasksEqual(res, [expected])
+
+    def test_process_runnable_win32_com(self):
+        resource = mock_resource("runnable.com")
+        magic = self.magic_from_content(resource.content, mime=False)
+        res = self.run_task(mock_task(resource))
+
+        expected = Task(
+            headers={
+                "type": "sample",
+                "stage": "recognized",
+                "origin": "karton.classifier",
+                "quality": "high",
+                "kind": "runnable",
+                "mime": "application/x-dosexec",
+                "extension": "com",
+                "platform": "win32",
+            },
+            payload={
+                "sample": resource,
+                "tags": ["runnable:win32:com"],
+                "magic": magic,
+            },
+        )
+        self.assertTasksEqual(res, [expected])
+
+    def test_process_runnable_mbr(self):
+        resource = mock_resource("runnable.mbr")
+        magic = self.magic_from_content(resource.content, mime=False)
+        res = self.run_task(mock_task(resource))
+
+        expected = Task(
+            headers={
+                "type": "sample",
+                "stage": "recognized",
+                "origin": "karton.classifier",
+                "quality": "high",
+                "kind": "runnable",
+                "mime": "application/octet-stream",
+                "extension": "mbr",
+            },
+            payload={
+                "sample": resource,
+                "tags": ["runnable:mbr"],
+                "magic": magic,
+            },
+        )
+        self.assertTasksEqual(res, [expected])
