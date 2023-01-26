@@ -32,11 +32,16 @@ type only (e.g. `raw` => `runnable:win32:exe`)
               || "archive"   # Archive containing samples (zip, e-mails)
               || "dump"      # Dump from sandbox
               || "script",   # Script (js/vbs/bat...)
+              || "misc",     # No platform or extension
     "platform":  "win32" 
               || "win64" 
               || "linux" 
               || "android",
               || "macos",
+              || "freebsd",
+              || "netbsd",
+              || "openbsd",
+              || "solaris",
     "extension": "*",        # Expected file extension
     ... (other fields are derived from incoming task)
 }
