@@ -88,12 +88,19 @@ class Classifier(Karton):
 
         file_name = sample.name or "sample"
 
-        if sample_class is None:
-            self.log.info(
-                "Sample {!r} not recognized (unsupported type)".format(
-                    file_name.encode("utf8")
+        if sample_class['kind'] is None:
+            if sample_class['magic'] and sample_class['magic'].startswith("data"):
+                self.log.info(
+                    "Sample {!r} (sha256 {}) not recognized (unsupported type), first 50 bytes of content: {!r}".format(
+                        file_name.encode("utf8"), sample.sha256, sample.content[:50]
+                    )
                 )
-            )
+            else:
+                self.log.info(
+                    "Sample {!r} (sha256 {}) not recognized (unsupported type), magic: {}, mime: {}".format(
+                        file_name.encode("utf8"), sample.sha256, sample_class['magic'], sample_class['mime']
+                    )
+                )
             res = task.derive_task(
                 {
                     "type": "sample",
@@ -155,6 +162,7 @@ class Classifier(Karton):
     def _classify(self, task: Task) -> Optional[Dict[str, Optional[str]]]:
         sample = task.get_resource("sample")
         content = cast(bytes, sample.content)
+        file_name = sample.name
 
         magic = task.get_payload("magic") or ""
         magic_mime = task.get_payload("mime") or ""
@@ -455,6 +463,24 @@ class Classifier(Karton):
             sample_class.update({"kind": "json"})
             return sample_class
 
+        # Ransomware encrypted files, check this before archive detection
+        # as some of them would be detected for example as zip archives
+        if content.startswith(b'PK'):
+            if file_name.endswith('.zatp'):
+                sample_class.update({"kind": "zatp_ransomware_encryped"})
+                return sample_class
+            if file_name.endswith('.ygvb'):
+                sample_class.update({"kind": "ygvb_ransomware_encryped"})
+                return sample_class
+            if file_name.endswith('.uyro'):
+                sample_class.update({"kind": "uyro_ransomware_encryped"})
+                return sample_class
+
+        if content.startswith(b'20 et'):
+            if file_name.endswith('.mbtf'):
+                sample_class.update({"kind": "mbtf_ransomware_encryped"})
+                return sample_class
+
         # Archives
         archive_assoc = {
             "7z": ["7-zip archive data"],
@@ -641,8 +667,12 @@ class Classifier(Karton):
                 )
                 return sample_class
 
-        # magic of XML files: XML 1.0 document, ASCII text
-        if magic.startswith("ASCII") or magic.endswith("ASCII text"):
+        # magic samples of ASCII files:
+        # XML 1.0 document, ASCII text
+        # XML 1.0 document, ASCII text, with very long lines (581), with CRLF line terminators
+        # Non-ISO extended-ASCII text, with no line terminators
+        # troff or preprocessor input, ASCII text, with CRLF line terminators
+        if "ASCII" in magic:
             sample_class.update(
                 {
                     "kind": "ascii",
@@ -663,14 +693,17 @@ class Classifier(Karton):
                 }
             )
             return sample_class
-        if magic.startswith("UTF-8"):
+        # magic samples of UTF-8 files:
+        # Unicode text, UTF-8 text, with CRLF line terminators
+        # XML 1.0 document, Unicode text, UTF-8 text
+        if "UTF-8" in magic:
             sample_class.update(
                 {
                     "kind": "utf-8",
                 }
             )
             return sample_class
-        if magic.startswith("PGP"):
+        if magic.startswith("PGP") or magic.startswith("OpenPGP"):
             sample_class.update(
                 {
                     "kind": "pgp",
@@ -691,6 +724,28 @@ class Classifier(Karton):
                 }
             )
             return sample_class
+        if magic.startswith("JPEG"):
+            sample_class.update(
+                {
+                    "kind": "jpeg",
+                }
+            )
+            return sample_class
+        if content.startswith(b'TDF$'):
+            sample_class.update(
+                {
+                    "kind": "telegram_desktop_file",
+                }
+            )
+            self.log.info(sample_class)
+            return sample_class
+        if content.startswith(b'TDEF'):
+            sample_class.update(
+                {
+                    "kind": "telegram_desktop_encrypted_file",
+                }
+            )
+            return sample_class
 
         # If not recognized then unsupported
-        return None
+        return sample_class

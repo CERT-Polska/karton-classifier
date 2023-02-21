@@ -142,3 +142,25 @@ class TestClassifier(KartonTestCase):
             },
         )
         self.assertTasksEqual(res, [expected])
+
+    def test_special_txt(self):
+        resource = mock_resource("misc.utf-8")
+        magic = self.magic_from_content(resource.content, mime=False)
+        res = self.run_task(mock_task(resource))
+
+        expected = Task(
+            headers={
+                "type": "sample",
+                "stage": "recognized",
+                "origin": "karton.classifier",
+                "quality": "high",
+                "kind": "utf-8",
+                "mime": 'text/plain',
+            },
+            payload={
+                "sample": resource,
+                "tags": ["misc:utf-8"],
+                "magic": magic,
+            },
+        )
+        self.assertTasksEqual(res, [expected])
