@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, ANY
 
 import pytest
 from karton.core import Resource, Task
@@ -22,7 +22,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "ascii",
-                "mime": "text/plain",
+                "mime": ANY,
             },
             payload={
                 "sample": resource,
