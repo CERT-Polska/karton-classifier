@@ -617,6 +617,13 @@ class Classifier(Karton):
                         }
                     )
                     return sample_class
+                if magic.startswith("CSV text"):
+                    sample_class.update(
+                        {
+                            "kind": "csv",
+                        }
+                    )
+                    return sample_class
                 if magic.startswith("ISO-8859"):
                     sample_class.update(
                         {

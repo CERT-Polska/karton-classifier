@@ -51,3 +51,25 @@ class TestClassifier(KartonTestCase):
             },
         )
         self.assertTasksEqual(res, [expected])
+
+    def test_process_misc_csv(self):
+        resource = mock_resource("misc.csv")
+        magic = self.magic_from_content(resource.content, mime=False)
+        res = self.run_task(mock_task(resource))
+
+        expected = Task(
+            headers={
+                "type": "sample",
+                "stage": "recognized",
+                "origin": "karton.classifier",
+                "quality": "high",
+                "kind": "csv",
+                "mime": ANY,
+            },
+            payload={
+                "sample": resource,
+                "tags": ["misc:csv"],
+                "magic": magic,
+            },
+        )
+        self.assertTasksEqual(res, [expected])
