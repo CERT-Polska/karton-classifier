@@ -1,4 +1,5 @@
 import pytest
+from unittest.mock import ANY
 from karton.core import Task
 from karton.core.test import KartonTestCase
 
@@ -19,7 +20,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": "application/x-7z-compressed",
+                "mime": ANY,
                 "extension": "7z",
             },
             payload={
@@ -42,7 +43,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": "application/octet-stream",
+                "mime": ANY,
                 "extension": "ace",
             },
             payload={
@@ -65,7 +66,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": "application/x-bzip2",
+                "mime": ANY,
                 "extension": "bz2",
             },
             payload={
@@ -88,7 +89,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": "application/vnd.ms-cab-compressed",
+                "mime": ANY,
                 "extension": "cab",
             },
             payload={
@@ -111,7 +112,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": "application/vnd.ms-cab-compressed",
+                "mime": ANY,
                 "extension": "cab",
             },
             payload={
@@ -134,7 +135,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": "application/gzip",
+                "mime": ANY,
                 "extension": "gz",
             },
             payload={
@@ -157,7 +158,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": "application/x-iso9660-image",
+                "mime": ANY,
                 "extension": "iso",
             },
             payload={
@@ -180,7 +181,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": "application/x-lzip",
+                "mime": ANY,
                 "extension": "lz",
             },
             payload={"sample": resource, "tags": ["archive:lz"], "magic": magic},
@@ -199,7 +200,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": "application/x-rar",
+                "mime": ANY,
                 "extension": "rar",
             },
             payload={
@@ -222,7 +223,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": "application/x-tar",
+                "mime": ANY,
                 "extension": "tar",
             },
             payload={
@@ -245,7 +246,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": "application/x-iso9660-image",
+                "mime": ANY,
                 "extension": "udf",
             },
             payload={
@@ -268,7 +269,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": "application/x-xz",
+                "mime": ANY,
                 "extension": "xz",
             },
             payload={
@@ -291,7 +292,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "archive",
-                "mime": "application/zip",
+                "mime": ANY,
                 "extension": "zip",
             },
             payload={

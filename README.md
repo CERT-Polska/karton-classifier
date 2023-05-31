@@ -43,9 +43,12 @@ type only (e.g. `raw` => `runnable:win32:exe`)
               || "openbsd",
               || "solaris",
     "extension": "*",        # Expected file extension
+    "mime": "*",        # Expected file mimetype
     ... (other fields are derived from incoming task)
 }
 ```
+
+**Warning** the output `mime` field is not deterministic across libmagic versions and can change depending on the version you're using. We don't recommend creating consumers that listen on it directly.
 
 ## Usage
 
