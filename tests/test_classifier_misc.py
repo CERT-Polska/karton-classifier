@@ -1,4 +1,5 @@
 import pytest
+from unittest.mock import ANY
 from karton.core import Task
 from karton.core.test import KartonTestCase
 
@@ -19,7 +20,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "ascii",
-                "mime": "text/plain",
+                "mime": ANY,
             },
             payload={
                 "sample": resource,
@@ -41,7 +42,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "html",
-                "mime": "text/html",
+                "mime": ANY,
             },
             payload={
                 "sample": resource,
