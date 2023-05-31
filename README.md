@@ -43,7 +43,7 @@ type only (e.g. `raw` => `runnable:win32:exe`)
               || "openbsd",
               || "solaris",
     "extension": "*",        # Expected file extension
-    "mime": "*",        # Expected file extension
+    "mime": "*",        # Expected file mimetype
     ... (other fields are derived from incoming task)
 }
 ```
