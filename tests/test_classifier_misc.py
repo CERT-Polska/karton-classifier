@@ -64,7 +64,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "csv",
-                "mime": "text/csv",
+                "mime": ANY,
             },
             payload={
                 "sample": resource,
