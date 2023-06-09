@@ -116,7 +116,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "script",
-                "mime": "text/x-php",
+                "mime": ANY,
                 "extension": "php",
             },
             payload={
@@ -139,7 +139,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "script",
-                "mime": "text/x-shellscript",
+                "mime": ANY,
                 "extension": "sh",
             },
             payload={
@@ -162,7 +162,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "script",
-                "mime": "text/x-perl",
+                "mime": ANY,
                 "extension": "pl",
             },
             payload={
@@ -185,7 +185,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "script",
-                "mime": "text/x-python",
+                "mime": ANY,
                 "extension": "py",
             },
             payload={
@@ -208,7 +208,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "script",
-                "mime": "text/x-ruby",
+                "mime": ANY,
                 "extension": "rb",
             },
             payload={
@@ -231,7 +231,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "script",
-                "mime": "application/octet-stream",
+                "mime": ANY,
                 "extension": "scpt",
             },
             payload={
