@@ -1,4 +1,5 @@
 import pytest
+from unittest.mock import ANY
 from karton.core import Task
 from karton.core.test import KartonTestCase
 
@@ -19,7 +20,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "script",
-                "mime": "text/plain",
+                "mime": ANY,
                 "extension": "js",
                 "platform": "win32",
             },
@@ -43,7 +44,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "script",
-                "mime": "application/octet-stream",
+                "mime": ANY,
                 "extension": "jse",
                 "platform": "win32",
             },
@@ -67,7 +68,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "script",
-                "mime": "text/plain",
+                "mime": ANY,
                 "extension": "ps1",
                 "platform": "win32",
             },
@@ -91,7 +92,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "script",
-                "mime": "text/plain",
+                "mime": ANY,
                 "extension": "vbs",
                 "platform": "win32",
             },

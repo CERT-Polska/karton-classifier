@@ -32,15 +32,23 @@ type only (e.g. `raw` => `runnable:win32:exe`)
               || "archive"   # Archive containing samples (zip, e-mails)
               || "dump"      # Dump from sandbox
               || "script",   # Script (js/vbs/bat...)
+              || "misc",     # No platform or extension
     "platform":  "win32" 
               || "win64" 
               || "linux" 
               || "android",
               || "macos",
+              || "freebsd",
+              || "netbsd",
+              || "openbsd",
+              || "solaris",
     "extension": "*",        # Expected file extension
+    "mime": "*",        # Expected file mimetype
     ... (other fields are derived from incoming task)
 }
 ```
+
+**Warning** the output `mime` field is not deterministic across libmagic versions and can change depending on the version you're using. We don't recommend creating consumers that listen on it directly.
 
 ## Usage
 
