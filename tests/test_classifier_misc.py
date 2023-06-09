@@ -75,7 +75,7 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_misc_gif(self):
-        resource = mock_resource("dump.gif")
+        resource = mock_resource("misc.gif")
         magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
@@ -98,7 +98,7 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_misc_jpg(self):
-        resource = mock_resource("dump.jpg")
+        resource = mock_resource("misc.jpg")
         magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
@@ -121,7 +121,7 @@ class TestClassifier(KartonTestCase):
         self.assertTasksEqual(res, [expected])
 
     def test_process_misc_png(self):
-        resource = mock_resource("dump.png")
+        resource = mock_resource("misc.png")
         magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
 
