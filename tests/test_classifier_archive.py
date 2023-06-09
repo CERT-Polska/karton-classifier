@@ -302,3 +302,27 @@ class TestClassifier(KartonTestCase):
             },
         )
         self.assertTasksEqual(res, [expected])
+
+    def test_process_archive_vhd(self):
+        resource = mock_resource("dump.vhd")
+        magic = self.magic_from_content(resource.content, mime=False)
+        res = self.run_task(mock_task(resource))
+
+        expected = Task(
+            headers={
+                "type": "sample",
+                "stage": "recognized",
+                "origin": "karton.classifier",
+                "quality": "high",
+                "kind": "archive",
+                "extension": "vhd",
+                "mime": ANY,
+            },
+            payload={
+                "sample": resource,
+                "tags": ["archive:vhd"],
+                "magic": magic,
+            },
+        )
+        self.assertTasksEqual(res, [expected])
+

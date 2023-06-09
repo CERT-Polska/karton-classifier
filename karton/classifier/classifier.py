@@ -309,16 +309,16 @@ class Classifier(Karton):
 
         for ext, patterns in image_assoc.items():
             if any(pattern in magic for pattern in patterns):
-                sample_class.update({"kind": "dump", "extension": ext})
+                sample_class.update({"kind": "misc", "extension": ext})
                 return sample_class
 
         if extension in image_assoc.keys():
-            sample_class.update({"kind": "dump", "extension": ext})
+            sample_class.update({"kind": "misc", "extension": ext})
             return sample_class
 
         # Is Disk image?
         if magic.startswith("Microsoft Disk Image") or extension == "vhd":
-            sample_class.update({"kind": "dump", "extension": "vhd"})
+            sample_class.update({"kind": "archive", "extension": "vhd"})
             return sample_class
 
         # Windows scripts (per extension)
