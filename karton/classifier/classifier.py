@@ -1,15 +1,15 @@
+import argparse
 import re
 import struct
 from hashlib import sha256
 from io import BytesIO
-from typing import Callable, Dict, Optional, cast, List
-from zipfile import ZipFile
 from pathlib import Path
-import argparse
-import yara
+from typing import Callable, Dict, List, Optional, cast
+from zipfile import ZipFile
 
 import chardet  # type: ignore
 import magic as pymagic  # type: ignore
+import yara
 from karton.core import Config, Karton, Task
 from karton.core.backend import KartonBackend
 
