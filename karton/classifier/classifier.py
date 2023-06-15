@@ -184,6 +184,18 @@ class Classifier(Karton):
                 sample_class["extension"] = "dll"
             return sample_class
 
+        # Is COM file?
+        if magic.startswith("COM executable for DOS"):
+            sample_class.update(
+                {"kind": "runnable", "platform": "win32", "extension": "com"}
+            )
+            return sample_class
+
+        # Is PC MBR?
+        if magic.startswith("DOS/MBR boot sector"):
+            sample_class.update({"kind": "runnable", "extension": "mbr"})
+            return sample_class
+
         # ZIP-contained files?
         def zip_has_file(path: str) -> bool:
             try:
@@ -258,6 +270,13 @@ class Classifier(Karton):
             sample_class.update({"kind": "runnable", "extension": "elf"})
             return sample_class
 
+        # Is XCOFF64 file (for AIX)?
+        if magic.startswith("64-bit XCOFF"):
+            sample_class.update(
+                {"kind": "runnable", "platform": "aix", "extension": "xcoff"}
+            )
+            return sample_class
+
         # Is PKG file?
         if magic.startswith("xar archive") or extension == "pkg":
             sample_class.update(
@@ -278,7 +297,7 @@ class Classifier(Karton):
             )
             return sample_class
 
-        # Is mach-o file?
+        # Is Mach-O file?
         if magic.startswith("Mach-O"):
             sample_class.update({"kind": "runnable", "platform": "macos"})
             return sample_class
