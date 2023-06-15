@@ -133,7 +133,11 @@ class Classifier(Karton):
     def process(self, task: Task) -> None:
         sample = task.get_resource("sample")
 
-        sample_classes = self._classify_yara(task)
+        sample_classes = []
+
+        if self.yara_rules:
+            sample_classes += self._classify_yara(task)
+
         filemagic_classification =  self._classify(task)
         if filemagic_classification:
             sample_classes.append(filemagic_classification)
