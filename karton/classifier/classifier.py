@@ -9,7 +9,7 @@ from zipfile import ZipFile
 
 import chardet  # type: ignore
 import magic as pymagic  # type: ignore
-import yara
+import yara  # type: ignore
 from karton.core import Config, Karton, Task
 from karton.core.backend import KartonBackend
 
