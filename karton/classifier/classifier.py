@@ -599,17 +599,17 @@ class Classifier(Karton):
                         {"kind": "script", "platform": "win32", "extension": "js"}
                     )
                     return sample_class
+                # JSE heuristics
+                if re.match("#@~\\^[a-zA-Z0-9+/]{6}==", partial_str):
+                    sample_class.update(
+                        {
+                            "kind": "script",
+                            "platform": "win32",
+                            "extension": "jse",  # jse is more possible than vbe
+                        }
+                    )
+                    return sample_class
 
-            # JSE heuristics
-            if re.match("#@~\\^[a-zA-Z0-9+/]{6}==", partial_str):
-                sample_class.update(
-                    {
-                        "kind": "script",
-                        "platform": "win32",
-                        "extension": "jse",  # jse is more possible than vbe
-                    }
-                )
-                return sample_class
             # magic of XML files: XML 1.0 document, ASCII text
             if magic.startswith("ASCII") or magic.endswith("ASCII text"):
                 sample_class.update(
