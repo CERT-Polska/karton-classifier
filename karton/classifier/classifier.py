@@ -138,7 +138,7 @@ class Classifier(Karton):
         if self.yara_rules:
             sample_classes += self._classify_yara(task)
 
-        filemagic_classification =  self._classify(task)
+        filemagic_classification = self._classify(task)
         if filemagic_classification:
             sample_classes.append(filemagic_classification)
 
