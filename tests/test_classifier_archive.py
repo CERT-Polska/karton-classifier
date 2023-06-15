@@ -123,6 +123,29 @@ class TestClassifier(KartonTestCase):
         )
         self.assertTasksEqual(res, [expected])
 
+    def test_process_archive_cpio(self):
+        resource = mock_resource("archive.cpio")
+        magic = self.magic_from_content(resource.content, mime=False)
+        res = self.run_task(mock_task(resource))
+
+        expected = Task(
+            headers={
+                "type": "sample",
+                "stage": "recognized",
+                "origin": "karton.classifier",
+                "quality": "high",
+                "kind": "archive",
+                "mime": "application/x-cpio",
+                "extension": "cpio",
+            },
+            payload={
+                "sample": resource,
+                "tags": ["archive:cpio"],
+                "magic": magic,
+            },
+        )
+        self.assertTasksEqual(res, [expected])
+
     def test_process_archive_gz(self):
         resource = mock_resource("archive.gz")
         magic = self.magic_from_content(resource.content, mime=False)
@@ -185,6 +208,25 @@ class TestClassifier(KartonTestCase):
                 "extension": "lz",
             },
             payload={"sample": resource, "tags": ["archive:lz"], "magic": magic},
+        )
+        self.assertTasksEqual(res, [expected])
+
+    def test_process_archive_lzh(self):
+        resource = mock_resource("archive.lzh")
+        magic = self.magic_from_content(resource.content, mime=False)
+        res = self.run_task(mock_task(resource))
+
+        expected = Task(
+            headers={
+                "type": "sample",
+                "stage": "recognized",
+                "origin": "karton.classifier",
+                "quality": "high",
+                "kind": "archive",
+                "mime": "application/x-lzh-compressed",
+                "extension": "lzh",
+            },
+            payload={"sample": resource, "tags": ["archive:lzh"], "magic": magic},
         )
         self.assertTasksEqual(res, [expected])
 
@@ -275,6 +317,29 @@ class TestClassifier(KartonTestCase):
             payload={
                 "sample": resource,
                 "tags": ["archive:xz"],
+                "magic": magic,
+            },
+        )
+        self.assertTasksEqual(res, [expected])
+
+    def test_process_archive_zlib(self):
+        resource = mock_resource("archive.zlib")
+        magic = self.magic_from_content(resource.content, mime=False)
+        res = self.run_task(mock_task(resource))
+
+        expected = Task(
+            headers={
+                "type": "sample",
+                "stage": "recognized",
+                "origin": "karton.classifier",
+                "quality": "high",
+                "kind": "archive",
+                "mime": "application/zlib",
+                "extension": "zlib",
+            },
+            payload={
+                "sample": resource,
+                "tags": ["archive:zlib"],
                 "magic": magic,
             },
         )
