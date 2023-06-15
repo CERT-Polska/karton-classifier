@@ -599,66 +599,67 @@ class Classifier(Karton):
                         {"kind": "script", "platform": "win32", "extension": "js"}
                     )
                     return sample_class
-                # JSE heuristics
-                if re.match("#@~\\^[a-zA-Z0-9+/]{6}==", partial_str):
-                    sample_class.update(
-                        {
-                            "kind": "script",
-                            "platform": "win32",
-                            "extension": "jse",  # jse is more possible than vbe
-                        }
-                    )
-                    return sample_class
-                # magic of XML files: XML 1.0 document, ASCII text
-                if magic.startswith("ASCII") or magic.endswith("ASCII text"):
-                    sample_class.update(
-                        {
-                            "kind": "ascii",
-                        }
-                    )
-                    return sample_class
-                if magic.startswith("CSV text"):
-                    sample_class.update(
-                        {
-                            "kind": "csv",
-                        }
-                    )
-                    return sample_class
-                if magic.startswith("ISO-8859"):
-                    sample_class.update(
-                        {
-                            "kind": "iso-8859-1",
-                        }
-                    )
-                    return sample_class
-                if magic.startswith("UTF-8"):
-                    sample_class.update(
-                        {
-                            "kind": "utf-8",
-                        }
-                    )
-                    return sample_class
-                if magic.startswith("PGP"):
-                    sample_class.update(
-                        {
-                            "kind": "pgp",
-                        }
-                    )
-                    return sample_class
-                if magic.startswith("pcap capture file"):
-                    sample_class.update(
-                        {
-                            "kind": "pcap",
-                        }
-                    )
-                    return sample_class
-                if magic.startswith("pcap") and "ng capture file" in magic:
-                    sample_class.update(
-                        {
-                            "kind": "pcapng",
-                        }
-                    )
-                    return sample_class
+
+            # JSE heuristics
+            if re.match("#@~\\^[a-zA-Z0-9+/]{6}==", partial_str):
+                sample_class.update(
+                    {
+                        "kind": "script",
+                        "platform": "win32",
+                        "extension": "jse",  # jse is more possible than vbe
+                    }
+                )
+                return sample_class
+            # magic of XML files: XML 1.0 document, ASCII text
+            if magic.startswith("ASCII") or magic.endswith("ASCII text"):
+                sample_class.update(
+                    {
+                        "kind": "ascii",
+                    }
+                )
+                return sample_class
+            if magic.startswith("CSV text"):
+                sample_class.update(
+                    {
+                        "kind": "csv",
+                    }
+                )
+                return sample_class
+            if magic.startswith("ISO-8859"):
+                sample_class.update(
+                    {
+                        "kind": "iso-8859-1",
+                    }
+                )
+                return sample_class
+            if magic.startswith("UTF-8"):
+                sample_class.update(
+                    {
+                        "kind": "utf-8",
+                    }
+                )
+                return sample_class
+            if magic.startswith("PGP"):
+                sample_class.update(
+                    {
+                        "kind": "pgp",
+                    }
+                )
+                return sample_class
+            if magic.startswith(("pcap capture file", "tcpdump capture file")):
+                sample_class.update(
+                    {
+                        "kind": "pcap",
+                    }
+                )
+                return sample_class
+            if magic.startswith("pcap") and "ng capture file" in magic:
+                sample_class.update(
+                    {
+                        "kind": "pcapng",
+                    }
+                )
+                return sample_class
         except Exception as e:
             self.log.exception(e)
 
