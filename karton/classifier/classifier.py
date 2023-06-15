@@ -319,6 +319,27 @@ class Classifier(Karton):
             )
             return sample_class
 
+        # Various graphics/image file formats
+        image_assoc = {
+            "gif": ["GIF image data"],
+            "jpg": ["JPEG image data"],
+            "png": ["PNG image data"],
+        }
+
+        for ext, patterns in image_assoc.items():
+            if any(pattern in magic for pattern in patterns):
+                sample_class.update({"kind": "misc", "extension": ext})
+                return sample_class
+
+        if extension in image_assoc.keys():
+            sample_class.update({"kind": "misc", "extension": ext})
+            return sample_class
+
+        # Is Disk image?
+        if magic.startswith("Microsoft Disk Image") or extension == "vhd":
+            sample_class.update({"kind": "archive", "extension": "vhd"})
+            return sample_class
+
         # Windows scripts (per extension)
         script_extensions = [
             "vbs",
