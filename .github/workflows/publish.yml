@@ -10,8 +10,6 @@ jobs:
   build_core:
     name: Build image
     runs-on: ubuntu-latest
-    env:
-      DOCKER_BUILDKIT: 1
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
