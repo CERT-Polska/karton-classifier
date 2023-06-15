@@ -62,4 +62,32 @@ $ pip install karton-classifier
 $ karton-classifier
 ```
 
+
+## YARA rule classifiers
+
+Since karton-classifier v1.5.0 it's possible to extend the classifier logic using YARA rules.
+
+You can enable it by passing `--yara-rules` with the path to the directory containing the rules. Each rule **has to** specify the resulting `kind` using the meta section. A working rule looks like this:
+
+```yar
+rule pe_file
+{
+    meta:
+        description = "classifies incoming windows executables"
+        kind = "runnable"
+        platform = "win32"
+        extension = "exe"
+    strings:
+        $mz = "MZ"
+    condition:
+        $mz at 0 and uint32(uint32(0x3C)) == 0x4550
+}
+```
+
+Some caveats to consider:
+  * classifier will report samples classified by both the normal method and the YARA rules
+  * if several YARA rules are matched classifier will report all of them (n matches == n outgoing tasks)
+  * the outgoing task includes the matched rule name in `rule-name` in the task header
+
+
 ![Co-financed by the Connecting Europe Facility by of the European Union](https://www.cert.pl/uploads/2019/02/en_horizontal_cef_logo-e1550495232540.png)
