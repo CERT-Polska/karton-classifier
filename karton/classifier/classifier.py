@@ -529,139 +529,138 @@ class Classifier(Karton):
 
         # Heuristics for scripts
         try:
-            try:
-                partial_str = partial.decode(
-                    chardet.detect(partial)["encoding"]
-                ).lower()
-            except Exception:
-                self.log.warning("Heuristics disabled - unknown encoding")
-            else:
-                vbs_keywords = [
-                    "end function",
-                    "end if",
-                    "array(",
-                    "sub ",
-                    "on error ",
-                    "createobject",
-                    "execute",
-                ]
-                js_keywords = [
-                    "function ",
-                    "function(",
-                    "this.",
-                    "this[",
-                    "new ",
-                    "createobject",
-                    "activexobject",
-                    "var ",
-                    "catch",
-                ]
-                html_keywords = ["<!doctype", "<html", "<script"]
-                ps_keywords = [
-                    "powershell",
-                    "-nop",
-                    "bypass",
-                    "new-object",
-                    "invoke-expression",
-                    "frombase64string(",
-                    "| iex",
-                    "|iex",
-                ]
-                if (
-                    len([True for keyword in html_keywords if keyword in partial_str])
-                    >= 2
-                ):
-                    sample_class.update({"kind": "html"})
-                    return sample_class
+            partial_str = partial.decode(
+                chardet.detect(partial)["encoding"]
+            ).lower()
+        except Exception:
+            self.log.warning("Heuristics disabled - unknown encoding")
+            partial_str = None
 
-                if (
-                    len([True for keyword in vbs_keywords if keyword in partial_str])
-                    >= 2
-                ):
-                    sample_class.update(
-                        {"kind": "script", "platform": "win32", "extension": "vbs"}
-                    )
-                    return sample_class
-                # Powershell heuristics
-                if len(
-                    [True for keyword in ps_keywords if keyword.lower() in partial_str]
-                ):
-                    sample_class.update(
-                        {"kind": "script", "platform": "win32", "extension": "ps1"}
-                    )
-                    return sample_class
-                # JS heuristics
-                if (
-                    len([True for keyword in js_keywords if keyword in partial_str])
-                    >= 2
-                ):
-                    sample_class.update(
-                        {"kind": "script", "platform": "win32", "extension": "js"}
-                    )
-                    return sample_class
-                # JSE heuristics
-                if re.match("#@~\\^[a-zA-Z0-9+/]{6}==", partial_str):
-                    sample_class.update(
-                        {
-                            "kind": "script",
-                            "platform": "win32",
-                            "extension": "jse",  # jse is more possible than vbe
-                        }
-                    )
-                    return sample_class
+        if partial_str:
+            vbs_keywords = [
+                "end function",
+                "end if",
+                "array(",
+                "sub ",
+                "on error ",
+                "createobject",
+                "execute",
+            ]
+            js_keywords = [
+                "function ",
+                "function(",
+                "this.",
+                "this[",
+                "new ",
+                "createobject",
+                "activexobject",
+                "var ",
+                "catch",
+            ]
+            html_keywords = ["<!doctype", "<html", "<script"]
+            ps_keywords = [
+                "powershell",
+                "-nop",
+                "bypass",
+                "new-object",
+                "invoke-expression",
+                "frombase64string(",
+                "| iex",
+                "|iex",
+            ]
+            if (
+                len([True for keyword in html_keywords if keyword in partial_str])
+                >= 2
+            ):
+                sample_class.update({"kind": "html"})
+                return sample_class
 
-            # magic of XML files: XML 1.0 document, ASCII text
-            if magic.startswith("ASCII") or magic.endswith("ASCII text"):
+            if (
+                len([True for keyword in vbs_keywords if keyword in partial_str])
+                >= 2
+            ):
+                sample_class.update(
+                    {"kind": "script", "platform": "win32", "extension": "vbs"}
+                )
+                return sample_class
+            # Powershell heuristics
+            if len(
+                [True for keyword in ps_keywords if keyword.lower() in partial_str]
+            ):
+                sample_class.update(
+                    {"kind": "script", "platform": "win32", "extension": "ps1"}
+                )
+                return sample_class
+            # JS heuristics
+            if (
+                len([True for keyword in js_keywords if keyword in partial_str])
+                >= 2
+            ):
+                sample_class.update(
+                    {"kind": "script", "platform": "win32", "extension": "js"}
+                )
+                return sample_class
+            # JSE heuristics
+            if re.match("#@~\\^[a-zA-Z0-9+/]{6}==", partial_str):
                 sample_class.update(
                     {
-                        "kind": "ascii",
+                        "kind": "script",
+                        "platform": "win32",
+                        "extension": "jse",  # jse is more possible than vbe
                     }
                 )
                 return sample_class
-            if magic.startswith("CSV text"):
-                sample_class.update(
-                    {
-                        "kind": "csv",
-                    }
-                )
-                return sample_class
-            if magic.startswith("ISO-8859"):
-                sample_class.update(
-                    {
-                        "kind": "iso-8859-1",
-                    }
-                )
-                return sample_class
-            if magic.startswith("UTF-8"):
-                sample_class.update(
-                    {
-                        "kind": "utf-8",
-                    }
-                )
-                return sample_class
-            if magic.startswith("PGP"):
-                sample_class.update(
-                    {
-                        "kind": "pgp",
-                    }
-                )
-                return sample_class
-            if magic.startswith(("pcap capture file", "tcpdump capture file")):
-                sample_class.update(
-                    {
-                        "kind": "pcap",
-                    }
-                )
-                return sample_class
-            if magic.startswith("pcap") and "ng capture file" in magic:
-                sample_class.update(
-                    {
-                        "kind": "pcapng",
-                    }
-                )
-                return sample_class
-        except Exception as e:
-            self.log.exception(e)
+
+        # magic of XML files: XML 1.0 document, ASCII text
+        if magic.startswith("ASCII") or magic.endswith("ASCII text"):
+            sample_class.update(
+                {
+                    "kind": "ascii",
+                }
+            )
+            return sample_class
+        if magic.startswith("CSV text"):
+            sample_class.update(
+                {
+                    "kind": "csv",
+                }
+            )
+            return sample_class
+        if magic.startswith("ISO-8859"):
+            sample_class.update(
+                {
+                    "kind": "iso-8859-1",
+                }
+            )
+            return sample_class
+        if magic.startswith("UTF-8"):
+            sample_class.update(
+                {
+                    "kind": "utf-8",
+                }
+            )
+            return sample_class
+        if magic.startswith("PGP"):
+            sample_class.update(
+                {
+                    "kind": "pgp",
+                }
+            )
+            return sample_class
+        if magic.startswith(("pcap capture file", "tcpdump capture file")):
+            sample_class.update(
+                {
+                    "kind": "pcap",
+                }
+            )
+            return sample_class
+        if magic.startswith("pcap") and "ng capture file" in magic:
+            sample_class.update(
+                {
+                    "kind": "pcapng",
+                }
+            )
+            return sample_class
 
         # If not recognized then unsupported
         return None
