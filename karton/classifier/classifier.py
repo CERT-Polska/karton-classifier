@@ -529,9 +529,7 @@ class Classifier(Karton):
 
         # Heuristics for scripts
         try:
-            partial_str = partial.decode(
-                chardet.detect(partial)["encoding"]
-            ).lower()
+            partial_str = partial.decode(chardet.detect(partial)["encoding"]).lower()
         except Exception:
             self.log.warning("Heuristics disabled - unknown encoding")
             partial_str = None
@@ -568,34 +566,23 @@ class Classifier(Karton):
                 "| iex",
                 "|iex",
             ]
-            if (
-                len([True for keyword in html_keywords if keyword in partial_str])
-                >= 2
-            ):
+            if len([True for keyword in html_keywords if keyword in partial_str]) >= 2:
                 sample_class.update({"kind": "html"})
                 return sample_class
 
-            if (
-                len([True for keyword in vbs_keywords if keyword in partial_str])
-                >= 2
-            ):
+            if len([True for keyword in vbs_keywords if keyword in partial_str]) >= 2:
                 sample_class.update(
                     {"kind": "script", "platform": "win32", "extension": "vbs"}
                 )
                 return sample_class
             # Powershell heuristics
-            if len(
-                [True for keyword in ps_keywords if keyword.lower() in partial_str]
-            ):
+            if len([True for keyword in ps_keywords if keyword.lower() in partial_str]):
                 sample_class.update(
                     {"kind": "script", "platform": "win32", "extension": "ps1"}
                 )
                 return sample_class
             # JS heuristics
-            if (
-                len([True for keyword in js_keywords if keyword in partial_str])
-                >= 2
-            ):
+            if len([True for keyword in js_keywords if keyword in partial_str]) >= 2:
                 sample_class.update(
                     {"kind": "script", "platform": "win32", "extension": "js"}
                 )
