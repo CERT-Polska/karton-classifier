@@ -143,7 +143,7 @@ class TestClassifier(KartonTestCase):
         )
         self.assertTasksEqual(res, [expected])
 
-    def test_special_txt(self):
+    def test_misc_utf8(self):
         resource = mock_resource("misc.utf-8")
         magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
