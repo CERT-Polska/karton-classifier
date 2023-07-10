@@ -577,23 +577,6 @@ class Classifier(Karton):
             )
             return sample_class
 
-        # Images
-        if magic.startswith("JPEG"):
-            sample_class.update(
-                {
-                    "kind": "jpeg",
-                }
-            )
-            return sample_class
-
-        if magic.startswith("PNG"):
-            sample_class.update(
-                {
-                    "kind": "png",
-                }
-            )
-            return sample_class
-
         # Wallets
         if content.startswith(b"\xbaWALLET"):
             sample_class.update(
