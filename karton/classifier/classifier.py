@@ -36,7 +36,7 @@ def load_yara_rules(path: Path) -> yara.Rules:
     for r in rules:
         if not r.meta.get("kind"):
             raise RuntimeError(
-                f"Rule {r.identifier} does not have the kind meta attribute"
+                f"Rule {r.identifier} does not have a `kind` meta attribute"
             )
 
     return rules
@@ -741,7 +741,7 @@ class Classifier(Karton):
             if match.meta.get("extension"):
                 sample_class["extension"] = match.meta["extension"]
 
-            self.log.info("Matched the sample using yara rule %s", match.rule)
+            self.log.info("Matched the sample using Yara rule %s", match.rule)
             sample_classes.append(sample_class)
 
         return sample_classes

@@ -85,9 +85,10 @@ rule pe_file
 ```
 
 Some caveats to consider:
-  * classifier will report samples classified by both the normal method and the YARA rules
-  * if several YARA rules are matched classifier will report all of them (n matches == n outgoing tasks)
-  * the outgoing task includes the matched rule name in `rule-name` in the task header
-
+  * Classifier will still process files normally, so in some cases it may report the same file twice.
+  * Classifier will report all matching Yara rules (so N matches on a single file will create N tasks)
+  * The outgoing task includes the matched rule name in `rule-name` in the task header
+  * All Yara rules must have a `.yar` extension. All other files in the specified directory are ignored. In particular, `.yara` extension is not supported.
+  * Directories are not supported too - all Yara rules must reside directly in the specified directory.
 
 ![Co-financed by the Connecting Europe Facility by of the European Union](https://www.cert.pl/uploads/2019/02/en_horizontal_cef_logo-e1550495232540.png)
