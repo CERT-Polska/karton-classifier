@@ -138,7 +138,7 @@ class Classifier(Karton):
         if self.yara_rules:
             sample_classes += self._classify_yara(task)
 
-        filemagic_classification = self._classify(task)
+        filemagic_classification = self._classify_filemagic(task)
         if filemagic_classification:
             sample_classes.append(filemagic_classification)
 
@@ -212,7 +212,7 @@ class Classifier(Karton):
         splitted = name.rsplit(".", 1)
         return splitted[-1].lower() if len(splitted) > 1 else ""
 
-    def _classify(self, task: Task) -> Optional[Dict[str, Optional[str]]]:
+    def _classify_filemagic(self, task: Task) -> Optional[Dict[str, Optional[str]]]:
         sample = task.get_resource("sample")
         content = cast(bytes, sample.content)
 
