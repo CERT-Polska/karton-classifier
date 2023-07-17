@@ -166,7 +166,9 @@ class Classifier(Karton):
             classification_tag = get_tag(sample_class)
             self.log.info(
                 "Classified %r as %r and tag %s",
-                file_name.encode("utf8"), sample_class, classification_tag
+                file_name.encode("utf8"),
+                sample_class,
+                classification_tag,
             )
 
             derived_headers = {
