@@ -67,7 +67,7 @@ $ karton-classifier
 
 Since karton-classifier v2.1.0 it's possible to extend the classifier logic using YARA rules.
 
-You can enable it by passing `--yara-rules` with the path to the directory containing the rules. Each rule **has to** specify the resulting `kind` using the meta section. A working rule looks like this:
+You can enable it by passing `--yara-rules` with the path to the directory containing the rules. Each rule **has to** specify the resulting `kind` using the meta section. Other meta-attributes (`platform` and `extension`) are supported but optional. A working rule looks like this:
 
 ```yar
 rule pe_file
