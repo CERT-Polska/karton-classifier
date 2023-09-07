@@ -145,16 +145,23 @@ class Classifier(Karton):
         file_name = sample.name or "sample"
 
         if not sample_classes:
-            if filemagic_classification['magic'] and filemagic_classification['magic'].startswith("data"):
+            if filemagic_classification["magic"] and filemagic_classification[
+                "magic"
+            ].startswith("data"):
                 self.log.info(
-                    "Sample {!r} (sha256 {}) not recognized (unsupported type), first 50 bytes of content: {!r}".format(
+                    "Sample {!r} (sha256 {}) not recognized (unsupported type), "
+                    "first 50 bytes of content: {!r}".format(
                         file_name.encode("utf8"), sample.sha256, sample.content[:50]
                     )
                 )
             else:
                 self.log.info(
-                    "Sample {!r} (sha256 {}) not recognized (unsupported type), magic: {}, mime: {}".format(
-                        file_name.encode("utf8"), sample.sha256, filemagic_classification['magic'], filemagic_classification['mime']
+                    "Sample {!r} (sha256 {}) not recognized (unsupported type), "
+                    "magic: {}, mime: {}".format(
+                        file_name.encode("utf8"),
+                        sample.sha256,
+                        filemagic_classification["magic"],
+                        filemagic_classification["mime"],
                     )
                 )
             res = task.derive_task(
@@ -225,7 +232,9 @@ class Classifier(Karton):
         content = cast(bytes, sample.content)
         file_name = sample.name
         if len(sample.content) == 0:
-            self.log.info("Sample: {!r} has no content".format(file_name.encode("utf8")))
+            self.log.info(
+                "Sample: {!r} has no content".format(file_name.encode("utf8"))
+            )
 
         magic = task.get_payload("magic") or ""
         magic_mime = task.get_payload("mime") or ""
@@ -528,19 +537,19 @@ class Classifier(Karton):
 
         # Ransomware encrypted files, check this before archive detection
         # as some of them would be detected for example as zip archives
-        if content.startswith(b'PK'):
-            if file_name.endswith('.zatp'):
+        if content.startswith(b"PK"):
+            if file_name.endswith(".zatp"):
                 sample_class.update({"kind": "zatp_ransomware_encryped"})
                 return sample_class
-            if file_name.endswith('.ygvb'):
+            if file_name.endswith(".ygvb"):
                 sample_class.update({"kind": "ygvb_ransomware_encryped"})
                 return sample_class
-            if file_name.endswith('.uyro'):
+            if file_name.endswith(".uyro"):
                 sample_class.update({"kind": "uyro_ransomware_encryped"})
                 return sample_class
 
-        if content.startswith(b'20 et'):
-            if file_name.endswith('.mbtf'):
+        if content.startswith(b"20 et"):
+            if file_name.endswith(".mbtf"):
                 sample_class.update({"kind": "mbtf_ransomware_encryped"})
                 return sample_class
 
@@ -726,13 +735,15 @@ class Classifier(Karton):
             return sample_class
 
         #
-        # Detection of text-files: As these files also could be scripts, do not immediately return sample_class after
-        # a successful detection. Like this heuristics part further bellow can override detection
+        # Detection of text-files: As these files also could be scripts, do not
+        # immediately return sample_class after a successful detection. Like this
+        # heuristics part further below can override detection
         #
 
         # magic samples of ASCII files:
         # XML 1.0 document, ASCII text
-        # XML 1.0 document, ASCII text, with very long lines (581), with CRLF line terminators
+        # XML 1.0 document, ASCII text, with very long lines (581), with CRLF line
+        # terminators
         # Non-ISO extended-ASCII text, with no line terminators
         # troff or preprocessor input, ASCII text, with CRLF line terminators
         if "ASCII" in magic:
@@ -772,7 +783,7 @@ class Classifier(Karton):
         except Exception:
             self.log.warning("Heuristics disabled - unknown encoding")
             # Detect steam files based on the file name
-            if re.match('ssfn\d{16,19}', file_name):
+            if re.match(r"ssfn\d{16,19}", file_name):
                 sample_class.update(
                     {
                         "kind": "steam",
@@ -843,7 +854,6 @@ class Classifier(Karton):
                     }
                 )
                 return sample_class
-
 
         # If not recognized then unsupported
         return sample_class
