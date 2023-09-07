@@ -1,5 +1,4 @@
-# We're using alpine because libmagic bundled in Debian is quite old (5.35)
-FROM python
+FROM python:3.10
 
 WORKDIR /app/service
 COPY ./requirements.txt ./requirements.txt
