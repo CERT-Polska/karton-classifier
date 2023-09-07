@@ -1,7 +1,4 @@
-# We're using alpine because libmagic bundled in Debian is quite old (5.35)
-FROM python:3.9-alpine
-
-RUN apk add file
+FROM python:3.10
 
 WORKDIR /app/service
 COPY ./requirements.txt ./requirements.txt
