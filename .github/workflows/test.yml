@@ -10,7 +10,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: CERT-Polska/lint-python-action@v1
+      - uses: CERT-Polska/lint-python-action@v2
         with:
           source: karton/
   unittest:
@@ -20,8 +20,8 @@ jobs:
         minor: [9, 10, 11]
         libmagic: [FILE5_40, FILE5_41, FILE5_42]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: 3.${{ matrix.minor }}
       - name: Cache libmagic.so
