@@ -1,12 +1,15 @@
+import argparse
 import re
 import struct
 from hashlib import sha256
 from io import BytesIO
-from typing import Callable, Dict, Optional, cast
+from pathlib import Path
+from typing import Callable, Dict, List, Optional, cast
 from zipfile import ZipFile
 
 import chardet  # type: ignore
 import magic as pymagic  # type: ignore
+import yara  # type: ignore
 from karton.core import Config, Karton, Task
 from karton.core.backend import KartonBackend
 
@@ -22,6 +25,21 @@ def classify_openxml(content: bytes) -> Optional[str]:
         if any(x.startswith(file_prefix) for x in filenames):
             return ext
     return None
+
+
+def load_yara_rules(path: Path) -> yara.Rules:
+    rule_files = {}
+    for f in path.glob("*.yar"):
+        rule_files[f.name] = f.as_posix()
+
+    rules = yara.compile(filepaths=rule_files)
+    for r in rules:
+        if not r.meta.get("kind"):
+            raise RuntimeError(
+                f"Rule {r.identifier} does not have a `kind` meta attribute"
+            )
+
+    return rules
 
 
 def get_tag(classification: Dict) -> str:
@@ -70,6 +88,36 @@ class Classifier(Karton):
         super().__init__(config=config, identity=identity, backend=backend)
         self._magic = magic or self._magic_from_content()
 
+        yara_directory = self.config.get("classifier", "yara_rules", fallback=None)
+        if yara_directory:
+            yara_p = Path(yara_directory)
+            if not yara_p.is_dir():
+                raise NotADirectoryError(yara_p)
+
+            self.yara_rules = load_yara_rules(yara_p)
+            self.log.info("Loaded %d yara classifier rules", len(list(self.yara_rules)))
+        else:
+            self.yara_rules = None
+
+    @classmethod
+    def args_parser(cls) -> argparse.ArgumentParser:
+        parser = super().args_parser()
+        parser.add_argument(
+            "--yara-rules",
+            default=None,
+            help="Directory containing classifier YARA rules",
+        )
+        return parser
+
+    @classmethod
+    def config_from_args(cls, config: Config, args: argparse.Namespace) -> None:
+        super().config_from_args(config, args)
+        config.load_from_dict(
+            {
+                "classifier": {"yara_rules": args.yara_rules},
+            }
+        )
+
     def _magic_from_content(self) -> Callable:
         get_magic = pymagic.Magic(mime=False)
         get_mime = pymagic.Magic(mime=True)
@@ -84,12 +132,20 @@ class Classifier(Karton):
 
     def process(self, task: Task) -> None:
         sample = task.get_resource("sample")
-        sample_class = self._classify(task)
+
+        sample_classes = []
+
+        if self.yara_rules:
+            sample_classes += self._classify_yara(task)
+
+        filemagic_classification = self._classify_filemagic(task)
+        if filemagic_classification["kind"] is not None:
+            sample_classes.append(filemagic_classification)
 
         file_name = sample.name or "sample"
 
-        if sample_class['kind'] is None:
-            if sample_class['magic'] and sample_class['magic'].startswith("data"):
+        if not sample_classes:
+            if filemagic_classification['magic'] and filemagic_classification['magic'].startswith("data"):
                 self.log.info(
                     "Sample {!r} (sha256 {}) not recognized (unsupported type), first 50 bytes of content: {!r}".format(
                         file_name.encode("utf8"), sample.sha256, sample.content[:50]
@@ -98,7 +154,7 @@ class Classifier(Karton):
             else:
                 self.log.info(
                     "Sample {!r} (sha256 {}) not recognized (unsupported type), magic: {}, mime: {}".format(
-                        file_name.encode("utf8"), sample.sha256, sample_class['magic'], sample_class['mime']
+                        file_name.encode("utf8"), sample.sha256, filemagic_classification['magic'], filemagic_classification['mime']
                     )
                 )
             res = task.derive_task(
@@ -112,54 +168,59 @@ class Classifier(Karton):
             self.send_task(res)
             return
 
-        classification_tag = get_tag(sample_class)
-        self.log.info(
-            "Classified {!r} as {} and tag {}".format(
-                file_name.encode("utf8"), repr(sample_class), classification_tag
+        for sample_class in sample_classes:
+
+            classification_tag = get_tag(sample_class)
+            self.log.info(
+                "Classified %r as %r and tag %s",
+                file_name.encode("utf8"),
+                sample_class,
+                classification_tag,
             )
-        )
 
-        derived_headers = {
-            "type": "sample",
-            "stage": "recognized",
-            "quality": task.headers.get("quality", "high"),
-            "mime": sample_class["mime"],
-        }
-        if sample_class.get("kind") is not None:
-            derived_headers["kind"] = sample_class["kind"]
-        if sample_class.get("platform") is not None:
-            derived_headers["platform"] = sample_class["platform"]
-        if sample_class.get("extension") is not None:
-            derived_headers["extension"] = sample_class["extension"]
+            derived_headers = {
+                "type": "sample",
+                "stage": "recognized",
+                "kind": sample_class["kind"],
+                "quality": task.headers.get("quality", "high"),
+            }
+            if sample_class.get("platform") is not None:
+                derived_headers["platform"] = sample_class["platform"]
+            if sample_class.get("extension") is not None:
+                derived_headers["extension"] = sample_class["extension"]
+            if sample_class.get("mime") is not None:
+                derived_headers["mime"] = sample_class["mime"]
+            if sample_class.get("rule-name") is not None:
+                derived_headers["rule-name"] = sample_class["rule-name"]
 
-        derived_task = task.derive_task(derived_headers)
+            derived_task = task.derive_task(derived_headers)
 
-        # pass the original tags to the next task
-        tags = [classification_tag]
-        if derived_task.has_payload("tags"):
-            tags += derived_task.get_payload("tags")
-            derived_task.remove_payload("tags")
+            # pass the original tags to the next task
+            tags = [classification_tag]
+            if derived_task.has_payload("tags"):
+                tags += derived_task.get_payload("tags")
+                derived_task.remove_payload("tags")
 
-        derived_task.add_payload("tags", tags)
+            derived_task.add_payload("tags", tags)
 
-        # if present the magic description is added as a playload
-        if "magic" in sample_class:
-            derived_task.add_payload("magic", sample_class["magic"])
+            # if present the magic description is added as a playload
+            if "magic" in sample_class:
+                derived_task.add_payload("magic", sample_class["magic"])
 
-        # add a sha256 digest in the outgoing task if there
-        # isn't one in the incoming task
-        if "sha256" not in derived_task.payload["sample"].metadata:
-            derived_task.payload["sample"].metadata["sha256"] = sha256(
-                cast(bytes, sample.content)
-            ).hexdigest()
+            # add a sha256 digest in the outgoing task if there
+            # isn't one in the incoming task
+            if "sha256" not in derived_task.payload["sample"].metadata:
+                derived_task.payload["sample"].metadata["sha256"] = sha256(
+                    cast(bytes, sample.content)
+                ).hexdigest()
 
-        self.send_task(derived_task)
+            self.send_task(derived_task)
 
     def _get_extension(self, name: str) -> str:
         splitted = name.rsplit(".", 1)
         return splitted[-1].lower() if len(splitted) > 1 else ""
 
-    def _classify(self, task: Task) -> Optional[Dict[str, Optional[str]]]:
+    def _classify_filemagic(self, task: Task) -> Dict[str, Optional[str]]:
         sample = task.get_resource("sample")
         content = cast(bytes, sample.content)
         file_name = sample.name
@@ -786,3 +847,24 @@ class Classifier(Karton):
 
         # If not recognized then unsupported
         return sample_class
+
+    def _classify_yara(self, task: Task) -> List[Dict[str, Optional[str]]]:
+        sample = task.get_resource("sample")
+        content = cast(bytes, sample.content)
+
+        sample_classes = []
+
+        yara_matches = self.yara_rules.match(data=content)
+        for match in yara_matches:
+            sample_class = {}
+            sample_class["rule-name"] = match.rule
+            sample_class["kind"] = match.meta["kind"]
+            if match.meta.get("platform"):
+                sample_class["platform"] = match.meta["platform"]
+            if match.meta.get("extension"):
+                sample_class["extension"] = match.meta["extension"]
+
+            self.log.info("Matched the sample using Yara rule %s", match.rule)
+            sample_classes.append(sample_class)
+
+        return sample_classes
