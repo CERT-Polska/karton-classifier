@@ -412,7 +412,7 @@ class Classifier(Karton):
                 return sample_class
 
         if extension in image_assoc.keys():
-            sample_class.update({"kind": "misc", "extension": ext})
+            sample_class.update({"kind": "misc", "extension": extension})
             return sample_class
 
         # Is Disk image?
