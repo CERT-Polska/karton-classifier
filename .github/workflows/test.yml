@@ -26,7 +26,7 @@ jobs:
           python-version: 3.${{ matrix.minor }}
       - name: Cache libmagic.so
         id: cache-libmagic
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: tests/libmagic
           key: libmagic-${{ matrix.libmagic }}
