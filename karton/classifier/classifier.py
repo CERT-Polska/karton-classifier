@@ -268,7 +268,7 @@ class Classifier(Karton):
         JAVA_ARCHIVES = [
             "Zip archive data",
             "Java archive data (JAR)",
-            "Android package (APK)"
+            "Android package (APK)",
         ]
 
         if any(magic.startswith(x) for x in JAVA_ARCHIVES):
