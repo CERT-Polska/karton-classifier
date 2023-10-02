@@ -265,9 +265,13 @@ class Classifier(Karton):
             except Exception:
                 return False
 
-        if magic.startswith("Zip archive data") or magic.startswith(
-            "Java archive data (JAR)"
-        ):
+        JAVA_ARCHIVES = [
+            "Zip archive data",
+            "Java archive data (JAR)",
+            "Android package (APK)",
+        ]
+
+        if any(magic.startswith(x) for x in JAVA_ARCHIVES):
             if extension == "apk" or zip_has_file("AndroidManifest.xml"):
                 sample_class.update(
                     {"kind": "runnable", "platform": "android", "extension": "apk"}
