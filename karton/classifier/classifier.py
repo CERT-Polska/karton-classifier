@@ -253,6 +253,10 @@ class Classifier(Karton):
             "extension": None,
         }
 
+        self.log.info(
+            "Classifying sample with magic: %s, extension: %s", magic, extension
+        )
+
         # Is PE file?
         if magic.startswith("PE32") or magic.startswith("MS-DOS executable PE32"):
             sample_class.update(
