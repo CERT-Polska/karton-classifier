@@ -791,30 +791,11 @@ class Classifier(Karton):
                 }
             )
 
-        #if sample_class['kind'] is None:
-        #    # as libmagic sometimes fails to detect encoding of text files
-        #    chardet_prediction = chardet.detect(partial)['encoding']
-        #    self.log.info(f'chardet classification: {chardet_prediction} magic: {magic}')
-        #    if chardet_prediction is not None:
-        #        sample_class.update(
-        #            {
-        #                "kind": chardet_prediction
-        #            }
-        #        )
-
         # Heuristics for scripts
         try:
             partial_str = partial.decode(chardet.detect(partial)["encoding"]).lower()
         except Exception:
             self.log.warning("Heuristics disabled - unknown encoding")
-            # Detect steam files based on the file name
-            if re.match(r"ssfn\d{16,19}", file_name):
-                sample_class.update(
-                    {
-                        "kind": "steam",
-                    }
-                )
-            return sample_class
 
         if partial_str:
             vbs_keywords = [
