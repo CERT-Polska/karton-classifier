@@ -145,6 +145,7 @@ class Classifier(Karton):
         file_name = sample.name or "sample"
 
         if not sample_classes:
+<<<<<<< HEAD
             if filemagic_classification["magic"] and filemagic_classification[
                 "magic"
             ].startswith("data"):
@@ -164,6 +165,13 @@ class Classifier(Karton):
                         filemagic_classification["mime"],
                     )
                 )
+=======
+            self.log.info(
+                "Sample {} (sha256: {}) not recognized (unsupported type)".format(
+                    file_name, sample.sha256)
+            )
+
+>>>>>>> 6945438 (merge upstream, remove some too specific detections)
             res = task.derive_task(
                 {
                     "type": "sample",
@@ -863,6 +871,89 @@ class Classifier(Karton):
                 )
                 return sample_class
 
+<<<<<<< HEAD
+=======
+        # magic samples of ASCII files:
+        # XML 1.0 document, ASCII text
+        # XML 1.0 document, ASCII text, with very long lines (581), with CRLF line terminators
+        # Non-ISO extended-ASCII text, with no line terminators
+        # troff or preprocessor input, ASCII text, with CRLF line terminators
+        if "ASCII" in magic:
+            sample_class.update(
+                {
+                    "kind": "ascii",
+                }
+            )
+            return sample_class
+        if magic.startswith("CSV text"):
+            sample_class.update(
+                {
+                    "kind": "csv",
+                }
+            )
+            return sample_class
+        if magic.startswith("ISO-8859"):
+            sample_class.update(
+                {
+                    "kind": "iso-8859-1",
+                }
+            )
+            return sample_class
+        # magic samples of UTF-8 files:
+        # Unicode text, UTF-8 text, with CRLF line terminators
+        # XML 1.0 document, Unicode text, UTF-8 text
+        if "UTF-8" in magic:
+            sample_class.update(
+                {
+                    "kind": "utf-8",
+                }
+            )
+            return sample_class
+        if magic.startswith("PGP") or magic.startswith("OpenPGP"):
+            sample_class.update(
+                {
+                    "kind": "pgp",
+                }
+            )
+            return sample_class
+        if magic.startswith(("pcap capture file", "tcpdump capture file")):
+            sample_class.update(
+                {
+                    "kind": "pcap",
+                }
+            )
+            return sample_class
+        if magic.startswith("pcap") and "ng capture file" in magic:
+            sample_class.update(
+                {
+                    "kind": "pcapng",
+                }
+            )
+            return sample_class
+        if magic.startswith("JPEG"):
+            sample_class.update(
+                {
+                    "kind": "jpeg",
+                }
+            )
+            return sample_class
+        if content.startswith(b'TDF$'):
+            sample_class.update(
+                {
+                    "kind": "telegram_desktop_file",
+                }
+            )
+            self.log.info(sample_class)
+            return sample_class
+        if content.startswith(b'TDEF'):
+            sample_class.update(
+                {
+                    "kind": "telegram_desktop_encrypted_file",
+                }
+            )
+            return sample_class
+
+>>>>>>> 6945438 (merge upstream, remove some too specific detections)
         # If not recognized then unsupported
         return sample_class
 
