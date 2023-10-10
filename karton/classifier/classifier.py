@@ -527,24 +527,6 @@ class Classifier(Karton):
             sample_class.update({"kind": "json"})
             return sample_class
 
-        # Ransomware encrypted files, check this before archive detection
-        # as some of them would be detected for example as zip archives
-        if content.startswith(b"PK"):
-            if file_name.endswith(".zatp"):
-                sample_class.update({"kind": "zatp_ransomware_encryped"})
-                return sample_class
-            if file_name.endswith(".ygvb"):
-                sample_class.update({"kind": "ygvb_ransomware_encryped"})
-                return sample_class
-            if file_name.endswith(".uyro"):
-                sample_class.update({"kind": "uyro_ransomware_encryped"})
-                return sample_class
-
-        if content.startswith(b"20 et"):
-            if file_name.endswith(".mbtf"):
-                sample_class.update({"kind": "mbtf_ransomware_encryped"})
-                return sample_class
-
         # Archives
         archive_assoc = {
             "7z": ["7-zip archive data"],
