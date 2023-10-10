@@ -164,3 +164,69 @@ class TestClassifier(KartonTestCase):
             },
         )
         self.assertTasksEqual(res, [expected])
+
+    def test_misc_pcapng(self):
+        resource = mock_resource("misc.pcapng")
+        magic = self.magic_from_content(resource.content, mime=False)
+        res = self.run_task(mock_task(resource))
+
+        expected = Task(
+            headers={
+                "type": "sample",
+                "stage": "recognized",
+                "origin": "karton.classifier",
+                "quality": "high",
+                "kind": "pcapng",
+                "mime": 'application/octet-stream',
+            },
+            payload={
+                "sample": resource,
+                "tags": ["misc:pcapng"],
+                "magic": magic,
+            },
+        )
+        self.assertTasksEqual(res, [expected])
+
+    def test_misc_pcap(self):
+        resource = mock_resource("misc.pcap")
+        magic = self.magic_from_content(resource.content, mime=False)
+        res = self.run_task(mock_task(resource))
+
+        expected = Task(
+            headers={
+                "type": "sample",
+                "stage": "recognized",
+                "origin": "karton.classifier",
+                "quality": "high",
+                "kind": "pcap",
+                "mime": 'application/vnd.tcpdump.pcap',
+            },
+            payload={
+                "sample": resource,
+                "tags": ["misc:pcap"],
+                "magic": magic,
+            },
+        )
+        self.assertTasksEqual(res, [expected])
+
+    def test_misc_pgp(self):
+        resource = mock_resource("misc.pgp")
+        magic = self.magic_from_content(resource.content, mime=False)
+        res = self.run_task(mock_task(resource))
+
+        expected = Task(
+            headers={
+                "type": "sample",
+                "stage": "recognized",
+                "origin": "karton.classifier",
+                "quality": "high",
+                "kind": "pgp",
+                "mime": 'application/octet-stream',
+            },
+            payload={
+                "sample": resource,
+                "tags": ["misc:pgp"],
+                "magic": magic,
+            },
+        )
+        self.assertTasksEqual(res, [expected])
