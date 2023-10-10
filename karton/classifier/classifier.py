@@ -838,7 +838,7 @@ class Classifier(Karton):
                 return sample_class
 
         # If not recognized then unsupported
-        return sample_class
+        return None
 
     def _classify_yara(self, task: Task) -> List[Dict[str, Optional[str]]]:
         sample = task.get_resource("sample")
