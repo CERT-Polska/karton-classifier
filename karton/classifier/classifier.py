@@ -218,12 +218,6 @@ class Classifier(Karton):
         content = cast(bytes, sample.content)
         file_name = sample.name
         if len(sample.content) == 0:
-            self.log.info(
-                "Sample: {!r} has no content".format(file_name.encode("utf8"))
-            )
-
-        file_name = sample.name
-        if len(sample.content) == 0:
             self.log.info("Sample: {} has no content".format(file_name))
 
         magic = task.get_payload("magic") or ""
