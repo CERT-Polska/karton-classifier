@@ -139,17 +139,18 @@ class Classifier(Karton):
             sample_classes += self._classify_yara(task)
 
         filemagic_classification = self._classify_filemagic(task)
-        if filemagic_classification:
+        if filemagic_classification["kind"] is not None:
             sample_classes.append(filemagic_classification)
 
         file_name = sample.name or "sample"
 
         if not sample_classes:
             self.log.info(
-                "Sample {!r} not recognized (unsupported type)".format(
-                    file_name.encode("utf8")
+                "Sample {} (sha256: {}) not recognized (unsupported type)".format(
+                    file_name, sample.sha256
                 )
             )
+
             res = task.derive_task(
                 {
                     "type": "sample",
@@ -213,9 +214,12 @@ class Classifier(Karton):
         splitted = name.rsplit(".", 1)
         return splitted[-1].lower() if len(splitted) > 1 else ""
 
-    def _classify_filemagic(self, task: Task) -> Optional[Dict[str, Optional[str]]]:
+    def _classify_filemagic(self, task: Task) -> Dict[str, Optional[str]]:
         sample = task.get_resource("sample")
         content = cast(bytes, sample.content)
+        file_name = sample.name
+        if not sample.content:
+            self.log.info("Sample: {} has no content".format(file_name))
 
         magic = task.get_payload("magic") or ""
         magic_mime = task.get_payload("mime") or ""
@@ -592,6 +596,67 @@ class Classifier(Karton):
             sample_class.update({"kind": "archive", "extension": extension})
             return sample_class
 
+        # PGP
+        if magic.startswith("PGP") or magic.startswith("OpenPGP"):
+            sample_class.update(
+                {
+                    "kind": "pgp",
+                }
+            )
+            return sample_class
+
+        # PCAP
+        if magic.startswith(("pcap capture file", "tcpdump capture file")):
+            sample_class.update(
+                {
+                    "kind": "pcap",
+                }
+            )
+            return sample_class
+
+        if magic.startswith("pcap") and "ng capture file" in magic:
+            sample_class.update(
+                {
+                    "kind": "pcapng",
+                }
+            )
+            return sample_class
+
+        # Images
+        if magic.startswith("JPEG"):
+            sample_class.update(
+                {
+                    "kind": "jpeg",
+                }
+            )
+            return sample_class
+
+        if magic.startswith("PNG"):
+            sample_class.update(
+                {
+                    "kind": "png",
+                }
+            )
+            return sample_class
+
+        # Wallets
+        if content.startswith(b"\xbaWALLET"):
+            sample_class.update(
+                {
+                    "kind": "armory-wallet",
+                }
+            )
+            return sample_class
+
+        # IOT / OT
+        if content.startswith(b"SECO"):
+            sample_class.update(
+                {
+                    "kind": "seco",
+                }
+            )
+            return sample_class
+
         # HTML
         if magic.startswith("HTML document"):
             sample_class.update({"kind": "html"})
@@ -616,7 +681,12 @@ class Classifier(Karton):
             return sample_class
 
         # Content heuristics
-        partial = content[:2048] + content[-2048:]
+        if len(content) >= 4096:
+            # take only the first and last 2048 bytes from the content
+            partial = content[:2048] + content[-2048:]
+        else:
+            # take the whole content
+            partial = content
 
         # Dumped PE file heuristics (PE not recognized by libmagic)
         if b".text" in partial and b"This program cannot be run" in partial:
@@ -639,12 +709,71 @@ class Classifier(Karton):
             )
             return sample_class
 
+        # Telegram
+        if partial.startswith(b"TDF$"):
+            sample_class.update(
+                {
+                    "kind": "telegram-desktop-file",
+                }
+            )
+            return sample_class
+
+        if partial.startswith(b"TDEF"):
+            sample_class.update(
+                {
+                    "kind": "telegram-desktop-encrypted-file",
+                }
+            )
+            return sample_class
+
+        #
+        # Detection of text-files: As these files also could be scripts, do not
+        # immediately return sample_class after a successful detection. Like this
+        # heuristics part further below can override detection
+        #
+
+        # magic samples of ASCII files:
+        # XML 1.0 document, ASCII text
+        # XML 1.0 document, ASCII text, with very long lines (581), with
+        # CRLF line terminators
+        # Non-ISO extended-ASCII text, with no line terminators
+        # troff or preprocessor input, ASCII text, with CRLF line terminators
+        if "ASCII" in magic:
+            sample_class.update(
+                {
+                    "kind": "ascii",
+                }
+            )
+
+        if magic.startswith("CSV text"):
+            sample_class.update(
+                {
+                    "kind": "csv",
+                }
+            )
+
+        if magic.startswith("ISO-8859"):
+            sample_class.update(
+                {
+                    "kind": "iso-8859-1",
+                }
+            )
+
+        # magic samples of UTF-8 files:
+        # Unicode text, UTF-8 text, with CRLF line terminators
+        # XML 1.0 document, Unicode text, UTF-8 text
+        if "UTF-8" in magic:
+            sample_class.update(
+                {
+                    "kind": "utf-8",
+                }
+            )
+
         # Heuristics for scripts
         try:
             partial_str = partial.decode(chardet.detect(partial)["encoding"]).lower()
         except Exception:
             self.log.warning("Heuristics disabled - unknown encoding")
-            partial_str = None
 
         if partial_str:
             vbs_keywords = [
@@ -710,59 +839,8 @@ class Classifier(Karton):
                 )
                 return sample_class
 
-        # magic of XML files: XML 1.0 document, ASCII text
-        if magic.startswith("ASCII") or magic.endswith("ASCII text"):
-            sample_class.update(
-                {
-                    "kind": "ascii",
-                }
-            )
-            return sample_class
-        if magic.startswith("CSV text"):
-            sample_class.update(
-                {
-                    "kind": "csv",
-                }
-            )
-            return sample_class
-        if magic.startswith("ISO-8859"):
-            sample_class.update(
-                {
-                    "kind": "iso-8859-1",
-                }
-            )
-            return sample_class
-        if magic.startswith("UTF-8"):
-            sample_class.update(
-                {
-                    "kind": "utf-8",
-                }
-            )
-            return sample_class
-        if magic.startswith("PGP"):
-            sample_class.update(
-                {
-                    "kind": "pgp",
-                }
-            )
-            return sample_class
-        if magic.startswith(("pcap capture file", "tcpdump capture file")):
-            sample_class.update(
-                {
-                    "kind": "pcap",
-                }
-            )
-            return sample_class
-        if magic.startswith("pcap") and "ng capture file" in magic:
-            sample_class.update(
-                {
-                    "kind": "pcapng",
-                }
-            )
-            return sample_class
-
         # If not recognized then unsupported
-        return None
+        return sample_class
 
     def _classify_yara(self, task: Task) -> List[Dict[str, Optional[str]]]:
         sample = task.get_resource("sample")
