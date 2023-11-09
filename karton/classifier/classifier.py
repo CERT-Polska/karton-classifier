@@ -734,7 +734,8 @@ class Classifier(Karton):
 
         # magic samples of ASCII files:
         # XML 1.0 document, ASCII text
-        # XML 1.0 document, ASCII text, with very long lines (581), with CRLF line terminators
+        # XML 1.0 document, ASCII text, with very long lines (581), with
+        # CRLF line terminators
         # Non-ISO extended-ASCII text, with no line terminators
         # troff or preprocessor input, ASCII text, with CRLF line terminators
         if "ASCII" in magic:
