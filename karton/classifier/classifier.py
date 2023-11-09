@@ -147,7 +147,8 @@ class Classifier(Karton):
         if not sample_classes:
             self.log.info(
                 "Sample {} (sha256: {}) not recognized (unsupported type)".format(
-                    file_name, sample.sha256)
+                    file_name, sample.sha256
+                )
             )
 
             res = task.derive_task(
@@ -642,7 +643,7 @@ class Classifier(Karton):
         if content.startswith(b"\xbaWALLET"):
             sample_class.update(
                 {
-                    "kind": "armory_wallet",
+                    "kind": "armory-wallet",
                 }
             )
             return sample_class
@@ -712,7 +713,7 @@ class Classifier(Karton):
         if partial.startswith(b"TDF$"):
             sample_class.update(
                 {
-                    "kind": "telegram_desktop_file",
+                    "kind": "telegram-desktop-file",
                 }
             )
             return sample_class
@@ -720,7 +721,7 @@ class Classifier(Karton):
         if partial.startswith(b"TDEF"):
             sample_class.update(
                 {
-                    "kind": "telegram_desktop_encrypted_file",
+                    "kind": "telegram-desktop-encrypted-file",
                 }
             )
             return sample_class
