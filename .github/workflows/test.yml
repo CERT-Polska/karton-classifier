@@ -13,6 +13,7 @@ jobs:
       - uses: CERT-Polska/lint-python-action@v2
         with:
           source: karton/
+          python-version: '3.12'
   unittest:
     runs-on: ubuntu-latest
     strategy:
