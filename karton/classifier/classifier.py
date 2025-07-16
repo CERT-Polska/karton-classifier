@@ -4,7 +4,7 @@ import struct
 from hashlib import sha256
 from io import BytesIO
 from pathlib import Path
-from typing import Callable, Dict, List, Optional, cast
+from typing import Callable, cast
 from zipfile import ZipFile
 
 import chardet  # type: ignore
@@ -16,7 +16,7 @@ from karton.core.backend import KartonBackend
 from .__version__ import __version__
 
 
-def classify_openxml(content: bytes) -> Optional[str]:
+def classify_openxml(content: bytes) -> str | None:
     zipfile = ZipFile(BytesIO(content))
     extensions = {"docx": "word", "pptx": "ppt", "xlsx": "xl"}
     filenames = [x.filename for x in zipfile.filelist]
@@ -42,7 +42,7 @@ def load_yara_rules(path: Path) -> yara.Rules:
     return rules
 
 
-def get_tag(classification: Dict) -> str:
+def get_tag(classification: dict) -> str:
     sample_type = classification["kind"]
 
     # Build classification tag
@@ -80,10 +80,10 @@ class Classifier(Karton):
 
     def __init__(
         self,
-        config: Config = None,
-        identity: str = None,
-        backend: KartonBackend = None,
-        magic: Callable = None,
+        config: Config | None = None,
+        identity: str | None = None,
+        backend: KartonBackend | None = None,
+        magic: Callable | None = None,
     ) -> None:
         super().__init__(config=config, identity=identity, backend=backend)
         self._magic = magic or self._magic_from_content()
@@ -213,7 +213,7 @@ class Classifier(Karton):
         splitted = name.rsplit(".", 1)
         return splitted[-1].lower() if len(splitted) > 1 else ""
 
-    def _classify_filemagic(self, task: Task) -> Optional[Dict[str, Optional[str]]]:
+    def _classify_filemagic(self, task: Task) -> dict[str, str | None] | None:
         sample = task.get_resource("sample")
         content = cast(bytes, sample.content)
 
@@ -764,7 +764,7 @@ class Classifier(Karton):
         # If not recognized then unsupported
         return None
 
-    def _classify_yara(self, task: Task) -> List[Dict[str, Optional[str]]]:
+    def _classify_yara(self, task: Task) -> list[dict[str, str | None]]:
         sample = task.get_resource("sample")
         content = cast(bytes, sample.content)
 
