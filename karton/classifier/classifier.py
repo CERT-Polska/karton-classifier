@@ -63,6 +63,18 @@ def get_tag(classification: dict) -> str:
     return sample_type
 
 
+def zip_is_xapk(content: bytes) -> bool:
+    try:
+        with ZipFile(BytesIO(content)) as zf:
+            names = zf.namelist()
+            if "manifest.json" not in names:
+                return False
+
+            return any(n.endswith(".apk") and "/" not in n for n in names)
+    except Exception:
+        return False
+
+
 class Classifier(Karton):
     """
     File type classifier for the Karton framework.
@@ -289,6 +301,12 @@ class Classifier(Karton):
                         "platform": "win32",  # Default platform should be Windows
                         "extension": "jar",
                     }
+                )
+                return sample_class
+
+            if extension == "xapk" or zip_is_xapk(content):
+                sample_class.update(
+                    {"kind": "runnable", "platform": "android", "extension": "xapk"}
                 )
                 return sample_class
 
