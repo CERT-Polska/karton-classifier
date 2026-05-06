@@ -15,6 +15,139 @@ from karton.core.backend import KartonBackend
 
 from .__version__ import __version__
 
+ZIP_MAGIC = "Zip archive data"
+
+JAVA_ARCHIVES = [
+    ZIP_MAGIC,
+    "Java archive data (JAR)",
+    "Android package (APK)",
+]
+
+ELF_ASSOC = {
+    "linux": "(GNU/Linux)",
+    "freebsd": "(FreeBSD)",
+    "netbsd": "(NetBSD)",
+    "openbsd": "(SYSV)",
+    "solaris": "(Solaris)",
+}
+
+# Various graphics/image file formats
+IMAGE_ASSOC = {
+    "gif": ["GIF image data"],
+    "jpg": ["JPEG image data"],
+    "png": ["PNG image data"],
+}
+
+# Windows scripts (per extension)
+SCRIPT_EXTENSIONS = {
+    "vbs",
+    "vbe",
+    "js",
+    "jse",
+    "wsh",
+    "wsf",
+    "hta",
+    "cmd",
+    "bat",
+    "ps1",
+}
+
+# Office documents
+OFFICE_EXTENSIONS = {
+    "doc": "Microsoft Word",
+    "xls": "Microsoft Excel",
+    "ppt": "Microsoft PowerPoint",
+}
+
+# Archives
+ARCHIVE_ASSOC = {
+    "7z": ["7-zip archive data"],
+    "ace": ["ACE archive data"],
+    "bz2": ["bzip2 compressed data"],
+    "cab": ["Microsoft Cabinet archive data"],
+    "cpio": ["cpio archive"],
+    "gz": ["gzip compressed"],
+    "iso": ["ISO 9660 CD-ROM"],
+    "lz": ["lzip compressed data"],
+    "tar": ["tar archive", "POSIX tar archive"],
+    "rar": ["RAR archive data"],
+    "udf": ["UDF filesystem data"],
+    "xz": ["XZ compressed data"],
+    "zip": [ZIP_MAGIC],
+    "zlib": ["zlib compressed data"],
+    "lzh": ["  LHa (2.x) archive data", "  LHa 2.x? archive data"],
+}
+
+ARCHIVE_EXTENSIONS = {
+    "7z",
+    "ace",
+    "arc",
+    "arj",
+    "bz2",
+    "cab",
+    "cpio",
+    "gz",
+    "iso",
+    "lz",
+    "lzh",
+    "rar",
+    "tar",
+    "udf",
+    "xz",
+    "zip",
+    "zlib",
+}
+
+# Various scripting languages
+SCRIPT_ASSOC = {
+    "php": ["PHP script"],
+    "pl": ["Perl script", "Perl5 module"],
+    "py": ["Python script"],
+    "rb": ["Ruby script"],
+    "scpt": ["AppleScript compiled"],
+    "sh": ["Bourne-Again shell", "POSIX shell"],
+}
+
+VBS_KEYWORDS = [
+    "end function",
+    "end if",
+    "array(",
+    "sub ",
+    "on error ",
+    "createobject",
+    "execute",
+]
+
+JS_KEYWORDS = [
+    "function ",
+    "function(",
+    "this.",
+    "this[",
+    "new ",
+    "createobject",
+    "activexobject",
+    "var ",
+    "catch",
+]
+
+HTML_KEYWORDS = ["<!doctype", "<html", "<script"]
+
+PS_KEYWORDS = [
+    "powershell",
+    "-nop",
+    "bypass",
+    "new-object",
+    "invoke-expression",
+    "frombase64string(",
+    "| iex",
+    "|iex",
+]
+
+# E-mail
+EMAIL_ASSOC = {
+    "msg": ["Microsoft Outlook Message"],
+    "eml": ["multipart/mixed", "RFC 822 mail", "SMTP mail"],
+}
 
 def classify_openxml(content: bytes) -> str | None:
     zipfile = ZipFile(BytesIO(content))
@@ -216,7 +349,6 @@ class Classifier(Karton):
     def _classify_filemagic(self, task: Task) -> dict[str, str | None] | None:
         sample = task.get_resource("sample")
         content = cast(bytes, sample.content)
-
         magic = task.get_payload("magic") or ""
         magic_mime = task.get_payload("mime") or ""
         try:
@@ -269,12 +401,6 @@ class Classifier(Karton):
             except Exception:
                 return False
 
-        JAVA_ARCHIVES = [
-            "Zip archive data",
-            "Java archive data (JAR)",
-            "Android package (APK)",
-        ]
-
         if any(magic.startswith(x) for x in JAVA_ARCHIVES):
             if extension == "apk" or zip_has_file("AndroidManifest.xml"):
                 sample_class.update(
@@ -321,15 +447,8 @@ class Classifier(Karton):
             return sample_class
 
         # Is ELF file?
-        elf_assoc = {
-            "linux": "(GNU/Linux)",
-            "freebsd": "(FreeBSD)",
-            "netbsd": "(NetBSD)",
-            "openbsd": "(SYSV)",
-            "solaris": "(Solaris)",
-        }
         if magic.startswith("ELF"):
-            for platform, platform_full in elf_assoc.items():
+            for platform, platform_full in ELF_ASSOC.items():
                 if platform_full in magic:
                     sample_class.update(
                         {"kind": "runnable", "platform": platform, "extension": "elf"}
@@ -382,25 +501,18 @@ class Classifier(Karton):
                 return False
 
         # macos app within zip
-        if magic.startswith("Zip archive data") and zip_has_mac_app():
+        if magic.startswith(ZIP_MAGIC) and zip_has_mac_app():
             sample_class.update(
                 {"kind": "runnable", "platform": "macos", "extension": "app"}
             )
             return sample_class
 
-        # Various graphics/image file formats
-        image_assoc = {
-            "gif": ["GIF image data"],
-            "jpg": ["JPEG image data"],
-            "png": ["PNG image data"],
-        }
-
-        for ext, patterns in image_assoc.items():
+        for ext, patterns in IMAGE_ASSOC.items():
             if any(pattern in magic for pattern in patterns):
                 sample_class.update({"kind": "misc", "extension": ext})
                 return sample_class
 
-        if extension in image_assoc.keys():
+        if extension in IMAGE_ASSOC.keys():
             sample_class.update({"kind": "misc", "extension": extension})
             return sample_class
 
@@ -409,31 +521,12 @@ class Classifier(Karton):
             sample_class.update({"kind": "archive", "extension": "vhd"})
             return sample_class
 
-        # Windows scripts (per extension)
-        script_extensions = [
-            "vbs",
-            "vbe",
-            "js",
-            "jse",
-            "wsh",
-            "wsf",
-            "hta",
-            "cmd",
-            "bat",
-            "ps1",
-        ]
-        if extension in script_extensions:
+        if extension in SCRIPT_EXTENSIONS:
             sample_class.update(
                 {"kind": "script", "platform": "win32", "extension": extension}
             )
             return sample_class
 
-        # Office documents
-        office_extensions = {
-            "doc": "Microsoft Word",
-            "xls": "Microsoft Excel",
-            "ppt": "Microsoft PowerPoint",
-        }
         # Check RTF by libmagic
         if magic.startswith("Rich Text Format"):
             sample_class.update(
@@ -456,19 +549,19 @@ class Classifier(Karton):
                 }
             )
 
-            for ext, typepart in office_extensions.items():
+            for ext, typepart in OFFICE_EXTENSIONS.items():
                 if f"Name of Creating Application: {typepart}" in magic:
                     sample_class["extension"] = ext
                     return sample_class
 
-            if extension[:3] in office_extensions.keys():
+            if extension[:3] in OFFICE_EXTENSIONS.keys():
                 sample_class["extension"] = extension
             else:
                 sample_class["extension"] = "doc"
             return sample_class
 
         # Check docx/xlsx/pptx by libmagic
-        for ext, typepart in office_extensions.items():
+        for ext, typepart in OFFICE_EXTENSIONS.items():
             if magic.startswith(typepart):
                 sample_class.update(
                     {"kind": "document", "platform": "win32", "extension": ext + "x"}
@@ -483,7 +576,7 @@ class Classifier(Karton):
             return sample_class
 
         # Finally check document type only by extension
-        if extension[:3] in office_extensions.keys():
+        if extension[:3] in OFFICE_EXTENSIONS.keys():
             sample_class.update(
                 {"kind": "document", "platform": "win32", "extension": extension}
             )
@@ -524,45 +617,6 @@ class Classifier(Karton):
             sample_class.update({"kind": "json"})
             return sample_class
 
-        # Archives
-        archive_assoc = {
-            "7z": ["7-zip archive data"],
-            "ace": ["ACE archive data"],
-            "bz2": ["bzip2 compressed data"],
-            "cab": ["Microsoft Cabinet archive data"],
-            "cpio": ["cpio archive"],
-            "gz": ["gzip compressed"],
-            "iso": ["ISO 9660 CD-ROM"],
-            "lz": ["lzip compressed data"],
-            "tar": ["tar archive", "POSIX tar archive"],
-            "rar": ["RAR archive data"],
-            "udf": ["UDF filesystem data"],
-            "xz": ["XZ compressed data"],
-            "zip": ["Zip archive data"],
-            "zlib": ["zlib compressed data"],
-            "lzh": ["  LHa (2.x) archive data", "  LHa 2.x? archive data"],
-        }
-        archive_extensions = [
-            "7z",
-            "ace",
-            "arc",
-            "arj",
-            "bz2",
-            "cab",
-            "cab",
-            "cpio",
-            "gz",
-            "iso",
-            "lz",
-            "lzh",
-            "rar",
-            "tar",
-            "udf",
-            "xz",
-            "zip",
-            "zlib",
-        ]
-
         def apply_archive_headers(extension):
             headers = {"kind": "archive", "extension": extension}
             if extension == "xz":
@@ -571,24 +625,19 @@ class Classifier(Karton):
             sample_class.update(headers)
             return sample_class
 
-        for archive_extension, assocs in archive_assoc.items():
+        for archive_extension, assocs in ARCHIVE_ASSOC.items():
             if any(magic.startswith(assoc) for assoc in assocs):
                 return apply_archive_headers(archive_extension)
 
-        if extension in archive_extensions:
+        if extension in ARCHIVE_EXTENSIONS:
             return apply_archive_headers(extension)
 
-        # E-mail
-        email_assoc = {
-            "msg": ["Microsoft Outlook Message"],
-            "eml": ["multipart/mixed", "RFC 822 mail", "SMTP mail"],
-        }
-        for ext, patterns in email_assoc.items():
+        for ext, patterns in EMAIL_ASSOC.items():
             if any(pattern in magic for pattern in patterns):
                 sample_class.update({"kind": "archive", "extension": ext})
                 return sample_class
 
-        if extension in email_assoc.keys():
+        if extension in EMAIL_ASSOC.keys():
             sample_class.update({"kind": "archive", "extension": extension})
             return sample_class
 
@@ -597,22 +646,14 @@ class Classifier(Karton):
             sample_class.update({"kind": "html"})
             return sample_class
 
-        # Various scripting languages
-        script_assoc = {
-            "php": ["PHP script"],
-            "pl": ["Perl script", "Perl5 module"],
-            "py": ["Python script"],
-            "rb": ["Ruby script"],
-            "scpt": ["AppleScript compiled"],
-            "sh": ["Bourne-Again shell", "POSIX shell"],
-        }
-        for ext, patterns in script_assoc.items():
+        for ext, patterns in SCRIPT_ASSOC.items():
             if any(pattern in magic for pattern in patterns):
                 sample_class.update({"kind": "script", "extension": ext})
                 return sample_class
 
         if extension in script_assoc.keys():
             sample_class.update({"kind": "script", "extension": ext})
+            sample_class.update({"kind": "script", "extension": extension})
             return sample_class
 
         # Content heuristics
@@ -647,54 +688,23 @@ class Classifier(Karton):
             partial_str = None
 
         if partial_str:
-            vbs_keywords = [
-                "end function",
-                "end if",
-                "array(",
-                "sub ",
-                "on error ",
-                "createobject",
-                "execute",
-            ]
-            js_keywords = [
-                "function ",
-                "function(",
-                "this.",
-                "this[",
-                "new ",
-                "createobject",
-                "activexobject",
-                "var ",
-                "catch",
-            ]
-            html_keywords = ["<!doctype", "<html", "<script"]
-            ps_keywords = [
-                "powershell",
-                "-nop",
-                "bypass",
-                "new-object",
-                "invoke-expression",
-                "frombase64string(",
-                "| iex",
-                "|iex",
-            ]
-            if len([True for keyword in html_keywords if keyword in partial_str]) >= 2:
+            if len([True for keyword in HTML_KEYWORDS if keyword in partial_str]) >= 2:
                 sample_class.update({"kind": "html"})
                 return sample_class
 
-            if len([True for keyword in vbs_keywords if keyword in partial_str]) >= 2:
+            if len([True for keyword in VBS_KEYWORDS if keyword in partial_str]) >= 2:
                 sample_class.update(
                     {"kind": "script", "platform": "win32", "extension": "vbs"}
                 )
                 return sample_class
             # Powershell heuristics
-            if len([True for keyword in ps_keywords if keyword.lower() in partial_str]):
+            if len([True for keyword in PS_KEYWORDS if keyword.lower() in partial_str]):
                 sample_class.update(
                     {"kind": "script", "platform": "win32", "extension": "ps1"}
                 )
                 return sample_class
             # JS heuristics
-            if len([True for keyword in js_keywords if keyword in partial_str]) >= 2:
+            if len([True for keyword in JS_KEYWORDS if keyword in partial_str]) >= 2:
                 sample_class.update(
                     {"kind": "script", "platform": "win32", "extension": "js"}
                 )
