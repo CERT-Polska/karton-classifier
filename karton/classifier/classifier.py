@@ -353,6 +353,7 @@ class Classifier(Karton):
         content = cast(bytes, sample.content)
         magic = task.get_payload("magic") or ""
         magic_mime = task.get_payload("mime") or ""
+        
         try:
             magic = self._magic(content, mime=False)
             magic_mime = self._magic(content, mime=True)
