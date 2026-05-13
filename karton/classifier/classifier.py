@@ -351,16 +351,16 @@ class Classifier(Karton):
     def _classify_filemagic(self, task: Task) -> dict[str, str | None] | None:
         sample = task.get_resource("sample")
         content = cast(bytes, sample.content)
+        extension = self._get_extension(sample.name or "sample")
         magic = task.get_payload("magic") or ""
         magic_mime = task.get_payload("mime") or ""
-        
+
         try:
             magic = self._magic(content, mime=False)
             magic_mime = self._magic(content, mime=True)
         except Exception as ex:
             self.log.warning(f"unable to get magic: {ex}")
 
-        extension = self._get_extension(sample.name or "sample")
         sample_class = {
             "magic": magic if magic else None,
             "mime": magic_mime if magic_mime else None,
