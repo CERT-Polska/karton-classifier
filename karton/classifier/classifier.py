@@ -5,7 +5,7 @@ from hashlib import sha256
 from io import BytesIO
 from pathlib import Path
 from typing import Callable, cast
-from zipfile import ZipFile
+from zipfile import ZipFile, is_zipfile
 
 import chardet  # type: ignore
 import magic as pymagic  # type: ignore
@@ -61,6 +61,17 @@ def get_tag(classification: dict) -> str:
         sample_type = f"misc:{sample_type}"
 
     return sample_type
+
+
+def zip_is_xapk(content: bytes) -> bool:
+    try:
+        with ZipFile(BytesIO(content)) as zf:
+            names = zf.namelist()
+            if "manifest.json" not in names:
+                return False
+            return any(n.endswith(".apk") and "/" not in n for n in names)
+    except Exception:
+        return False
 
 
 class Classifier(Karton):
@@ -226,6 +237,13 @@ class Classifier(Karton):
             self.log.warning(f"unable to get magic: {ex}")
 
         extension = self._get_extension(sample.name or "sample")
+        if magic == "data" and is_zipfile(BytesIO(content)):
+            self.log.info("libmagic 'data' fallback, classifying as zip.")
+            # TODO change to:
+            # magic = ZIP_MAGIC
+            # after refactor/classifier-constants merges
+            magic = "Zip archive data"
+
         sample_class = {
             "magic": magic if magic else None,
             "mime": magic_mime if magic_mime else None,
@@ -289,6 +307,12 @@ class Classifier(Karton):
                         "platform": "win32",  # Default platform should be Windows
                         "extension": "jar",
                     }
+                )
+                return sample_class
+
+            if extension == "xapk" or zip_is_xapk(content):
+                sample_class.update(
+                    {"kind": "runnable", "platform": "android", "extension": "xapk"}
                 )
                 return sample_class
 
