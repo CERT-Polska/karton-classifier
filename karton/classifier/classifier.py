@@ -15,20 +15,76 @@ from karton.core.backend import KartonBackend
 
 from .__version__ import __version__
 
-ZIP_MAGIC = "Zip archive data"
+# ---------------------------------------------------------------------------
+# Classification lookup tables
+# ---------------------------------------------------------------------------
 
-JAVA_ARCHIVES = [
-    ZIP_MAGIC,
-    "Java archive data (JAR)",
-    "Android package (APK)",
-]
-
+# ELF
 ELF_ASSOC = {
     "linux": "(GNU/Linux)",
     "freebsd": "(FreeBSD)",
     "netbsd": "(NetBSD)",
     "openbsd": "(SYSV)",
     "solaris": "(Solaris)",
+}
+
+# Archives
+ZIP_MAGIC = "Zip archive data"
+ARCHIVE_ASSOC = {
+    "7z": ["7-zip archive data"],
+    "ace": ["ACE archive data"],
+    "bz2": ["bzip2 compressed data"],
+    "cab": ["Microsoft Cabinet archive data"],
+    "cpio": ["cpio archive"],
+    "gz": ["gzip compressed"],
+    "iso": ["ISO 9660 CD-ROM"],
+    "lz": ["lzip compressed data"],
+    "tar": ["tar archive", "POSIX tar archive"],
+    "rar": ["RAR archive data"],
+    "udf": ["UDF filesystem data"],
+    "xz": ["XZ compressed data"],
+    "zip": [ZIP_MAGIC],
+    "zlib": ["zlib compressed data"],
+    "lzh": ["  LHa (2.x) archive data", "  LHa 2.x? archive data"],
+}
+ARCHIVE_EXTENSIONS = {
+    "7z",
+    "ace",
+    "arc",
+    "arj",
+    "bz2",
+    "cab",
+    "cpio",
+    "gz",
+    "iso",
+    "lz",
+    "lzh",
+    "rar",
+    "tar",
+    "udf",
+    "xz",
+    "zip",
+    "zlib",
+}
+
+# Java / Android
+JAVA_ARCHIVES = [
+    ZIP_MAGIC,
+    "Java archive data (JAR)",
+    "Android package (APK)",
+]
+
+# E-mail
+EMAIL_ASSOC = {
+    "msg": ["Microsoft Outlook Message"],
+    "eml": ["multipart/mixed", "RFC 822 mail", "SMTP mail"],
+}
+
+# Office documents
+OFFICE_EXTENSIONS = {
+    "doc": "Microsoft Word",
+    "xls": "Microsoft Excel",
+    "ppt": "Microsoft PowerPoint",
 }
 
 # Various graphics/image file formats
@@ -52,52 +108,6 @@ SCRIPT_EXTENSIONS = {
     "ps1",
 }
 
-# Office documents
-OFFICE_EXTENSIONS = {
-    "doc": "Microsoft Word",
-    "xls": "Microsoft Excel",
-    "ppt": "Microsoft PowerPoint",
-}
-
-# Archives
-ARCHIVE_ASSOC = {
-    "7z": ["7-zip archive data"],
-    "ace": ["ACE archive data"],
-    "bz2": ["bzip2 compressed data"],
-    "cab": ["Microsoft Cabinet archive data"],
-    "cpio": ["cpio archive"],
-    "gz": ["gzip compressed"],
-    "iso": ["ISO 9660 CD-ROM"],
-    "lz": ["lzip compressed data"],
-    "tar": ["tar archive", "POSIX tar archive"],
-    "rar": ["RAR archive data"],
-    "udf": ["UDF filesystem data"],
-    "xz": ["XZ compressed data"],
-    "zip": [ZIP_MAGIC],
-    "zlib": ["zlib compressed data"],
-    "lzh": ["  LHa (2.x) archive data", "  LHa 2.x? archive data"],
-}
-
-ARCHIVE_EXTENSIONS = {
-    "7z",
-    "ace",
-    "arc",
-    "arj",
-    "bz2",
-    "cab",
-    "cpio",
-    "gz",
-    "iso",
-    "lz",
-    "lzh",
-    "rar",
-    "tar",
-    "udf",
-    "xz",
-    "zip",
-    "zlib",
-}
-
 # Various scripting languages
 SCRIPT_ASSOC = {
     "php": ["PHP script"],
@@ -108,6 +118,7 @@ SCRIPT_ASSOC = {
     "sh": ["Bourne-Again shell", "POSIX shell"],
 }
 
+# Content heuristics keywords
 VBS_KEYWORDS = [
     "end function",
     "end if",
@@ -117,7 +128,6 @@ VBS_KEYWORDS = [
     "createobject",
     "execute",
 ]
-
 JS_KEYWORDS = [
     "function ",
     "function(",
@@ -129,9 +139,7 @@ JS_KEYWORDS = [
     "var ",
     "catch",
 ]
-
 HTML_KEYWORDS = ["<!doctype", "<html", "<script"]
-
 PS_KEYWORDS = [
     "powershell",
     "-nop",
@@ -142,12 +150,6 @@ PS_KEYWORDS = [
     "| iex",
     "|iex",
 ]
-
-# E-mail
-EMAIL_ASSOC = {
-    "msg": ["Microsoft Outlook Message"],
-    "eml": ["multipart/mixed", "RFC 822 mail", "SMTP mail"],
-}
 
 def classify_openxml(content: bytes) -> str | None:
     zipfile = ZipFile(BytesIO(content))
@@ -651,8 +653,7 @@ class Classifier(Karton):
                 sample_class.update({"kind": "script", "extension": ext})
                 return sample_class
 
-        if extension in script_assoc.keys():
-            sample_class.update({"kind": "script", "extension": ext})
+        if extension in SCRIPT_ASSOC.keys():
             sample_class.update({"kind": "script", "extension": extension})
             return sample_class
 
