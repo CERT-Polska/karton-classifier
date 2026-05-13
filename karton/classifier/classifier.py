@@ -151,6 +151,7 @@ PS_KEYWORDS = [
     "|iex",
 ]
 
+
 def classify_openxml(content: bytes) -> str | None:
     zipfile = ZipFile(BytesIO(content))
     extensions = {"docx": "word", "pptx": "ppt", "xlsx": "xl"}
