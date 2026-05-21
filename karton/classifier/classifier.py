@@ -377,10 +377,7 @@ class Classifier(Karton):
         extension = self._get_extension(sample.name or "sample")
         if magic == "data" and is_zipfile(BytesIO(content)):
             self.log.info("libmagic 'data' fallback, classifying as zip.")
-            # TODO change to:
-            # magic = ZIP_MAGIC
-            # after refactor/classifier-constants merges
-            magic = "Zip archive data"
+            magic = ZIP_MAGIC
 
         sample_class = {
             "magic": magic if magic else None,
