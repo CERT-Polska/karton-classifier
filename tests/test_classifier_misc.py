@@ -142,3 +142,26 @@ class TestClassifier(KartonTestCase):
             },
         )
         self.assertTasksEqual(res, [expected])
+
+    def test_process_misc_webp(self):
+        resource = mock_resource("misc.webp")
+        magic = self.magic_from_content(resource.content, mime=False)
+        res = self.run_task(mock_task(resource))
+
+        expected = Task(
+            headers={
+                "type": "sample",
+                "stage": "recognized",
+                "origin": "karton.classifier",
+                "quality": "high",
+                "kind": "misc",
+                "extension": "webp",
+                "mime": ANY,
+            },
+            payload={
+                "sample": resource,
+                "tags": ["misc:webp"],
+                "magic": magic,
+            },
+        )
+        self.assertTasksEqual(res, [expected])

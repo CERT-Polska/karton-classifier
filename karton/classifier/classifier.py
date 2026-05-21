@@ -92,6 +92,7 @@ IMAGE_ASSOC = {
     "gif": ["GIF image data"],
     "jpg": ["JPEG image data"],
     "png": ["PNG image data"],
+    "webp": ["Web/P image"],
 }
 
 # Windows scripts (per extension)
