@@ -393,6 +393,7 @@ class Classifier(Karton):
             "gif": ["GIF image data"],
             "jpg": ["JPEG image data"],
             "png": ["PNG image data"],
+            "webp": ["Web/P image"],
         }
 
         for ext, patterns in image_assoc.items():
