@@ -32,6 +32,30 @@ class TestClassifier(KartonTestCase):
         )
         self.assertTasksEqual(res, [expected])
 
+    def test_process_runnable_android_xapk(self):
+        resource = mock_resource("runnable.xapk")
+        magic = self.magic_from_content(resource.content, mime=False)
+        res = self.run_task(mock_task(resource))
+
+        expected = Task(
+            headers={
+                "type": "sample",
+                "stage": "recognized",
+                "origin": "karton.classifier",
+                "quality": "high",
+                "kind": "runnable",
+                "mime": ANY,
+                "extension": "xapk",
+                "platform": "android",
+            },
+            payload={
+                "sample": resource,
+                "tags": ["runnable:android:xapk"],
+                "magic": magic,
+            },
+        )
+        self.assertTasksEqual(res, [expected])
+
     def test_process_runnable_linux(self):
         resource = mock_resource("runnable.spc")
         magic = self.magic_from_content(resource.content, mime=False)
