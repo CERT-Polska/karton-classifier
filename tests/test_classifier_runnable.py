@@ -8,6 +8,30 @@ from .mock_helper import mock_resource, mock_task
 
 @pytest.mark.usefixtures("karton_classifier")
 class TestClassifier(KartonTestCase):
+    def test_process_runnable_android_apk(self):
+        resource = mock_resource("runnable.apk")
+        magic = self.magic_from_content(resource.content, mime=False)
+        res = self.run_task(mock_task(resource))
+
+        expected = Task(
+            headers={
+                "type": "sample",
+                "stage": "recognized",
+                "origin": "karton.classifier",
+                "quality": "high",
+                "kind": "runnable",
+                "mime": ANY,
+                "extension": "apk",
+                "platform": "android",
+            },
+            payload={
+                "sample": resource,
+                "tags": ["runnable:android:apk"],
+                "magic": magic,
+            },
+        )
+        self.assertTasksEqual(res, [expected])
+
     def test_process_runnable_android_dex(self):
         resource = mock_resource("runnable.dex")
         magic = self.magic_from_content(resource.content, mime=False)
