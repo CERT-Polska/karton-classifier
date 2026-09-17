@@ -14,6 +14,7 @@ from karton.core import Config, Karton, Task
 from karton.core.backend import KartonBackend
 
 from .__version__ import __version__
+from .zip_utils import get_zip_filenames
 
 # ---------------------------------------------------------------------------
 # Classification lookup tables
@@ -202,11 +203,10 @@ def get_tag(classification: dict) -> str:
 
 def zip_is_xapk(content: bytes) -> bool:
     try:
-        with ZipFile(BytesIO(content)) as zf:
-            names = zf.namelist()
-            if "manifest.json" not in names:
-                return False
-            return any(n.endswith(".apk") and "/" not in n for n in names)
+        names = get_zip_filenames(content)
+        if "manifest.json" not in names:
+            return False
+        return any(n.endswith(".apk") and "/" not in n for n in names)
     except Exception:
         return False
 
@@ -415,21 +415,19 @@ class Classifier(Karton):
             return sample_class
 
         # ZIP-contained files?
-        def zip_has_file(path: str) -> bool:
-            try:
-                ZipFile(BytesIO(content)).getinfo(path)
-                return True
-            except Exception:
-                return False
-
         if any(magic.startswith(x) for x in JAVA_ARCHIVES):
-            if extension == "apk" or zip_has_file("AndroidManifest.xml"):
+            try:
+                zip_filenames = set(get_zip_filenames(content))
+            except Exception:
+                zip_filenames = set()
+
+            if extension == "apk" or "AndroidManifest.xml" in zip_filenames:
                 sample_class.update(
                     {"kind": "runnable", "platform": "android", "extension": "apk"}
                 )
                 return sample_class
 
-            if extension == "jar" or zip_has_file("META-INF/MANIFEST.MF"):
+            if extension == "jar" or "META-INF/MANIFEST.MF" in zip_filenames:
                 sample_class.update(
                     {
                         "kind": "runnable",
