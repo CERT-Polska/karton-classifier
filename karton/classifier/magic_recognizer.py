@@ -459,13 +459,12 @@ def recognize_with_magic(
         sample_class.update({"kind": "json"})
         return sample_class
 
-    def apply_archive_headers(extension):
-        headers = {"kind": "archive", "extension": extension}
+    def apply_archive_headers(extension: str) -> FileTypeInfo:
+        headers: FileTypeInfo = {"kind": "archive", "extension": extension}
         if extension == "xz":
             # libmagic >= 5.40 generates correct MIME type for XZ archives
             headers["mime"] = "application/x-xz"
-        sample_class.update(headers)
-        return sample_class
+        return headers
 
     for archive_extension, assocs in ARCHIVE_ASSOC.items():
         if any(magic.startswith(assoc) for assoc in assocs):

@@ -78,6 +78,9 @@ class Classifier(Karton):
         filemagic_classification = recognize_with_magic(content, file_name, magic, mime)
         if filemagic_classification:
             file_types.append(filemagic_classification)
+            if filemagic_classification.get("mime"):
+                # Fix MIME type accordingly
+                mime = filemagic_classification["mime"]
 
         if not file_types:
             self.log.info(

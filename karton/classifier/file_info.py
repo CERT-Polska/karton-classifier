@@ -5,6 +5,8 @@ class FileTypeInfo(TypedDict):
     kind: NotRequired[str]
     platform: NotRequired[str]
     extension: NotRequired[str]
+    # MIME type fix-up
+    mime: NotRequired[str]
     # for Yara rules
     rule_name: NotRequired[str]
 
