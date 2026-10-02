@@ -90,7 +90,7 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(results, indent=2))
     else:
         for result in results:
-            print(f"=== {result['file']} ===")
+            print(f"file: {result['file']}")
             if "error" in result:
                 print(f"error: {result['error']}")
                 print()
