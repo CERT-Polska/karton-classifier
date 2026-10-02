@@ -24,7 +24,8 @@ setup(
     python_requires=">=3.10",
     entry_points={
         'console_scripts': [
-            'karton-classifier=karton.classifier:Classifier.main'
+            'karton-classifier=karton.classifier:Classifier.main',
+            'karton-classifier-cli=karton.classifier.cli:main',
         ],
     },
     classifiers=[
