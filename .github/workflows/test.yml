@@ -13,12 +13,12 @@ jobs:
       - uses: CERT-Polska/lint-python-action@v2
         with:
           source: karton/
-          python-version: '3.12'
+          python-version: '3.11'
   unittest:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        minor: [10, 11, 12]
+        minor: [11, 12, 13]
         libmagic: [FILE5_40, FILE5_41, FILE5_42]
     steps:
       - uses: actions/checkout@v4
