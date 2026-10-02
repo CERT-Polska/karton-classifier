@@ -62,7 +62,6 @@ $ pip install karton-classifier
 $ karton-classifier
 ```
 
-
 ## YARA rule classifiers
 
 Since karton-classifier v2.1.0 it's possible to extend the classifier logic using YARA rules.
@@ -90,5 +89,25 @@ Some caveats to consider:
   * The outgoing task includes the matched rule name in `rule-name` in the task header
   * All Yara rules must have a `.yar` extension. All other files in the specified directory are ignored. In particular, `.yara` extension is not supported.
   * Directories are not supported too - all Yara rules must reside directly in the specified directory.
+
+## CLI for testing
+
+Since karton-classifier v3.0.0 it's possible to check the classification result from CLI using `karton-classifier-cli` command.
+
+Usage:
+
+```
+$ karton-classifier-cli README.md 
+
+file: README.md
+magic: ASCII text
+mime: text/plain
+recognized: true
+file_types:
+  - {"kind": "ascii"}
+tags:
+  - misc:ascii
+```
+
 
 ![Co-financed by the Connecting Europe Facility by of the European Union](https://www.cert.pl/uploads/2019/02/en_horizontal_cef_logo-e1550495232540.png)

@@ -21,10 +21,11 @@ setup(
     long_description=open("README.md", "r").read(),
     long_description_content_type="text/markdown",
     install_requires=open("requirements.txt").read().splitlines(),
-    python_requires=">=3.10",
+    python_requires=">=3.11",
     entry_points={
         'console_scripts': [
-            'karton-classifier=karton.classifier:Classifier.main'
+            'karton-classifier=karton.classifier:Classifier.main',
+            'karton-classifier-cli=karton.classifier.cli:main',
         ],
     },
     classifiers=[

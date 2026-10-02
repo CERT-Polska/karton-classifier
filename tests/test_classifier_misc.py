@@ -10,7 +10,7 @@ from .mock_helper import mock_resource, mock_task
 class TestClassifier(KartonTestCase):
     def test_process_misc_ascii(self):
         resource = mock_resource("misc.ascii")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -32,7 +32,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_misc_html(self):
         resource = mock_resource("misc.html")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -54,7 +54,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_misc_csv(self):
         resource = mock_resource("misc.csv")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -76,7 +76,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_misc_gif(self):
         resource = mock_resource("misc.gif")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -99,7 +99,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_misc_jpg(self):
         resource = mock_resource("misc.jpg")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -122,7 +122,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_misc_png(self):
         resource = mock_resource("misc.png")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -145,7 +145,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_misc_webp(self):
         resource = mock_resource("misc.webp")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -168,7 +168,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_misc_utf8(self):
         resource = mock_resource("misc.utf-8")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -190,7 +190,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_misc_pcapng(self):
         resource = mock_resource("misc.pcapng")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -212,7 +212,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_misc_pcap(self):
         resource = mock_resource("misc.pcap")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -234,7 +234,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_misc_pgp(self):
         resource = mock_resource("misc.pgp")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(

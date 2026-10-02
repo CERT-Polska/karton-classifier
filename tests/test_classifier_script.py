@@ -10,7 +10,7 @@ from .mock_helper import mock_resource, mock_task
 class TestClassifier(KartonTestCase):
     def test_process_script_win32_js(self):
         resource = mock_resource("script.js")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -34,7 +34,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_script_win32_jse(self):
         resource = mock_resource("script.jse")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -58,7 +58,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_script_win32_ps1(self):
         resource = mock_resource("script.ps1")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -82,7 +82,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_script_win32_vbs(self):
         resource = mock_resource("script.vbs")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -106,7 +106,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_script_php(self):
         resource = mock_resource("script.php")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -129,7 +129,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_script_bash(self):
         resource = mock_resource("script.bash")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -152,7 +152,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_script_perl(self):
         resource = mock_resource("script.pl")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -175,7 +175,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_script_python(self):
         resource = mock_resource("script.py")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -198,7 +198,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_script_ruby(self):
         resource = mock_resource("script.rb")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -221,7 +221,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_script_script(self):
         resource = mock_resource("script.scpt")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
