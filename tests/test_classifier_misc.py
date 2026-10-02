@@ -143,7 +143,30 @@ class TestClassifier(KartonTestCase):
         )
         self.assertTasksEqual(res, [expected])
 
-    def test_misc_utf8(self):
+    def test_process_misc_webp(self):
+        resource = mock_resource("misc.webp")
+        magic = self.magic_from_content(resource.content, mime=False)
+        res = self.run_task(mock_task(resource))
+
+        expected = Task(
+            headers={
+                "type": "sample",
+                "stage": "recognized",
+                "origin": "karton.classifier",
+                "quality": "high",
+                "kind": "misc",
+                "extension": "webp",
+                "mime": ANY,
+            },
+            payload={
+                "sample": resource,
+                "tags": ["misc:webp"],
+                "magic": magic,
+            },
+        )
+        self.assertTasksEqual(res, [expected])
+
+    def test_process_misc_utf8(self):
         resource = mock_resource("misc.utf-8")
         magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
@@ -165,7 +188,7 @@ class TestClassifier(KartonTestCase):
         )
         self.assertTasksEqual(res, [expected])
 
-    def test_misc_pcapng(self):
+    def test_process_misc_pcapng(self):
         resource = mock_resource("misc.pcapng")
         magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
@@ -187,7 +210,7 @@ class TestClassifier(KartonTestCase):
         )
         self.assertTasksEqual(res, [expected])
 
-    def test_misc_pcap(self):
+    def test_process_misc_pcap(self):
         resource = mock_resource("misc.pcap")
         magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))
@@ -209,7 +232,7 @@ class TestClassifier(KartonTestCase):
         )
         self.assertTasksEqual(res, [expected])
 
-    def test_misc_pgp(self):
+    def test_process_misc_pgp(self):
         resource = mock_resource("misc.pgp")
         magic = self.magic_from_content(resource.content, mime=False)
         res = self.run_task(mock_task(resource))

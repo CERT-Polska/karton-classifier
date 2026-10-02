@@ -13,15 +13,16 @@ jobs:
       - uses: CERT-Polska/lint-python-action@v2
         with:
           source: karton/
+          python-version: '3.12'
   unittest:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        minor: [9, 10, 11]
+        minor: [10, 11, 12]
         libmagic: [FILE5_40, FILE5_41, FILE5_42]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: 3.${{ matrix.minor }}
       - name: Cache libmagic.so
