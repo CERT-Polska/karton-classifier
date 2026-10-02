@@ -6,7 +6,7 @@ from typing import Callable
 from zipfile import ZipFile, is_zipfile
 
 import chardet  # type: ignore
-import magic as pymagic  # type: ignore
+from pure_magic_rs import MagicDb
 
 from .file_info import FileTypeInfo, get_extension
 from .zip_utils import get_zip_filenames
@@ -91,7 +91,7 @@ IMAGE_ASSOC = {
     "gif": ["GIF image data"],
     "jpg": ["JPEG image data"],
     "png": ["PNG image data"],
-    "webp": ["Web/P image"],
+    "webp": ["Web/P image", "WebP image"],
 }
 
 # Windows scripts (per extension)
@@ -177,13 +177,13 @@ MagicFromBufferFunction = Callable[[bytes], tuple[str, str]]
 
 
 def load_magic() -> MagicFromBufferFunction:
-    get_magic = pymagic.Magic(mime=False)
-    get_mime = pymagic.Magic(mime=True)
+    magic_db = MagicDb()
 
     def wrapper(content: bytes) -> tuple[str, str]:
         try:
-            magic = get_magic.from_buffer(content) or "data"
-            mime = get_mime.from_buffer(content) or "application/octet-stream"
+            result = magic_db.best_magic_buffer(content)
+            magic = result.message if result else "data"
+            mime = result.mime_type if result else "application/octet-stream"
         except Exception:
             logger.exception("Got exception from libmagic during file type recognition")
             magic = "data"
@@ -375,10 +375,10 @@ def recognize_with_magic(
             {"kind": "document", "platform": "win32", "extension": "rtf"}
         )
         return sample_class
-    # Check Composite Document (doc/xls/ppt) by libmagic and extension
-    if magic.startswith("Composite Document File"):
+    # Check OLE 2 Compound Document by magic and extension
+    if magic.startswith("OLE 2 Compound Document"):
         # MSI installers are also CDFs
-        if "MSI Installer" in magic:
+        if "Microsoft Windows Installer" in magic:
             sample_class.update(
                 {"kind": "runnable", "platform": "win32", "extension": "msi"}
             )
@@ -392,7 +392,7 @@ def recognize_with_magic(
         )
 
         for ext, typepart in OFFICE_EXTENSIONS.items():
-            if f"Name of Creating Application: {typepart}" in magic:
+            if f": {typepart}" in magic:
                 sample_class["extension"] = ext
                 return sample_class
 
@@ -461,10 +461,15 @@ def recognize_with_magic(
 
     def apply_archive_headers(extension: str) -> FileTypeInfo:
         headers: FileTypeInfo = {"kind": "archive", "extension": extension}
-        if extension == "xz":
-            # libmagic >= 5.40 generates correct MIME type for XZ archives
-            headers["mime"] = "application/x-xz"
+        if extension == "cpio":
+            # Fix-up for pure-magic
+            # Remove after it recognizes binary CPIO header
+            headers["mime"] = "application/x-cpio"
         return headers
+
+    # Special case of UDF: 'ISO 9660 CD-ROM ... + UDF filesystem data'
+    if magic.startswith("ISO 9660 CD-ROM") and "+ UDF filesystem data" in magic:
+        return apply_archive_headers("udf")
 
     for archive_extension, assocs in ARCHIVE_ASSOC.items():
         if any(magic.startswith(assoc) for assoc in assocs):
@@ -548,6 +553,9 @@ def recognize_with_magic(
         # take the whole content
         partial = content
 
+    if partial.startswith((b"\xc7\x71", b"\x71\xc7")) and b"TRAILER!!!" in partial:
+        return apply_archive_headers("cpio")
+
     # Dumped PE file heuristics (PE not recognized by libmagic)
     if b".text" in partial and b"This program cannot be run" in partial:
         sample_class.update({"kind": "dump", "platform": "win32", "extension": "exe"})
@@ -594,7 +602,7 @@ def recognize_with_magic(
     # CRLF line terminators
     # Non-ISO extended-ASCII text, with no line terminators
     # troff or preprocessor input, ASCII text, with CRLF line terminators
-    if "ASCII" in magic:
+    if "ASCII text" in magic:
         sample_class.update(
             {
                 "kind": "ascii",
@@ -618,7 +626,7 @@ def recognize_with_magic(
     # magic samples of UTF-8 files:
     # Unicode text, UTF-8 text, with CRLF line terminators
     # XML 1.0 document, Unicode text, UTF-8 text
-    if "UTF-8" in magic:
+    if "UTF-8 text" in magic:
         sample_class.update(
             {
                 "kind": "utf-8",
