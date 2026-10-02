@@ -200,7 +200,7 @@ class TestClassifier(KartonTestCase):
                 "origin": "karton.classifier",
                 "quality": "high",
                 "kind": "pcapng",
-                "mime": 'application/octet-stream',
+                "mime": 'application/x-pcapng',
             },
             payload={
                 "sample": resource,
