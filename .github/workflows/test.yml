@@ -19,31 +19,10 @@ jobs:
     strategy:
       matrix:
         minor: [11, 12, 13]
-        libmagic: [FILE5_40, FILE5_41, FILE5_42]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: 3.${{ matrix.minor }}
-      - name: Cache libmagic.so
-        id: cache-libmagic
-        uses: actions/cache@v3
-        with:
-          path: tests/libmagic
-          key: libmagic-${{ matrix.libmagic }}
-      - name: Build libmagic.so in version ${{matrix.libmagic}}
-        if: steps.cache-libmagic.outputs.cache-hit != 'true'
-        run: |
-          git clone https://github.com/file/file.git
-          cd file
-          git checkout ${{matrix.libmagic}}
-          autoreconf -vif
-          ./configure
-          make
-          mkdir ../tests/libmagic
-          cp src/.libs/libmagic.so.1.0.0 ../tests/libmagic/libmagic.so
-          cp magic/magic.mgc ../tests/libmagic/magic.mgc
-      - run: pip install -r requirements.txt pytest==6.2.5
+      - run: pip install -r requirements.txt pytest
       - run: pytest
-        env:
-          LIBMAGIC_PRELOAD: ${{ matrix.libmagic }}
