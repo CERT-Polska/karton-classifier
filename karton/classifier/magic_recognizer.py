@@ -173,7 +173,7 @@ def classify_openxml(content: bytes) -> str | None:
     return None
 
 
-type MagicFromBufferFunction = Callable[[bytes], tuple[str, str]]
+MagicFromBufferFunction = Callable[[bytes], tuple[str, str]]
 
 
 def load_magic() -> MagicFromBufferFunction:
