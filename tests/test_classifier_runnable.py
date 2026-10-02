@@ -10,7 +10,7 @@ from .mock_helper import mock_resource, mock_task
 class TestClassifier(KartonTestCase):
     def test_process_runnable_android_apk(self):
         resource = mock_resource("runnable.apk")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -34,7 +34,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_runnable_android_dex(self):
         resource = mock_resource("runnable.dex")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -58,7 +58,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_runnable_android_xapk(self):
         resource = mock_resource("runnable.xapk")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -82,7 +82,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_runnable_linux(self):
         resource = mock_resource("runnable.spc")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -106,7 +106,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_runnable_win32_dll(self):
         resource = mock_resource("runnable.dll")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -130,7 +130,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_runnable_win32_exe(self):
         resource = mock_resource("runnable.exe")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -154,7 +154,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_runnable_win32_jar(self):
         resource = mock_resource("runnable.jar")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -178,7 +178,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_runnable_win32_lnk(self):
         resource = mock_resource("runnable.lnk")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -202,7 +202,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_runnable_win32_msi(self):
         resource = mock_resource("runnable.msi")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -226,7 +226,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_runnable_win32_swf(self):
         resource = mock_resource("runnable.swf")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -250,7 +250,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_runnable_win64_dll(self):
         resource = mock_resource("runnable.dll64")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -274,7 +274,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_runnable_win64_exe(self):
         resource = mock_resource("runnable.exe64")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -298,7 +298,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_runnable_aix_xcoff(self):
         resource = mock_resource("runnable.xcoff")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -322,7 +322,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_runnable_win32_com(self):
         resource = mock_resource("runnable.com")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -346,7 +346,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_runnable_mbr(self):
         resource = mock_resource("runnable.mbr")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(

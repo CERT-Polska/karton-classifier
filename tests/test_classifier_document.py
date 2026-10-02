@@ -10,7 +10,7 @@ from .mock_helper import mock_resource, mock_task
 class TestClassifier(KartonTestCase):
     def test_process_document_doc(self):
         resource = mock_resource("document.doc")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -34,7 +34,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_document_docx(self):
         resource = mock_resource("document.docx")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -58,7 +58,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_document_pdf(self):
         resource = mock_resource("document.pdf")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -82,7 +82,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_document_rtf(self):
         resource = mock_resource("document.rtf")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -106,7 +106,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_document_xls(self):
         resource = mock_resource("document.xls")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -130,7 +130,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_document_xlsx(self):
         resource = mock_resource("document.xlsm")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
