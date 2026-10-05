@@ -9,3 +9,6 @@ line_length = 88
 [tool.lint-python]
 lint-version = "2"
 source = "karton/"
+
+[tool.mypy]
+explicit_package_bases = true

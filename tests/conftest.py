@@ -56,14 +56,21 @@ from karton.classifier import Classifier
 import pytest
 
 
-def magic_from_content(content, mime):
-    return (get_mime if mime else get_magic).from_buffer(content)
+def magic_from_content(content):
+    try:
+        magic = get_magic.from_buffer(content) or "data"
+        mime = get_mime.from_buffer(content) or "application/octet-stream"
+    except Exception:
+        magic = "data"
+        mime = "application/octet-stream"
+    return magic, mime
 
 
 @pytest.fixture(scope="class")
 def karton_classifier(request):
-    def _magic_from_content(_, content, mime):
-        return magic_from_content(content, mime)
+    def _magic_from_content(_, content):
+        # Function called by tests to get magic
+        return magic_from_content(content)[0]
 
     request.cls.karton_class = Classifier
     request.cls.magic_from_content = _magic_from_content

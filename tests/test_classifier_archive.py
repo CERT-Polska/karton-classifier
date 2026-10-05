@@ -10,7 +10,7 @@ from .mock_helper import mock_resource, mock_task
 class TestClassifier(KartonTestCase):
     def test_process_archive_7z(self):
         resource = mock_resource("archive.7z")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -33,7 +33,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_archive_ace(self):
         resource = mock_resource("archive.ace")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -56,7 +56,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_archive_bz2(self):
         resource = mock_resource("archive.bz2")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -79,7 +79,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_archive_cab(self):
         resource = mock_resource("archive.cab")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -102,7 +102,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_archive_cab_with_extension(self):
         resource = mock_resource("archive.cab", with_name=True)
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -125,7 +125,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_archive_cpio(self):
         resource = mock_resource("archive.cpio")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -148,7 +148,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_archive_gz(self):
         resource = mock_resource("archive.gz")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -171,7 +171,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_archive_iso(self):
         resource = mock_resource("archive.iso")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -194,7 +194,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_archive_lz(self):
         resource = mock_resource("archive.lz")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -213,7 +213,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_archive_lzh(self):
         resource = mock_resource("archive.lzh")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -232,7 +232,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_archive_rar(self):
         resource = mock_resource("archive.rar")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -255,7 +255,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_archive_tar(self):
         resource = mock_resource("archive.tar")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -278,7 +278,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_archive_udf(self):
         resource = mock_resource("archive.udf")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -301,7 +301,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_archive_xz(self):
         resource = mock_resource("archive.xz")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -324,7 +324,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_archive_zlib(self):
         resource = mock_resource("archive.zlib")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(
@@ -347,7 +347,7 @@ class TestClassifier(KartonTestCase):
 
     def test_process_archive_zip(self):
         resource = mock_resource("archive.zip")
-        magic = self.magic_from_content(resource.content, mime=False)
+        magic = self.magic_from_content(resource.content)
         res = self.run_task(mock_task(resource))
 
         expected = Task(

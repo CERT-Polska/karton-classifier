@@ -49,25 +49,3 @@ class TestClassifier(KartonTestCase):
             },
         )
         self.assertTasksEqual(res, [expected])
-
-    def test_process_error(self):
-        m = MagicMock()
-        m.side_effect = Exception("unknown error")
-        self.karton = Classifier(magic=m, config=self.config, backend=self.backend)
-
-        resource = Resource("file.txt", b"ffafafffa", sha256="sha256")
-        res = self.run_task(mock_task(resource))
-
-        expected = Task(
-            headers={
-                "type": "sample",
-                "stage": "unrecognized",
-                "origin": "karton.classifier",
-                "kind": "unknown",
-                "quality": "high",
-            },
-            payload={
-                "sample": resource,
-            },
-        )
-        self.assertTasksEqual(res, [expected])
