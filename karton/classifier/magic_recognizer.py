@@ -34,7 +34,7 @@ ARCHIVE_ASSOC = {
     "ace": ["ACE archive data"],
     "bz2": ["bzip2 compressed data"],
     "cab": ["Microsoft Cabinet archive data"],
-    "cpio": ["cpio archive"],
+    "cpio": ["cpio archive", "ASCII cpio archive"],
     "gz": ["gzip compressed"],
     "iso": ["ISO 9660 CD-ROM"],
     "lz": ["lzip compressed data"],
