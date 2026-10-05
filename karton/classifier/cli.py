@@ -43,12 +43,6 @@ def main(argv: list[str] | None = None) -> int:
         default=None,
         help="Directory containing classifier YARA rules",
     )
-    parser.add_argument(
-        "--json",
-        action="store_true",
-        dest="as_json",
-        help="Emit a single JSON array document instead of human-readable output",
-    )
     args = parser.parse_args(argv)
 
     magic_fn = load_magic()
@@ -84,28 +78,7 @@ def main(argv: list[str] | None = None) -> int:
         result["recognized"] = bool(file_types)
         result["file_types"] = file_types
         result["tags"] = tags
-        results.append(result)
-
-    if args.as_json:
-        print(json.dumps(results, indent=2))
-    else:
-        for result in results:
-            print(f"file: {result['file']}")
-            if "error" in result:
-                print(f"error: {result['error']}")
-                print()
-                continue
-            print(f"magic: {result['magic']}")
-            print(f"mime: {result['mime']}")
-            print(f"recognized: {'true' if result['recognized'] else 'false'}")
-            print("file_types:")
-            for file_type in result["file_types"]:
-                print(f"  - {json.dumps(file_type)}")
-            print("tags:")
-            for tag in result["tags"]:
-                print(f"  - {tag}")
-            print()
-
+        print(json.dumps(result))
     return exit_code
 
 
