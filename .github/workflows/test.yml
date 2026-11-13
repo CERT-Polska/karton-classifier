@@ -13,12 +13,12 @@ jobs:
       - uses: CERT-Polska/lint-python-action@v2
         with:
           source: karton/
-          python-version: '3.11'
+          python-version: '3.13'
   unittest:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        minor: [11, 12, 13]
+        minor: [12, 13]
         libmagic: [FILE5_40, FILE5_41, FILE5_42]
     steps:
       - uses: actions/checkout@v4
@@ -43,7 +43,7 @@ jobs:
           mkdir ../tests/libmagic
           cp src/.libs/libmagic.so.1.0.0 ../tests/libmagic/libmagic.so
           cp magic/magic.mgc ../tests/libmagic/magic.mgc
-      - run: pip install -r requirements.txt pytest==6.2.5
+      - run: pip install -r requirements.txt pytest==9.2.0
       - run: pytest
         env:
           LIBMAGIC_PRELOAD: ${{ matrix.libmagic }}
