@@ -26,6 +26,10 @@ class Classifier(Karton):
     filters = [
         {"type": "sample", "kind": "raw"},
     ]
+    egress_filters = [
+        {"type": "sample", "stage": "recognized"},
+        {"type": "sample", "stage": "unrecognized"},
+    ]
 
     def __init__(
         self,
